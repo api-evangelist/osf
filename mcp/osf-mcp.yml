@@ -1,0 +1,214 @@
+generated: '2026-10-14'
+method: derived
+generator: derive-mcp-candidate.py
+source:
+- openapi/_original/osf_swagger.json
+status: candidate
+deployment:
+  mode: none
+  auth: unknown
+  verified: probed
+note: 'No MCP server was found. The pre-flight posted tools/list to /mcp on api.cos.io, osf.io, developer.osf.io, www.cos.io; verdict opaque (https://developer.osf.io/mcp
+  answered 403: the edge authenticates before it routes, which proves nothing either way). Candidate tools below are derived from the 326 operation(s)
+  in the provider''s own OpenAPI (40 listed); they describe what a server WOULD expose, not one that exists.'
+tools:
+- name: addons_list
+  operationId: addons_list
+  method: GET
+  path: /addons/
+  description: List all addons
+- name: base_read
+  operationId: base_read
+  method: GET
+  path: /
+  description: Root
+- name: citations_styles_list
+  operationId: citations_styles_list
+  method: GET
+  path: /citations/styles/
+  description: List all citation styles
+- name: citations_styles_read
+  operationId: citations_styles_read
+  method: GET
+  path: /citations/styles/{style_id}/
+  description: Retrieve a citation style
+- name: comments_read
+  operationId: comments_read
+  method: GET
+  path: /comments/{comment_id}/
+  description: Retrieve a comment
+- name: comments_delete
+  operationId: comments_delete
+  method: DELETE
+  path: /comments/{comment_id}/
+  description: Delete a comment
+- name: files_detail
+  operationId: files_detail
+  method: GET
+  path: /files/{file_id}/
+  description: Retrieve a file
+- name: files_patch
+  operationId: files_patch
+  method: PATCH
+  path: /files/{file_id}/
+  description: Update a file
+- name: files_versions
+  operationId: files_versions
+  method: GET
+  path: /files/{file_id}/versions/
+  description: List all file versions
+- name: files_version_detail
+  operationId: files_version_detail
+  method: GET
+  path: /files/{file_id}/versions/{version_id}/
+  description: Retrieve a file version
+- name: license_list
+  operationId: license_list
+  method: GET
+  path: /licenses/
+  description: List all licenses
+- name: licenses_read
+  operationId: licenses_read
+  method: GET
+  path: /license/{license_id}/
+  description: Retrieve a license
+- name: logs_read
+  operationId: logs_read
+  method: GET
+  path: /logs/{log_id}/
+  description: Retrieve a log
+- name: logs_actions
+  operationId: logs_actions
+  method: GET
+  path: /actions/
+  description: Actions
+- name: institutions_list
+  operationId: institutions_list
+  method: GET
+  path: /institutions/
+  description: List all institutions
+- name: institutions_detail
+  operationId: institutions_detail
+  method: GET
+  path: /institutions/{institution_id}/
+  description: Retrieve an institution
+- name: institutions_users_list
+  operationId: institutions_users_list
+  method: GET
+  path: /institutions/{institution_id}/users/
+  description: List all affiliated users
+- name: institutions_node_list
+  operationId: institutions_node_list
+  method: GET
+  path: /institutions/{institution_id}/nodes/
+  description: List all affiliated nodes
+- name: institutions_registration_list
+  operationId: institutions_registration_list
+  method: GET
+  path: /institutions/{institution_id}/registrations/
+  description: List all affiliated registrations
+- name: list_institution_node_relationships
+  operationId: listInstitutionNodeRelationships
+  method: GET
+  path: /institutions/{institution_id}/relationships/nodes/
+  description: List nodes affiliated with an institution (relationship data)
+- name: add_institution_node_relationships
+  operationId: addInstitutionNodeRelationships
+  method: POST
+  path: /institutions/{institution_id}/relationships/nodes/
+  description: Add node relationships to an institution
+- name: remove_institution_node_relationships
+  operationId: removeInstitutionNodeRelationships
+  method: DELETE
+  path: /institutions/{institution_id}/relationships/nodes/
+  description: Remove node relationships from an institution
+- name: list_institution_registration_relationships
+  operationId: listInstitutionRegistrationRelationships
+  method: GET
+  path: /institutions/{institution_id}/relationships/registrations/
+  description: List registrations affiliated with an institution (relationship data)
+- name: add_institution_registration_relationships
+  operationId: addInstitutionRegistrationRelationships
+  method: POST
+  path: /institutions/{institution_id}/relationships/registrations/
+  description: Add registration relationships to an institution
+- name: remove_institution_registration_relationships
+  operationId: removeInstitutionRegistrationRelationships
+  method: DELETE
+  path: /institutions/{institution_id}/relationships/registrations/
+  description: Remove registration relationships from an institution
+- name: registration_schemas_list
+  operationId: registration_schemas_list
+  method: GET
+  path: /schemas/registrations/
+  description: Retrieve a list of Registration Schemas
+- name: registration_schema_read
+  operationId: registration_schema_read
+  method: GET
+  path: /schemas/registrations/{registration_schema_id}
+  description: Retrieve a Registration Schema
+- name: schema_responses_list
+  operationId: schema_responses_list
+  method: GET
+  path: /schema_responses/
+  description: List all Schema Responses
+- name: schema_response_ppost
+  operationId: schema_response_ppost
+  method: POST
+  path: /schema_responses/
+  description: Create a new Schema Response
+- name: schema_responses_read
+  operationId: schema_responses_read
+  method: GET
+  path: /schema_responses/{schema_response_id}
+  description: Retrieve a Schema Response
+- name: schema_response_patch
+  operationId: schema_response_patch
+  method: PATCH
+  path: /schema_responses/{schema_response_id}
+  description: Update a Registration's Schema Response
+- name: schema_response_delete
+  operationId: schema_response_delete
+  method: DELETE
+  path: /schema_responses/{schema_response_id}
+  description: Delete a Incomplete Schema Response
+- name: schema_response_action_read
+  operationId: schema_response_action_read
+  method: GET
+  path: /schema_responses/{schema_response_id}/actions/
+  description: Retrieve a list of Schema Response Actions for a Schema Response
+- name: schema_response_blocks_read
+  operationId: schema_response_blocks_read
+  method: GET
+  path: /schema_responses/{schema_response_id}/schema_blocks/
+  description: Retrieve a list of Registration Schema Blocks for a Schema Response
+- name: nodes_list
+  operationId: nodes_list
+  method: GET
+  path: /nodes/
+  description: List all nodes
+- name: nodes_create
+  operationId: nodes_create
+  method: POST
+  path: /nodes/
+  description: Create a node
+- name: nodes_read
+  operationId: nodes_read
+  method: GET
+  path: /nodes/{node_id}/
+  description: Retrieve a node
+- name: nodes_partial_update
+  operationId: nodes_partial_update
+  method: PATCH
+  path: /nodes/{node_id}/
+  description: Update a node
+- name: nodes_delete
+  operationId: nodes_delete
+  method: DELETE
+  path: /nodes/{node_id}/
+  description: Delete a node
+- name: nodes_addons_list
+  operationId: nodes_addons_list
+  method: GET
+  path: /nodes/{node_id}/addons/
+  description: List all addons

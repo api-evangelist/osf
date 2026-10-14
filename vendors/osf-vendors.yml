@@ -1,0 +1,74 @@
+generated: '2026-10-14'
+method: probed
+source: pre-flight dossier (docs platform, portal detections) + CNAME chains and response headers of the hosts apis.yml names
+registry: all/0-working/vendors.yml
+areas_vocabulary:
+- documentation
+- developer-portal
+- api-gateway
+- cdn
+- hosting
+- sdk-generation
+- api-collections
+- status-page
+- support
+- community
+- identity
+- mcp-hosting
+vendors:
+- vendor: postman
+  name: Postman
+  area: api-collections
+  host: www.postman.com
+  evidence: https://www.postman.com/centerforopenscience/workspace/osf
+  signal: url:postman.com
+  confidence: high
+  kin_score:
+  - postman_collection
+- vendor: cloudfront
+  name: Amazon CloudFront
+  area: cdn
+  host: developer.osf.io
+  evidence: cname:cloudfront.net
+  signal: cname
+  confidence: high
+  kin_score: []
+- vendor: redoc
+  name: Redoc (self-hosted)
+  area: documentation
+  host: developer.osf.io
+  evidence: markup:redoc
+  signal: docs-platform
+  confidence: medium
+  kin_score:
+  - openapi_published
+- vendor: helpscout
+  name: Help Scout
+  area: support
+  host: help.osf.io
+  evidence: cname:helpscoutdocs.com
+  signal: cname
+  confidence: high
+  kin_score:
+  - support_channel
+reliance:
+  areas_vendor_served:
+  - api-collections
+  - cdn
+  - documentation
+  - support
+  vendor_count: 4
+  areas_observed: 12
+  share_of_observable_areas: 0.333
+  note: areas where a third party was DETECTED serving this provider; an area absent here was either self-run or not observed, and this script
+    cannot tell those apart
+checked:
+- 'docs-platform: redoc'
+- help.osf.io (GettingStarted)
+- developer.osf.io (Documentation)
+- osf.io (Website)
+- developer.osf.io (APIReference)
+- osf.io (Support)
+- osf.io (SignUp)
+- www.postman.com (Postman)
+- api.osf.io (baseURL)

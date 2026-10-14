@@ -1,23 +1,95 @@
 aid: osf
+
 name: OSF
-description: 'OSF is a company surfaced via the API Evangelist harvest backlog (source: tag-qc) and added
-  to the network as a stub for full-pipeline profiling.'
+
+description: OSF (Open Science Framework) is a free, open-source platform that supports the entire research lifecycle, enabling collaboration,
+  data sharing, and reproducible workflows. Researchers can register projects, collect data, manage materials, and publish results, all while
+  integrating with tools like Dropbox, GitHub, and more. The platform emphasizes openness, inclusivity, and long-term preservation of scholarly
+  outputs.
+
 url: https://raw.githubusercontent.com/api-evangelist/osf/refs/heads/main/apis.yml
+
 x-type: company
+
 x-source: harvest:tag-qc
-x-tier: stub
-x-tier-reason: harvest
+
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-14 (modular-v1; was harvest)
+
 specificationVersion: '0.20'
+
 created: '2026-10-13'
+
 modified: '2026-10-13'
+
 tags:
 - Company
-apis: []
+- OpenScience
+- Research
+- Collaboration
+- Platform
+- OpenSource
+
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+
 common:
+- type: Spectral
+  url: rules/osf-rules.yml
+- type: Vocabulary
+  url: vocabulary/osf-vocabulary.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: ErrorCatalog
+  url: errors/osf-problem-types.yml
+- type: Conformance
+  url: conformance/osf-conformance.yml
+- type: Hosts
+  url: hosts/osf-hosts.yml
+- type: Vendors
+  url: vendors/osf-vendors.yml
+- type: GettingStarted
+  url: https://help.osf.io/collection/331-getting-started-live-training-and-recording-library
+- type: Documentation
+  url: https://developer.osf.io/
+- type: DomainSecurity
+  url: security/osf-domain-security.yml
 - type: Website
   url: https://osf.io
+- type: APIReference
+  url: https://developer.osf.io
+- type: Support
+  url: https://osf.io
+- type: Blog
+  url: https://www.cos.io/blog
+- type: GitHubOrganization
+  url: https://github.com/centerforopenscience
+- type: Roadmap
+  url: https://www.cos.io/initiatives/top-guidelines
+- type: Pricing
+  url: https://osf.io/pricing
+- type: SignUp
+  url: https://osf.io/register
+- type: TermsOfService
+  url: https://osf.io/terms-of-use
+- type: PrivacyPolicy
+  url: https://osf.io/privacy-policy
+- type: Postman
+  url: https://www.postman.com/centerforopenscience/workspace/osf
+
+apis:
+- name: OSF API
+  description: Open Science Framework API v2 provides programmatic access to projects, registrations, files, and other research resources.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  properties: []
+  aid: osf:osf-api
+x-enrichment:
+  date: '2026-10-14'
+  status: enriched
+  artifacts_added: 12
+  pass: modular-v1
+  engine: identity=local,contract=local,surfaces=local,docs=local,regulatory=local

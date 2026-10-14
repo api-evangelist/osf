@@ -1,0 +1,62 @@
+generated: '2026-10-14'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/_original/osf_swagger.json
+format: custom
+envelope:
+  media_type: null
+  schema: null
+coverage:
+  operations: 349
+  statuses_declared: 8
+problems:
+- status: 400
+  title: Bad Request
+  description: Bad Request. The submitted data is invalid.
+  operations: 54
+  media_types: []
+  schema: null
+- status: 401
+  title: Unauthorized
+  description: Unauthorized. Authentication is required.
+  operations: 111
+  media_types: []
+  schema: null
+- status: 403
+  title: Forbidden
+  description: Permission denied.
+  operations: 144
+  media_types: []
+  schema: null
+- status: 404
+  title: Not Found
+  description: Not Found. No node matches the given ID.
+  operations: 139
+  media_types: []
+  schema: null
+- status: 405
+  title: Method Not Allowed
+  description: Returned if write access to this node has been restricted. The response will include the message
+    "This action is no longer available. Contac
+  operations: 30
+  media_types: []
+  schema: null
+- status: 409
+  title: Conflict
+  description: Conflict. Invalid trigger for the node request's current state.
+  operations: 2
+  media_types: []
+  schema: null
+- status: 410
+  title: Gone
+  description: The GUID has been deleted.
+  operations: 2
+  media_types: []
+  schema: null
+- status: 429
+  title: Too Many Requests
+  description: Too many requests.
+  operations: 3
+  media_types: []
+  schema: null

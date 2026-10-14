@@ -1,0 +1,31 @@
+generated: '2026-10-14'
+method: searched
+generator: extract-docs-artifacts.py (local)
+source: https://help.osf.io/article/375-account-and-security-home-page
+sources:
+- https://help.osf.io/article/375-account-and-security-home-page
+- https://help.osf.io/article/547-account-and-security-faq-s
+- https://help.osf.io/article/391-security-and-privacy
+- https://help.osf.io/article/375-account-and-security-home-page
+standards:
+- id: gdpr
+  conforms: true
+  evidence: What steps has OSF taken to comply with GDPR? OSF has taken several steps to comply with GDPR, including revising our Terms Of Use
+    and Privacy Policy, ensuring GDPR compliance of third-party vendors and executing Data Processing Addendums with each, and reviewing policies
+    and procedures for deleting user data.
+- id: swagger-2.0
+  conforms: true
+  evidence: the document declares swagger-2.0
+- id: oauth2
+  conforms: false
+  evidence: no securitySchemes declared
+- id: rfc9457
+  conforms: false
+  evidence: no response declares application/problem+json
+- id: idempotency
+  conforms: false
+  evidence: no idempotency key parameter on mutating operations
+- id: pagination
+  conforms: true
+  evidence: list operations take page, page_size, per_page
+docs: https://help.osf.io/article/375-account-and-security-home-page
