@@ -1,0 +1,153 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation OAuth Scopes API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: OAuth Scopes
+  description: 'OAuth scopes define specific permissions for OAuth applications and personal access tokens.
+
+    Each scope indicates the permission level granted to perform actions via the OSF API, such as reading node data (`osf.nodes.read`) or modifying node data (`osf.nodes.write`).
+
+    Scopes can be queried and managed through these endpoints to understand and control access levels associated with applications and tokens.'
+paths:
+  /scopes/:
+    get:
+      summary: List OAuth Scopes
+      description: 'Retrieve a list of publicly available OAuth scopes.
+
+        Scopes define permissions granted to OAuth applications and personal access tokens.
+
+        #### Filtering & Pagination
+
+        Supports standard filtering and pagination via query parameters.
+
+        #### Returns
+
+        A JSON object containing an array of OAuth scopes under the `data` key.'
+      tags:
+      - OAuth Scopes
+      operationId: scope_list
+      responses:
+        '200':
+          description: Successfully retrieved list of OAuth scopes.
+          content:
+            application/json:
+              example:
+                data:
+                - id: osf.nodes.read
+                  type: scopes
+                  attributes:
+                    description: Read access to OSF nodes.
+                  links:
+                    self: https://api.osf.io/v2/scopes/osf.nodes.read/
+                - id: osf.nodes.write
+                  type: scopes
+                  attributes:
+                    description: Write access to OSF nodes.
+                  links:
+                    self: https://api.osf.io/v2/scopes/osf.nodes.write/
+                links:
+                  self: https://api.osf.io/v2/scopes/
+                meta:
+                  total: 2
+                  per_page: 10
+  /scopes/{scope_id}/:
+    get:
+      summary: Retrieve OAuth Scope Detail
+      description: 'Retrieve detailed information about a specific OAuth scope.
+
+        Only publicly available scopes are accessible without special permissions.'
+      tags:
+      - OAuth Scopes
+      operationId: scope_detail
+      parameters:
+      - name: scope_id
+        in: path
+        required: true
+        description: The unique identifier of the OAuth scope.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved OAuth scope details.
+          content:
+            application/json:
+              example:
+                data:
+                  id: osf.nodes.read
+                  type: scopes
+                  attributes:
+                    description: Read access to OSF nodes.
+                  links:
+                    self: https://api.osf.io/v2/scopes/osf.nodes.read/
+        '404':
+          description: OAuth scope not found or inaccessible.
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

@@ -1,0 +1,2379 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Collections API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Collections
+paths:
+  /collections/:
+    get:
+      summary: List all Collections
+      description: 'Retrieves a list collections, either public or related to the user
+
+        #### Permissions
+
+        Anonymous users are able to see all public collections at this endpoint. Logged in users will only be able to see their own content.
+
+
+        Comments on private nodes are only visible to contributors and administrators on the parent node.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      tags:
+      - Collections
+      operationId: collections_list
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Collection
+                  required:
+                  - type
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: The unique identifier of the collection.
+                    type:
+                      type: string
+                      readOnly: false
+                      description: The type identifier of the entity (`collections`).
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: false
+                      description: The properties of the collection.
+                      properties:
+                        title:
+                          type: string
+                          readOnly: false
+                          description: The title of the collection.
+                        date_created:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the collection was created, as an iso8601 formatted timestamp.
+                        date_modified:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the collection was last modified, as an iso8601 formatted timestamp.
+                        bookmarks:
+                          type: boolean
+                          readOnly: true
+                          description: This attribute indicates if a collection is being used as part of the bookmarking feature that allows each user to create a personal collection.
+                        is_promoted:
+                          type: boolean
+                          readOnly: true
+                          description: ???
+                        is_public:
+                          type: boolean
+                          readOnly: true
+                          description: This attribute indicates if a collection is viewable to a user with no special permissions.
+                        status_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `status` metadata options acceptable for entities in the a collection. This indicates the status of a entity within a collection.
+                        collected_type_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `collected_type` metadata options acceptable for entities in the a collection. This indicates the collected types of entities within a collection.
+                        volume_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `volume` metadata options acceptable for entities in the a collection.  This indicates what volumes exist of a multi-volume collection.
+                        issue_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `issue` metadata options acceptable for entities in the a collection.  This indicates what issues exist of a multi-issue collection.
+                        program_area_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `program_area` metadata options acceptable for entities in the a collection.  This indicates what program areas a collection is composed of .
+                    relationships:
+                      type: object
+                      title: Relationships
+                      readOnly: false
+                      description: URLs to other entities or entity collections that have a relationship to the node entity.
+                      properties:
+                        provider:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of preprints that this node relates to.
+                        node_links:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of nodes that are linked to the current collection.
+                        linked_nodes:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of nodes that are linked to the current collection.
+                        linked_registrations:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of registrations that are linked to the current collection.
+                        linked_preprints:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of preprints that are linked to the current collection.
+                        collected_metadata:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of metadata entries that are linked to the current collections.
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: URLs to alternative representations of the entity.
+                      properties:
+                        self:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the canonical API endpoint of this collection.
+              example:
+                data:
+                - attributes:
+                    title: Metascience's Collection
+                    date_created: '2019-09-18T19:24:28.751486Z'
+                    date_modified: '2019-09-18T19:24:28.886438Z'
+                    bookmarks": false
+                    is_promoted": true
+                    is_public: true
+                    status_choices:
+                    - Proposed
+                    - Active
+                    - Completed
+                    - Archived
+                    collected_type_choices:
+                    - Research
+                    - Teaching
+                    - Community Activity
+                    - Meeting
+                    - Other
+                    volume_choices: []
+                    issue_choices": []
+                    program_area_choices: []
+                  relationships:
+                    provider:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/collections/metascience/
+                          meta: {}
+                    node_links:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/node_links/
+                          meta: {}
+                    linked_nodes:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/collections/ezcuj/relationships/linked_nodes/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/linked_nodes/
+                          meta: {}
+                    linked_registrations:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/collections/ezcuj/relationships/linked_registrations/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/linked_registrations/
+                          meta: {}
+                    linked_preprints:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/collections/ezcuj/relationships/linked_preprints/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/linked_preprints/
+                          meta: {}
+                    collected_metadata:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/collected_metadata/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/collections/
+                links:
+                  self: https://api.osf.io/v2/collections/
+                  first: null
+                  last: https://api.osf.io/v2/collections/?page=2
+                  next: https://api.osf.io/v2/collections/?page=2
+                  prev: null
+                meta:
+                  total: 11
+                  per_page: 10
+                  version: 2.2
+    post:
+      summary: Create a Collection
+      description: 'Retrieves a list collections, either public or related to the user
+
+        #### Permissions
+
+        Anonymous users are able to see all public collections at this endpoint. Logged in users will only be able to see their own content.
+
+
+        Comments on private nodes are only visible to contributors and administrators on the parent node.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of comment objects. Each resource in the array is a separate comment object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      tags:
+      - Collections
+      operationId: collections_create
+      x-response-schema: Collection
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                  type: collections
+                  attributes:
+                    title: An Excellent Collection Title
+        required: true
+  /collections/{collection_id}/:
+    get:
+      summary: Retrieve a Collection
+      description: 'Retrieves a collection, if the user has appropriate permissions.
+
+
+        #### Permissions
+
+        Anonymous users are able to see all public collections at this endpoint. Logged in users will only be able to see their own content.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_detail
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Collection
+                  required:
+                  - type
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: The unique identifier of the collection.
+                    type:
+                      type: string
+                      readOnly: false
+                      description: The type identifier of the entity (`collections`).
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: false
+                      description: The properties of the collection.
+                      properties:
+                        title:
+                          type: string
+                          readOnly: false
+                          description: The title of the collection.
+                        date_created:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the collection was created, as an iso8601 formatted timestamp.
+                        date_modified:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the collection was last modified, as an iso8601 formatted timestamp.
+                        bookmarks:
+                          type: boolean
+                          readOnly: true
+                          description: This attribute indicates if a collection is being used as part of the bookmarking feature that allows each user to create a personal collection.
+                        is_promoted:
+                          type: boolean
+                          readOnly: true
+                          description: ???
+                        is_public:
+                          type: boolean
+                          readOnly: true
+                          description: This attribute indicates if a collection is viewable to a user with no special permissions.
+                        status_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `status` metadata options acceptable for entities in the a collection. This indicates the status of a entity within a collection.
+                        collected_type_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `collected_type` metadata options acceptable for entities in the a collection. This indicates the collected types of entities within a collection.
+                        volume_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `volume` metadata options acceptable for entities in the a collection.  This indicates what volumes exist of a multi-volume collection.
+                        issue_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `issue` metadata options acceptable for entities in the a collection.  This indicates what issues exist of a multi-issue collection.
+                        program_area_choices:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of the acceptable entity `program_area` metadata options acceptable for entities in the a collection.  This indicates what program areas a collection is composed of .
+                    relationships:
+                      type: object
+                      title: Relationships
+                      readOnly: false
+                      description: URLs to other entities or entity collections that have a relationship to the node entity.
+                      properties:
+                        provider:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of preprints that this node relates to.
+                        node_links:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of nodes that are linked to the current collection.
+                        linked_nodes:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of nodes that are linked to the current collection.
+                        linked_registrations:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of registrations that are linked to the current collection.
+                        linked_preprints:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of preprints that are linked to the current collection.
+                        collected_metadata:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of metadata entries that are linked to the current collections.
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: URLs to alternative representations of the entity.
+                      properties:
+                        self:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the canonical API endpoint of this collection.
+              example:
+                type: collections
+                data:
+                  attributes:
+                    title: Metascience's Collection
+                    date_created: '2019-09-18T19:24:28.751486Z'
+                    date_modified: '2019-09-18T19:24:28.886438Z'
+                    bookmarks": false
+                    is_promoted": true
+                    is_public: true
+                    status_choices:
+                    - Proposed
+                    - Active
+                    - Completed
+                    - Archived
+                    collected_type_choices:
+                    - Research
+                    - Teaching
+                    - Community Activity
+                    - Meeting
+                    - Other
+                    volume_choices: []
+                    issue_choices": []
+                    program_area_choices: []
+                  relationships:
+                    provider:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/collections/metascience/
+                          meta: {}
+                    node_links:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/node_links/
+                          meta: {}
+                    linked_nodes:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/collections/ezcuj/relationships/linked_nodes/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/linked_nodes/
+                          meta: {}
+                    linked_registrations:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/collections/ezcuj/relationships/linked_registrations/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/linked_registrations/
+                          meta: {}
+                    linked_preprints:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/collections/ezcuj/relationships/linked_preprints/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/linked_preprints/
+                          meta: {}
+                    collected_metadata:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/collections/ezcuj/collected_metadata/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/collections/
+                meta:
+                  version: 2.2
+    delete:
+      summary: Delete a Collection
+      description: 'Deletes a collection, if the user has appropriate permissions.
+
+        #### Permissions
+
+        Users must have write permissions on a collection in order to delete it
+
+        #### Returns
+
+        Nothing is returned in the body'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_delete
+      x-response-schema: Collection
+      responses:
+        '204':
+          description: No Content
+  /collections/{collection_id}/linked_nodes:
+    get:
+      summary: List All Linked Nodes for a Collection
+      description: 'List of all nodes linked to the given collection.
+
+        #### Permissions
+
+        This returns all public nodes associated with this collection.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of up to 10 nodes. Each resource in the array is a separate node object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_linked_nodes_list
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - id: 2vewn
+                  type: nodes
+                  attributes:
+                    title: A Good Node Title
+                    description: A good Node description.
+                    category: project
+                    custom_citation: null
+                    date_created: '2020-05-11T17:57:58.725950Z'
+                    date_modified: '2020-11-20T14:31:59.946554Z'
+                    registration: false
+                    preprint: false
+                    fork: false
+                    collection: false
+                    tags: []
+                    node_license:
+                      copyright_holders:
+                      - Test User
+                      year: '2020'
+                    analytics_key: c438e67a7680113ee310cad8121e520bab632f3df95d443a4fadb0cbf3af890acc0d91ab6499297ec622bb827979c6005f13a80b3eddcf87a081667e6b2ac3da6eff414dc659b19e3a473f8bf7ef295bff3c036c955c8313fa6ce1da1253e74592e0b399940ca9f099b36923df8c11622d0a1768ae53f79a6061da76007061207f299a0e507f1ff47baeb902f2c403f0
+                    current_user_can_comment: false
+                    current_user_permissions: []
+                    current_user_is_contributor: false
+                    current_user_is_contributor_or_group_member: false
+                    wiki_enabled: true
+                    public: true
+                  relationships:
+                    license:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/licenses/563c1cf88c5e4a3877f9e965/
+                          meta: {}
+                      data:
+                        id: 563c1cf88c5e4a3877f9e965
+                        type: licenses
+                    children:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/children/
+                          meta: {}
+                    comments:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/comments/?filter%5Btarget%5D=2vewn
+                          meta: {}
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/contributors/
+                          meta: {}
+                    bibliographic_contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/bibliographic_contributors/
+                          meta: {}
+                    implicit_contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/implicit_contributors/
+                          meta: {}
+                    files:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/files/
+                          meta: {}
+                    settings:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/settings/
+                          meta: {}
+                      data:
+                        id: 2vewn
+                        type: nodes
+                    wikis:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/wikis/
+                          meta: {}
+                    forked_from:
+                      data: null
+                    template_node:
+                      data: null
+                    forks:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/forks/
+                          meta: {}
+                    groups:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/groups/
+                          meta: {}
+                    linked_by_nodes:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/linked_by_nodes/
+                          meta: {}
+                    linked_by_registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/linked_by_registrations/
+                          meta: {}
+                    parent:
+                      data: null
+                    identifiers:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/identifiers/
+                          meta: {}
+                    affiliated_institutions:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/institutions/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/nodes/2vewn/relationships/institutions/
+                          meta: {}
+                    draft_registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/draft_registrations/
+                          meta: {}
+                    registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/registrations/
+                          meta: {}
+                    region:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/regions/us/
+                          meta: {}
+                      data:
+                        id: us
+                        type: regions
+                    root:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/
+                          meta: {}
+                      data:
+                        id: 2vewn
+                        type: nodes
+                    logs:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/logs/
+                          meta: {}
+                    linked_nodes:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/linked_nodes/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/nodes/2vewn/relationships/linked_nodes/
+                          meta: {}
+                    linked_registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/linked_registrations/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/nodes/2vewn/relationships/linked_registrations/
+                          meta: {}
+                    view_only_links:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/view_only_links/
+                          meta: {}
+                    citation:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/citation/
+                          meta: {}
+                      data:
+                        id: 2vewn
+                        type: nodes
+                    preprints:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/preprints/
+                          meta: {}
+                    storage:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/storage/
+                          meta: {}
+                      data:
+                        id: 2vewn
+                        type: nodes
+                    subjects:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/2vewn/subjects/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/nodes/2vewn/relationships/subjects/
+                          meta: {}
+                  links:
+                    html: https://osf.io/2vewn/
+                    self: https://api.osf.io/v2/nodes/2vewn/
+                meta:
+                  total: 1
+                  per_page: 10
+                  version: '2.20'
+                links:
+                  self: https://api.osf.io/v2/collections/ux3nq/linked_nodes/
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+  /collections/{collection_id}/linked_nodes/relationships/:
+    post:
+      summary: Link Nodes to Collection
+      description: 'This endpoint allow users to a add a node to a collection by issuing a POST request.
+
+        #### Permissions
+
+        This returns all public nodes associated with this collection.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of comment objects. Each resource in the array is a separate comment object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_linked_nodes_relationships
+      x-response-schema: Collection
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                - type: linked_nodes
+                  id: guid0
+                - type: linked_nodes
+                  id: newid
+                - type: linked_nodes
+                  id: test2
+                - type: linked_nodes
+                  id: guid4
+        required: true
+    get:
+      summary: Give a Sparse List of Node Ids
+      description: 'List of all the node ids linked to the given collection.
+
+        #### Permissions
+
+        This returns all public nodes associated with this collection.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_linked_nodes_relationships_create
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - type: nodes
+                  id: guid0
+                - type: nodes
+                  id: newid
+                - type: nodes
+                  id: test2
+                - type: nodes
+                  id: guid4
+                links:
+                  self: https://api.osf.io/v2/collections/dse23/relationships/linked_nodes/
+                  html: https://api.osf.io/v2/collections/dse23/linked_nodes/
+                meta:
+                  version: '2.20'
+    delete:
+      summary: Remove Nodes From Collection
+      description: 'This removes associated nodes from a collection
+
+        #### Permissions
+
+        Any user with write permissions on this collection should be to remove nodes from this collection.
+
+        #### Returns
+
+        Nothing in the response body.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_linked_nodes_relationships_delete
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                - type: linked_nodes
+                  id: guid0
+                - type: linked_nodes
+                  id: newid
+                - type: linked_nodes
+                  id: test2
+                - type: linked_nodes
+                  id: guid4
+        required: true
+  /collections/{collection_id}/linked_registrations/:
+    get:
+      summary: List All Linked Registrations for a Collection
+      description: 'List of all registrations linked to the given collection.
+
+        #### Permissions
+
+        This returns all public registrations associated with this collection.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of up to 10 nodes. Each resource in the array is a separate node object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_linked_registrations_list
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - id: qrwhu
+                  type: registrations
+                  attributes:
+                    title: A Good Registration Title
+                    description: Half believe though on significant.
+                    category: project
+                    custom_citation: ''
+                    date_created: '2020-12-10T14:36:42.195364Z'
+                    date_modified: '2020-12-10T14:36:39.925278Z'
+                    registration: true
+                    preprint: false
+                    fork: false
+                    collection: false
+                    tags: []
+                    access_requests_enabled: false
+                    node_license: null
+                    analytics_key: null
+                    current_user_can_comment: true
+                    current_user_permissions: []
+                    current_user_is_contributor: false
+                    current_user_is_contributor_or_group_member: false
+                    wiki_enabled: true
+                    public: true
+                    reviews_state: initial
+                    article_doi: null
+                    pending_embargo_approval: false
+                    pending_embargo_termination_approval: false
+                    embargoed: false
+                    pending_registration_approval: false
+                    archiving: false
+                    pending_withdrawal: false
+                    withdrawn: false
+                    date_registered: '2020-12-10T14:36:42.166193Z'
+                    date_withdrawn: null
+                    embargo_end_date: null
+                    withdrawal_justification: null
+                    registration_supplement: Open-Ended Registration
+                    registered_meta: {}
+                    registration_responses:
+                      summary: ''
+                  relationships:
+                    license:
+                      data: null
+                    children:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/children/
+                          meta: {}
+                    comments:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/comments/?filter%5Btarget%5D=qrwhu
+                          meta: {}
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/contributors/
+                          meta: {}
+                    bibliographic_contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/bibliographic_contributors/
+                          meta: {}
+                    implicit_contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/implicit_contributors/
+                          meta: {}
+                    files:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/files/
+                          meta: {}
+                    wikis:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/wikis/
+                          meta: {}
+                    forked_from:
+                      data: null
+                    template_node:
+                      data: null
+                    forks:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/forks/
+                          meta: {}
+                    linked_by_nodes:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/linked_by_nodes/
+                          meta: {}
+                    linked_by_registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/linked_by_registrations/
+                          meta: {}
+                    parent:
+                      data: null
+                    identifiers:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/identifiers/
+                          meta: {}
+                    affiliated_institutions:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/institutions/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/registrations/qrwhu/relationships/institutions/
+                          meta: {}
+                    region:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/regions/us/
+                          meta: {}
+                      data:
+                        id: us
+                        type: regions
+                    root:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/
+                          meta: {}
+                      data:
+                        id: qrwhu
+                        type: registrations
+                    logs:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/logs/
+                          meta: {}
+                    linked_nodes:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/linked_nodes/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/registrations/qrwhu/relationships/linked_nodes/
+                          meta: {}
+                    linked_registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/linked_registrations/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/registrations/qrwhu/relationships/linked_registrations/
+                          meta: {}
+                    view_only_links:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/view_only_links/
+                          meta: {}
+                    citation:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/citation/
+                          meta: {}
+                      data:
+                        id: qrwhu
+                        type: registrations
+                    storage:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qrwhu/storage/
+                          meta: {}
+                      data:
+                        id: qrwhu
+                        type: nodes
+                    registered_by:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/9hr6c/
+                          meta: {}
+                      data:
+                        id: 9hr6c
+                        type: users
+                    registered_from:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/4gnbx/
+                          meta: {}
+                      data:
+                        id: 4gnbx
+                        type: nodes
+                    registration_schema:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/5fa1bb678ccd39001e96c32b/
+                          meta: {}
+                      data:
+                        id: 5fa1bb678ccd39001e96c32b
+                        type: registration-schemas
+                    provider:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/registrations/osf/
+                          meta: {}
+                      data:
+                        id: osf
+                        type: registration-providers
+                    review_actions:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/actions/
+                          meta: {}
+                    requests:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/requests/
+                          meta: {}
+                    subjects:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/registrations/qrwhu/subjects/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/registrations/qrwhu/relationships/subjects/
+                          meta: {}
+                  links:
+                    html: https://osf.io/qrwhu/
+                    self: https://api.osf.io/v2/registrations/qrwhu/
+            meta:
+              example:
+                total: 1
+                per_page: 10
+                version: '2.20'
+            links:
+              example:
+                self: https://api.osf.io/v2/collections/nywr6/linked_registrations/
+                first: null
+                last: null
+                prev: null
+                next: null
+  /collections/{collection_id}/linked_registrations/relationships/:
+    post:
+      summary: Link Registrations to Collection
+      description: 'This endpoint allow users to a add a registration to a collection by issuing a POST request.
+
+        #### Permissions
+
+        This returns all public registrations associated with this collection.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of comment objects. Each resource in the array is a separate comment object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_linked_registrations_relationships
+      x-response-schema: Collection
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              example: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                - type: linked_registrations
+                  id: guid0
+                - type: linked_registrations
+                  id: newid
+                - type: linked_registrations
+                  id: test2
+                - type: linked_registrations
+                  id: guid4
+        required: true
+    get:
+      summary: Give a Sparse List of Registrations Ids
+      description: 'List of all the registration ids linked to the given collection.
+
+        #### Permissions
+
+        This returns all public registrations associated with this collection.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_linked_registrations_relationships_create
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - type: registrations
+                  id: guid0
+                - type: registrations
+                  id: newid
+                - type: registrations
+                  id: test2
+                - type: registrations
+                  id: guid4
+                links:
+                  self: https://api.osf.io/v2/collections/dse23/relationships/linked_registrations/
+                  html: https://api.osf.io/v2/collections/dse23/linked_registrations/
+                meta:
+                  version: '2.20'
+    delete:
+      summary: Remove Registrations From Collection
+      description: 'This removes associated registrations from a collection
+
+        #### Permissions
+
+        Any user with write permissions on this collection should be to remove registrations from this collection.
+
+        #### Returns
+
+        Nothing in the response body.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_linked_registrations_relationships_delete
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                - type: linked_registrations
+                  id: guid0
+                - type: linked_registrations
+                  id: newid
+                - type: linked_registrations
+                  id: test2
+                - type: linked_registrations
+                  id: guid4
+        required: true
+  /collections/{collection_id}/linked_preprints/:
+    get:
+      summary: List All Linked Preprints for a Collection
+      description: 'List of all preprints linked to the given collection.
+
+        #### Permissions
+
+        This returns all public preprints associated with this collection.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of up to 10 nodes. Each resource in the array is a separate node object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_linked_preprints_list
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - id: zjxhs
+                  type: preprints
+                  attributes:
+                    date_created: '2020-12-10T13:55:03.994648Z'
+                    date_modified: '2020-12-10T13:55:05.252565Z'
+                    date_published: '2020-12-10T13:55:05.046084Z'
+                    original_publication_date: null
+                    doi: 10.123/0
+                    title: A Good Preprint Title
+                    description: Research physical language morning consumer front population.
+                    is_published: true
+                    is_preprint_orphan: false
+                    license_record: null
+                    tags: []
+                    preprint_doi_created: '2020-12-10T13:55:05.230155Z'
+                    date_withdrawn: null
+                    current_user_permissions: []
+                    public: true
+                    reviews_state: accepted
+                    date_last_transitioned: '2020-12-10T13:55:05.046084Z'
+                  relationships:
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/preprints/zjxhs/contributors/
+                          meta: {}
+                    bibliographic_contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/preprints/zjxhs/bibliographic_contributors/
+                          meta: {}
+                    citation:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/preprints/zjxhs/citation/
+                          meta: {}
+                      data:
+                        id: zjxhs
+                        type: preprints
+                    identifiers:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/preprints/zjxhs/identifiers/
+                          meta: {}
+                    node:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/preprints/zjxhs/relationships/node/
+                          meta: {}
+                    license:
+                      data: null
+                    provider:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/preprints/slug1/
+                          meta: {}
+                      data:
+                        id: slug1
+                        type: preprint-providers
+                    files:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/preprints/zjxhs/files/
+                          meta: {}
+                    primary_file:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/files/5fd228b8e64e1300aa99ee17/
+                          meta: {}
+                      data:
+                        id: 5fd228b8e64e1300aa99ee17
+                        type: files
+                    review_actions:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/preprints/zjxhs/review_actions/
+                          meta: {}
+                    requests:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/preprints/zjxhs/requests/
+                          meta: {}
+                    subjects:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/preprints/zjxhs/subjects/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/preprints/zjxhs/
+                    html: https://osf.io/preprints/slug1/zjxhs/
+                    doi: https://doi.org/10.123/0
+                    preprint_doi: https://doi.org/None/FK2osf.io/zjxhs
+            meta:
+              example:
+                total: 1
+                per_page: 10
+                version: '2.20'
+            links:
+              example:
+                self: https://api.osf.io/v2/collections/nywr6/linked_preprints/
+                first: null
+                last: null
+                prev: null
+                next: null
+  /collections/{collection_id}/collected_metadata/:
+    get:
+      summary: Retrieve a list of collected metadata for a collection
+      description: 'List of user created metadata for entities within a collection.
+
+        #### Permissions
+
+        In order to view this metadata it must be public or a user must have read permissions for collection.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+        #### Errors
+
+        This request should never return an error.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_metadata_registrations_list
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - id: 2vewn
+                  type: collected-metadata
+                  attributes:
+                    collected_type: Document Analysis
+                    status: ''
+                    volume: ''
+                    issue: ''
+                    program_area: N/A
+                    subjects: []
+                  relationships:
+                    creator:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/794j8/?format=json
+                          meta: {}
+                      data:
+                        id: 794j8
+                        type: users
+                    collection:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/collections/ux3nq/?format=json
+                          meta: {}
+                      data:
+                        id: ux3nq
+                        type: collections
+                    guid:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/guids/2vewn/?format=json
+                          meta: {}
+                  embeds:
+                    guid:
+                      data:
+                        id: 2vewn
+                        type: nodes
+                        attributes:
+                          title: A Good Node Title
+                          description: A Good Node Description
+                          category: project
+                          custom_citation: null
+                          date_created: '2020-05-11T17:57:58.725950'
+                          date_modified: '2020-11-20T14:31:59.946554'
+                          registration: false
+                          preprint: false
+                          fork: false
+                          collection: false
+                          tags: []
+                          access_requests_enabled: true
+                          node_license:
+                            copyright_holders:
+                            - Test User
+                            year: '2020'
+                          analytics_key: c438e67a7680113ee310cad8121e520bab632f3df95d443a4fadb0cbf3af890acc0d91ab6499297ec622bb827979c6005f13a80b3eddcf87a081667e6b2ac3da6eff414dc659b19e3a473f8bf7ef295bff3c036c955c8313fa6ce1da1253e74592e0b399940ca9f099b36923df8c11622d0a1768ae53f79a6061da76007061207f299a0e507f1ff47baeb902f2c403f0
+                          current_user_can_comment: false
+                          current_user_permissions:
+                          - read
+                          current_user_is_contributor: false
+                          current_user_is_contributor_or_group_member: false
+                          wiki_enabled: true
+                          public: true
+                          subjects: []
+                        relationships:
+                          license:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/licenses/563c1cf88c5e4a3877f9e965/?format=json
+                                meta: {}
+                            data:
+                              id: 563c1cf88c5e4a3877f9e965
+                              type: licenses
+                          children:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/children/?format=json
+                                meta: {}
+                          comments:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/comments/?format=json&filter%5Btarget%5D=2vewn
+                                meta: {}
+                          contributors:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/contributors/?format=json
+                                meta: {}
+                          bibliographic_contributors:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/bibliographic_contributors/?format=json
+                                meta: {}
+                          implicit_contributors:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/implicit_contributors/?format=json
+                                meta: {}
+                          files:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/files/?format=json
+                                meta: {}
+                          settings:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/settings/?format=json
+                                meta: {}
+                            data:
+                              id: 2vewn
+                              type: nodes
+                          wikis:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/wikis/?format=json
+                                meta: {}
+                          forks:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/forks/?format=json
+                                meta: {}
+                          groups:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/groups/?format=json
+                                meta: {}
+                          node_links:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/node_links/?format=json
+                                meta: {}
+                          linked_by_nodes:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/linked_by_nodes/?format=json
+                                meta: {}
+                          linked_by_registrations:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/linked_by_registrations/?format=json
+                                meta: {}
+                          identifiers:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/identifiers/?format=json
+                                meta: {}
+                          affiliated_institutions:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/institutions/?format=json
+                                meta: {}
+                              self:
+                                href: https://api.osf.io/v2/nodes/2vewn/relationships/institutions/?format=json
+                                meta: {}
+                          draft_registrations:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/draft_registrations/?format=json
+                                meta: {}
+                          registrations:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/registrations/?format=json
+                                meta: {}
+                          region:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/regions/us/?format=json
+                                meta: {}
+                            data:
+                              id: us
+                              type: regions
+                          root:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/?format=json
+                                meta: {}
+                            data:
+                              id: 2vewn
+                              type: nodes
+                          logs:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/logs/?format=json
+                                meta: {}
+                          linked_nodes:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/linked_nodes/?format=json
+                                meta: {}
+                              self:
+                                href: https://api.osf.io/v2/nodes/2vewn/relationships/linked_nodes/?format=json
+                                meta: {}
+                          linked_registrations:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/linked_registrations/?format=json
+                                meta: {}
+                              self:
+                                href: https://api.osf.io/v2/nodes/2vewn/relationships/linked_registrations/?format=json
+                                meta: {}
+                          view_only_links:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/view_only_links/?format=json
+                                meta: {}
+                          citation:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/citation/?format=json
+                                meta: {}
+                            data:
+                              id: 2vewn
+                              type: nodes
+                          preprints:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/preprints/?format=json
+                                meta: {}
+                          storage:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/nodes/2vewn/storage/?format=json
+                                meta: {}
+                            data:
+                              id: 2vewn
+                              type: nodes
+                        links:
+                          html: https://osf.io/2vewn/
+                          self: https://api.osf.io/v2/nodes/2vewn/
+                  links: {}
+                links:
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+                  meta:
+                    total: 1
+                    per_page: 10
+    post:
+      summary: Add Metadata or Subjects to a Entity in a Collection
+      description: 'List of user created metadata for entities within a collection.
+
+        #### Permissions
+
+        To edit this collection a user must have collections write permissions
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_add_metadata
+      x-response-schema: Collection
+      responses:
+        '201':
+          description: OK
+        '405':
+          description: Returned if new submissions to this collection are currently restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                application/json:
+                  data:
+                    type: collected-metadata
+                    attributes:
+                      volume: test
+                      guid: test0
+                      subjects: 5fd228b7e64e1300aa99ee15
+        required: true
+  /collections/{collection_id}/collected_metadata/{cgm_id}:
+    get:
+      summary: Retrieve Specific Metadata for a Collection
+      description: '#### Permissions
+
+        In order to view this metadata it must be public or a user must have read permissions for collection.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+        #### Errors
+
+        This request should never return an error.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      - in: path
+        required: true
+        name: cgm_id
+        description: A short id for that piece of metadata
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_metadata_registrations_detail
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            data:
+              example:
+                id: zw4sh
+                type: collected-metadata
+                attributes:
+                  collected_type: Action Research
+                  status: ''
+                  volume: ''
+                  issue: ''
+                  program_area: Child Welfare
+                relationships:
+                  creator:
+                    links:
+                      related:
+                        href: https://api.osf.io/v2/users/nsx26/
+                        meta: {}
+                    data:
+                      id: nsx26
+                      type: users
+                  collection:
+                    links:
+                      related:
+                        href: https://api.osf.io/v2/collections/ux3nq/
+                        meta: {}
+                    data:
+                      id: ux3nq
+                      type: collections
+                  guid:
+                    links:
+                      related:
+                        href: https://api.osf.io/v2/guids/zw4sh/
+                        meta: {}
+                  subjects:
+                    links:
+                      related:
+                        href: https://api.osf.io/v2/collections/ux3nq/collected_metadata/zw4sh/subjects/
+                        meta: {}
+                      self:
+                        href: https://api.osf.io/v2/collections/ux3nq/collected_metadata/zw4sh/relationships/subjects/
+                        meta: {}
+                embeds:
+                  guid:
+                    data:
+                      id: zw4sh
+                      type: nodes
+                      attributes:
+                        title: test
+                        description: flaksdjfasdlkfj lkjdf aslkdfj sdlfkj
+                        category: project
+                        custom_citation: null
+                        date_created: '2020-06-05T18:02:28.254638Z'
+                        date_modified: '2020-10-21T15:47:17.646448Z'
+                        registration: false
+                        preprint: false
+                        fork: false
+                        collection: false
+                        tags: []
+                        node_license:
+                          copyright_holders: []
+                          year: null
+                        analytics_key: ''
+                        current_user_can_comment: false
+                        current_user_permissions: []
+                        current_user_is_contributor: false
+                        current_user_is_contributor_or_group_member: false
+                        wiki_enabled: true
+                        public: false
+                      relationships:
+                        license:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/licenses/563c1cf88c5e4a3877f9e96a/
+                              meta: {}
+                          data:
+                            id: 563c1cf88c5e4a3877f9e96a
+                            type: licenses
+                        children:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/children/
+                              meta: {}
+                        comments:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/comments/?filter%5Btarget%5D=zw4sh
+                              meta: {}
+                        contributors:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/contributors/
+                              meta: {}
+                        bibliographic_contributors:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/bibliographic_contributors/
+                              meta: {}
+                        implicit_contributors:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/implicit_contributors/
+                              meta: {}
+                        files:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/files/
+                              meta: {}
+                        settings:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/settings/
+                              meta: {}
+                          data:
+                            id: zw4sh
+                            type: nodes
+                        wikis:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/wikis/
+                              meta: {}
+                        forked_from:
+                          data: null
+                        template_node:
+                          data: null
+                        forks:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/forks/
+                              meta: {}
+                        groups:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/groups/
+                              meta: {}
+                        linked_by_nodes:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/linked_by_nodes/
+                              meta: {}
+                        linked_by_registrations:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/linked_by_registrations/
+                              meta: {}
+                        parent:
+                          data: null
+                        identifiers:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/identifiers/
+                              meta: {}
+                        affiliated_institutions:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/institutions/
+                              meta: {}
+                            self:
+                              href: https://api.osf.io/v2/nodes/zw4sh/relationships/institutions/
+                              meta: {}
+                        draft_registrations:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/draft_registrations/
+                              meta: {}
+                        registrations:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/registrations/
+                              meta: {}
+                        region:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/regions/us/
+                              meta: {}
+                          data:
+                            id: us
+                            type: regions
+                        root:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/
+                              meta: {}
+                          data:
+                            id: zw4sh
+                            type: nodes
+                        logs:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/logs/
+                              meta: {}
+                        linked_nodes:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/linked_nodes/
+                              meta: {}
+                            self:
+                              href: https://api.osf.io/v2/nodes/zw4sh/relationships/linked_nodes/
+                              meta: {}
+                        linked_registrations:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/linked_registrations/
+                              meta: {}
+                            self:
+                              href: https://api.osf.io/v2/nodes/zw4sh/relationships/linked_registrations/
+                              meta: {}
+                        view_only_links:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/view_only_links/
+                              meta: {}
+                        citation:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/citation/
+                              meta: {}
+                          data:
+                            id: zw4sh
+                            type: nodes
+                        preprints:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/preprints/
+                              meta: {}
+                        storage:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/storage/
+                              meta: {}
+                          data:
+                            id: zw4sh
+                            type: nodes
+                        subjects:
+                          links:
+                            related:
+                              href: https://api.osf.io/v2/nodes/zw4sh/subjects/
+                              meta: {}
+                            self:
+                              href: https://api.osf.io/v2/nodes/zw4sh/relationships/subjects/
+                              meta: {}
+                      links:
+                        html: https://osf.io/zw4sh/
+                        self: https://api.osf.io/v2/nodes/zw4sh/
+                links: {}
+            meta:
+              example:
+                version: '2.20'
+    post:
+      summary: Add Metadata or Subjects to an Entity in a Collection
+      description: 'List of user created metadata for entities within a collection.
+
+        #### Permissions
+
+        To edit this collection a user must have collections write permissions
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      - in: path
+        required: true
+        name: cgm_id
+        description: A short id for that piece of metadata
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_metadata_detail
+      x-response-schema: Collection
+      responses:
+        '201':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                application/json:
+                  data:
+                    type: collected-metadata
+                    attributes:
+                      volume: test
+                      guid: test0
+                      subjects: 5fd228b7e64e1300aa99ee15
+        required: true
+    delete:
+      summary: Delete Collection Metadata from entitiy
+      description: '#### Permissions
+
+        Only a user with collection admin permissions can delete collected metadata
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      - in: path
+        required: true
+        name: cgm_id
+        description: A short id for that piece of metadata
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_metadata_delete
+      x-response-schema: Collection
+      responses:
+        '204':
+          description: NO CONTENT
+  /collections/{collection_id}/collected_metadata/{cgm_id}/subjects/:
+    get:
+      summary: Retrieve subject data for a specific piece of metadata info for a collection
+      description: '#### Permissions
+
+        In order to view these subject it must be a public collection or a user must have read permissions for collection.
+
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+        #### Errors
+
+        This request should never return an error, other then permissions errors.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      - in: path
+        required: true
+        name: cgm_id
+        description: A short id for that piece of metadata
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_collected_metadata
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - id: 5fd228b7e64e1300aa99ee15
+                  type: subjects
+                  attributes:
+                    text: 'Example Subject #0'
+                    taxonomy_name: ''
+                  relationships:
+                    parent:
+                      data: null
+                    children:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/subjects/5fd228b7e64e1300aa99ee15/children/
+                          meta: {}
+                  embeds:
+                    parent:
+                      errors:
+                      - detail: Not found.
+                  links:
+                    self: https://api.osf.io/v2/subjects/5fd228b7e64e1300aa99ee15/
+                meta:
+                  total: 1
+                  per_page: 10
+                  version: '2.20'
+                links:
+                  self: https://api.osf.io/v2/collections/nywr6/collected_metadata/zjxhs/subjects/
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+  /collections/{collection_id}/collected_metadata/{cgm_id}/relationships/subjects/:
+    get:
+      summary: Retrieve subject metadata for a specific piece of metadata in a collection
+      description: '#### Permissions
+
+        This is public for a logged out user when an entity is public.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      - in: path
+        required: true
+        name: cgm_id
+        description: A short id for that piece of metadata
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_metadata_subjects_relationships
+      x-response-schema: Collection
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - type: subjects
+                  id: 5fd228b7e64e1300aa99ee15
+                links:
+                  self: https://api.osf.io/v2/collections/nywr6/collected_metadata/zjxhs/relationships/subjects/
+                  html: https://api.osf.io/v2/collections/nywr6/collected_metadata/zjxhs/subjects/
+                meta:
+                  version: '2.20'
+    post:
+      summary: Update subjects for a specific piece of metadata in a collection
+      description: '#### Permissions
+
+        This is editable for a user with a write permission for this collection.
+
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of nodes ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_id
+        description: A short id for that collection
+        schema:
+          type: string
+      - in: path
+        required: true
+        name: cgm_id
+        description: A short id for that piece of metadata
+        schema:
+          type: string
+      tags:
+      - Collections
+      operationId: collections_metadata_subjects_relationships_update
+      x-response-schema: Collection
+      responses:
+        '201':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                application/json:
+                  data:
+                    type: subjects
+                    id: 5fd228b7e64e1300aa99ee15
+        required: true
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

@@ -1,0 +1,376 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Requests API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Requests
+  description: Manage user-initiated requests related to nodes and preprints, including access requests, withdrawal requests, and institutional affiliation requests. Requests are actions initiated by users to either gain access to private content, withdraw content, or request affiliation with institutions. Administrators and moderators can approve or reject requests, while requesters can view and comment on their submissions.
+paths:
+  /requests/{request_id}/:
+    get:
+      summary: Retrieve details for a specific request
+      description: 'Retrieve a specific request by ID. Requests can be associated with either a node or a preprint. Depending on the type, this will return a `node-request` or a `preprint-request` resource.
+
+        A request is a formal submission for actions like access to private content, withdrawal of a preprint, or institutional affiliation. This endpoint returns details about the request''s status, creator, type, and comments.
+
+        Permissions: - Node requests: Viewable by the node''s administrators and the request creator. - Preprint requests: Viewable by preprint admins, moderators (for moderated providers), and the request creator.'
+      tags:
+      - Requests
+      operationId: retrieve_request
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        description: The unique identifier for the request (either NodeRequest or PreprintRequest).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved request details.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Returns either a node-request or a preprint-request resource, following JSON:API format.
+
+                  '
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - id
+                    - type
+                    - attributes
+                    - relationships
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier for the request.
+                        example: abc123
+                      type:
+                        type: string
+                        description: Resource type. Will be `node-requests` or `preprint-requests`.
+                        enum:
+                        - node-requests
+                        - preprint-requests
+                      attributes:
+                        type: object
+                        properties:
+                          request_type:
+                            type: string
+                            description: 'Type of request. Examples: `access`, `withdrawal`, or `institutional_request`.
+
+                              '
+                            example: access
+                          machine_state:
+                            type: string
+                            description: 'Current workflow state of the request. Examples: `pending`, `accepted`, `rejected`.
+
+                              '
+                            example: pending
+                          comment:
+                            type: string
+                            description: Comment provided with the request.
+                            example: Please grant me access.
+                          created:
+                            type: string
+                            format: date-time
+                            description: ISO 8601 timestamp of when the request was created.
+                            example: '2024-06-01T12:00:00Z'
+                          modified:
+                            type: string
+                            format: date-time
+                            description: ISO 8601 timestamp of the last modification to the request.
+                            example: '2024-06-02T15:30:00Z'
+                          date_last_transitioned:
+                            type: string
+                            format: date-time
+                            description: 'ISO 8601 timestamp of when the request last transitioned to a new workflow state.
+
+                              '
+                            example: '2024-06-02T15:30:00Z'
+                      relationships:
+                        type: object
+                        properties:
+                          creator:
+                            type: object
+                            description: The user who created the request.
+                            properties:
+                              data:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    example: user123
+                                  type:
+                                    type: string
+                                    example: users
+                          target:
+                            type: object
+                            description: 'The node or preprint this request is associated with.
+
+                              '
+                            properties:
+                              data:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    example: project456
+                                  type:
+                                    type: string
+                                    example: nodes
+                          actions:
+                            type: object
+                            description: 'Related actions for the request (only for preprint-requests).
+
+                              '
+                            properties:
+                              links:
+                                type: object
+                                properties:
+                                  related:
+                                    type: string
+                                    example: /v2/requests/abc123/actions/
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: /v2/requests/abc123/
+                          target:
+                            type: string
+                            example: /v2/nodes/project456/
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to view this request.
+        '404':
+          description: Request not found.
+  /requests/{request_id}/actions/:
+    get:
+      summary: List actions associated with a request
+      description: 'Retrieve a list of actions performed on a specific request.
+
+        Currently, actions are supported for `preprint-request` resources, typically related to withdrawal requests. Actions track the workflow of the request, including submission, approvals, rejections, and comments.
+
+        ### Permissions: - Request creators can view actions on their requests. - Preprint moderators can view actions for withdrawal requests. - Preprint administrators can view actions on requests for preprints they manage.'
+      tags:
+      - Requests
+      operationId: list_request_actions
+      parameters:
+      - name: request_id
+        in: path
+        required: true
+        description: The unique identifier for the request.
+        schema:
+          type: string
+      - name: filter
+        in: query
+        required: false
+        description: "Filter actions by attributes.\n\nSupported filters:\n  - `machine_state`: Filter by current state (e.g., `pending`, `accepted`, `rejected`)\n\nExample:\n  - filter[machine_state]=pending\n"
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved actions for the request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: List of actions related to the request.
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - attributes
+                      - relationships
+                      properties:
+                        id:
+                          type: string
+                          description: The unique identifier for the preprint request action.
+                          example: actn54321
+                        type:
+                          type: string
+                          example: preprint-request-actions
+                        attributes:
+                          type: object
+                          properties:
+                            trigger:
+                              type: string
+                              description: The event that caused this action.
+                              enum:
+                              - submit
+                              - accept
+                              - reject
+                              - edit_comment
+                              example: accept
+                            comment:
+                              type: string
+                              description: Optional comment made during the action.
+                              example: This withdrawal request has been approved.
+                            auto:
+                              type: boolean
+                              description: 'Whether the action was triggered automatically by the system rather than manually by a user.
+
+                                '
+                              example: false
+                            date_created:
+                              type: string
+                              format: date-time
+                              description: Date and time the action was created.
+                        relationships:
+                          type: object
+                          properties:
+                            creator:
+                              type: object
+                              description: The user who performed this action.
+                              properties:
+                                data:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: user789
+                                    type:
+                                      type: string
+                                      example: users
+                            target:
+                              type: object
+                              description: The preprint request this action is associated with.
+                              properties:
+                                data:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: prrqst67890
+                                    type:
+                                      type: string
+                                      example: preprint-requests
+                  links:
+                    type: object
+                    description: Pagination links.
+                    properties:
+                      self:
+                        type: string
+                        example: /v2/requests/{request_id}/actions/?page=1
+                      next:
+                        type: string
+                        example: /v2/requests/{request_id}/actions/?page=2
+                      prev:
+                        type: string
+                        example: null
+              example:
+                data:
+                - id: action123
+                  type: preprint-request-actions
+                  attributes:
+                    trigger: accept
+                    comment: Withdrawal approved.
+                    from_state: pending
+                    to_state: accepted
+                    created: '2024-06-01T12:00:00Z'
+                  relationships:
+                    creator:
+                      data:
+                        id: user456
+                        type: users
+                - id: action456
+                  type: preprint-request-actions
+                  attributes:
+                    trigger: submit
+                    comment: Request submitted.
+                    from_state: initial
+                    to_state: pending
+                    created: '2024-05-30T08:15:00Z'
+                  relationships:
+                    creator:
+                      data:
+                        id: user456
+                        type: users
+                links:
+                  self: /v2/requests/abc123/actions/?page=1
+                  next: null
+                  prev: null
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to view actions on this request.
+        '404':
+          description: Request not found or no actions are available for the given request.
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

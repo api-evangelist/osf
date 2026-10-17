@@ -1,0 +1,813 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Wikis API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Wikis
+  description: The Wikis endpoints allow users to create, update, retrieve, and manage wiki pages and their versions for OSF projects and registrations. Wikis are collaborative documents that enable teams to share information and document their research process directly within OSF. Each wiki page maintains a version history, providing transparency and accountability over changes.
+paths:
+  /wikis/{wiki_id}/:
+    get:
+      summary: Retrieve a Wiki
+      description: 'Retrieves the details about a specific wiki.
+
+        A wiki is a collection of markdown text pages that can be used to describe the project or dataset of contained in the attached node.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested wiki, if the request was successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        required: true
+        name: wiki_id
+        description: The unique identifier of the wiki.
+        schema:
+          type: string
+      tags:
+      - Wikis
+      operationId: wiki_read
+      x-response-schema: Wiki
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Wiki
+                required:
+                - type
+                - relationships
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the wiki.
+                  type:
+                    type: string
+                    readOnly: false
+                    description: The type identifier of the wiki (`wikis`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: false
+                    description: The properties of the wiki.
+                    required:
+                    - kind
+                    - name
+                    - date_modified
+                    - extra
+                    - content_type
+                    - path
+                    - current_user_can_comment
+                    - materialized_path
+                    - size
+                    properties:
+                      date_modified:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The date and time at which the wiki was last modified, as an iso8601 formatted timestamp.
+                      kind:
+                        type: string
+                        readOnly: true
+                        description: The type of object.
+                      name:
+                        type: string
+                        readOnly: true
+                        description: The name/title of the wiki page.
+                      extra:
+                        type: string
+                        readOnly: true
+                        description: A dictionary containing additional metadata about this wiki, including version information.
+                      content_type:
+                        type: string
+                        readOnly: true
+                        description: Content type of the wiki (`text/markdown`).
+                      path:
+                        type: string
+                        readOnly: true
+                        description: Path to the wiki object.
+                      current_user_can_comment:
+                        type: string
+                        readOnly: true
+                        description: Whether the current user is allowed to post comments on this wiki.
+                      materialized_path:
+                        type: string
+                        readOnly: true
+                        description: Materialized path to the wiki object.
+                      size:
+                        type: string
+                        readOnly: true
+                        description: Size of the wiki.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: false
+                    description: URLs to other entities or entity collections that have a relationship to the wiki.
+                    required:
+                    - node
+                    - user
+                    - comments
+                    properties:
+                      node:
+                        type: string
+                        readOnly: false
+                        description: A relationship to the associated node.
+                      user:
+                        type: string
+                        readOnly: false
+                        description: A relationship to the user associated with this wiki.
+                      comments:
+                        type: string
+                        readOnly: false
+                        description: A relationship to the comments related to this wiki.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs to alternative representations of the wiki.
+                    properties:
+                      download:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: The URL to download the content of the wiki.
+                      info:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the wiki.
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the wiki.
+              example:
+                data:
+                  relationships:
+                    node:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/tvyxz/
+                          meta: {}
+                    user:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/5k3hq/
+                          meta: {}
+                    comments:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/tvyxz/comments/?filter%5Btarget%5D=zveyb
+                          meta: {}
+                  links:
+                    info: https://api.osf.io/v2/wikis/zveyb/
+                    download: https://api.osf.io/v2/wikis/zveyb/content/
+                    self: https://api.osf.io/v2/wikis/zveyb/
+                  attributes:
+                    kind: file
+                    name: home
+                    date_modified: '2017-02-16T15:45:57.671957'
+                    extra:
+                      version: 47
+                    content_type: text/markdown
+                    path: /zveyb
+                    current_user_can_comment: true
+                    materialized_path: /zveyb
+                    size: 552
+                  type: wikis
+                  id: xu77p
+    patch:
+      summary: Update a Wiki
+      description: 'Renames the specified wiki page by setting its `name` attribute. This is the only attribute that can be changed through this endpoint; to update the content of a wiki page, create a new wiki version instead.
+
+        Wiki pages can be updated with either a **PUT** or **PATCH** request.
+
+
+        The `home` wiki page cannot be renamed.
+
+        #### Permissions
+
+        Only contributors with write access to the parent node may rename a wiki page (or any user, if the node''s wiki has been made publicly editable). Wiki pages on registrations cannot be renamed.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the new representation of the updated wiki, if the request is successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.
+
+        Some common error cases:
+
+        - `405 Method Not Allowed`: Returned if write access to this wiki''s node has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."'
+      parameters:
+      - in: path
+        required: true
+        name: wiki_id
+        description: The unique identifier of the wiki.
+        schema:
+          type: string
+      tags:
+      - Wikis
+      operationId: wiki_partial_update
+      x-response-schema: Wiki
+      responses:
+        '200':
+          description: OK
+        '405':
+          description: Returned if write access to this wiki's node has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                  type: wikis
+                  id: '{wiki_id}'
+                  attributes:
+                    name: A new page name
+        required: true
+    put:
+      summary: Replace a Wiki
+      description: 'Renames the specified wiki page by setting its `name` attribute. This is the only attribute that can be changed through this endpoint; to update the content of a wiki page, create a new wiki version instead.
+
+        Wiki pages can be updated with either a **PUT** or **PATCH** request. Unlike **PATCH**, a **PUT** request must include the `name` attribute in the request body.
+
+
+        The `home` wiki page cannot be renamed.
+
+        #### Permissions
+
+        Only contributors with write access to the parent node may rename a wiki page (or any user, if the node''s wiki has been made publicly editable). Wiki pages on registrations cannot be renamed.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the new representation of the updated wiki, if the request is successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.
+
+        Some common error cases:
+
+        - `405 Method Not Allowed`: Returned if write access to this wiki''s node has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."'
+      parameters:
+      - in: path
+        required: true
+        name: wiki_id
+        description: The unique identifier of the wiki.
+        schema:
+          type: string
+      tags:
+      - Wikis
+      operationId: wiki_update
+      x-response-schema: Wiki
+      responses:
+        '200':
+          description: OK
+        '405':
+          description: Returned if write access to this wiki's node has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              example:
+                data:
+                  type: wikis
+                  id: '{wiki_id}'
+                  attributes:
+                    name: A new page name
+        required: true
+    delete:
+      summary: Delete a Wiki
+      description: 'Permanently deletes the specified wiki page.
+
+
+        The `home` wiki page cannot be deleted.
+
+        #### Permissions
+
+        Only contributors with write access to the parent node may delete a wiki page. Wiki pages on registrations cannot be deleted.
+
+        #### Returns
+
+        If the request is successful, no content is returned.
+
+
+        If the request is unsuccessful, a JSON object with an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.
+
+        Some common error cases:
+
+        - `405 Method Not Allowed`: Returned if write access to this wiki''s node has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."'
+      parameters:
+      - in: path
+        required: true
+        name: wiki_id
+        description: The unique identifier of the wiki.
+        schema:
+          type: string
+      tags:
+      - Wikis
+      operationId: wiki_delete
+      responses:
+        '204':
+          description: No content
+        '405':
+          description: Returned if write access to this wiki's node has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+  /wikis/{wiki_id}/content/:
+    get:
+      summary: Retrieve the Content of a Wiki
+      description: 'Retrieves the plaintext content of a wiki in markdown format.
+
+        #### Returns
+
+        Returns `text/markdown` of the wiki content itself.
+
+        If the request is unsuccessful, plaintext with the error message will be displayed.'
+      parameters:
+      - in: path
+        required: true
+        name: wiki_id
+        description: The unique identifier of the wiki.
+        schema:
+          type: string
+      tags:
+      - Wikis
+      operationId: wiki_content
+      x-response-schema: Wiki
+      responses:
+        '200':
+          description: OK
+  /wikis/{wiki_id}/versions/:
+    post:
+      summary: Create a new version of a wiki page
+      description: 'Create a new version of a wiki page by submitting updated content.
+
+
+        This will store the updated content as a new version, incrementing the version number.
+
+
+        ### Permissions
+
+        - Only contributors with write access can create new wiki versions.
+
+        - Withdrawn registrations: Cannot create new wiki versions.'
+      tags:
+      - Wikis
+      operationId: create_wiki_version
+      parameters:
+      - name: wiki_id
+        in: path
+        required: true
+        description: The unique identifier for the wiki page.
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Wiki version created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Wiki
+                required:
+                - type
+                - relationships
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the wiki.
+                  type:
+                    type: string
+                    readOnly: false
+                    description: The type identifier of the wiki (`wikis`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: false
+                    description: The properties of the wiki.
+                    required:
+                    - kind
+                    - name
+                    - date_modified
+                    - extra
+                    - content_type
+                    - path
+                    - current_user_can_comment
+                    - materialized_path
+                    - size
+                    properties:
+                      date_modified:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The date and time at which the wiki was last modified, as an iso8601 formatted timestamp.
+                      kind:
+                        type: string
+                        readOnly: true
+                        description: The type of object.
+                      name:
+                        type: string
+                        readOnly: true
+                        description: The name/title of the wiki page.
+                      extra:
+                        type: string
+                        readOnly: true
+                        description: A dictionary containing additional metadata about this wiki, including version information.
+                      content_type:
+                        type: string
+                        readOnly: true
+                        description: Content type of the wiki (`text/markdown`).
+                      path:
+                        type: string
+                        readOnly: true
+                        description: Path to the wiki object.
+                      current_user_can_comment:
+                        type: string
+                        readOnly: true
+                        description: Whether the current user is allowed to post comments on this wiki.
+                      materialized_path:
+                        type: string
+                        readOnly: true
+                        description: Materialized path to the wiki object.
+                      size:
+                        type: string
+                        readOnly: true
+                        description: Size of the wiki.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: false
+                    description: URLs to other entities or entity collections that have a relationship to the wiki.
+                    required:
+                    - node
+                    - user
+                    - comments
+                    properties:
+                      node:
+                        type: string
+                        readOnly: false
+                        description: A relationship to the associated node.
+                      user:
+                        type: string
+                        readOnly: false
+                        description: A relationship to the user associated with this wiki.
+                      comments:
+                        type: string
+                        readOnly: false
+                        description: A relationship to the comments related to this wiki.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs to alternative representations of the wiki.
+                    properties:
+                      download:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: The URL to download the content of the wiki.
+                      info:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the wiki.
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the wiki.
+        '400':
+          description: Invalid request payload.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to update this wiki page.
+        '404':
+          description: Wiki page not found.
+        '405':
+          description: Returned if write access to this wiki's node has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - attributes
+                  properties:
+                    type:
+                      type: string
+                      example: wiki-versions
+                    attributes:
+                      type: object
+                      required:
+                      - content
+                      properties:
+                        content:
+                          type: string
+                          description: The new content for the wiki.
+                          example: This is an updated wiki page.
+        description: The content to save in the new wiki version.
+        required: true
+  /wikis/{wiki_id}/versions/{version_id}/:
+    get:
+      summary: Retrieve details for a specific wiki version
+      description: 'Retrieve metadata and basic details about a specific version of a wiki page.
+
+
+        Wiki versions store the history of content changes and are immutable snapshots of the wiki page content at that version.
+
+
+        ### Permissions
+
+        - Public nodes: Anyone can view wiki versions.
+
+        - Private nodes: Only contributors can view wiki versions.
+
+        - Withdrawn registrations: Wiki versions are not accessible.'
+      tags:
+      - Wikis
+      operationId: retrieve_wiki_version
+      parameters:
+      - name: wiki_id
+        in: path
+        required: true
+        description: The unique identifier for the wiki page.
+        schema:
+          type: string
+      - name: version_id
+        in: path
+        required: true
+        description: The version identifier for the specific wiki version.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved the wiki version.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Wiki
+                required:
+                - type
+                - relationships
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the wiki.
+                  type:
+                    type: string
+                    readOnly: false
+                    description: The type identifier of the wiki (`wikis`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: false
+                    description: The properties of the wiki.
+                    required:
+                    - kind
+                    - name
+                    - date_modified
+                    - extra
+                    - content_type
+                    - path
+                    - current_user_can_comment
+                    - materialized_path
+                    - size
+                    properties:
+                      date_modified:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The date and time at which the wiki was last modified, as an iso8601 formatted timestamp.
+                      kind:
+                        type: string
+                        readOnly: true
+                        description: The type of object.
+                      name:
+                        type: string
+                        readOnly: true
+                        description: The name/title of the wiki page.
+                      extra:
+                        type: string
+                        readOnly: true
+                        description: A dictionary containing additional metadata about this wiki, including version information.
+                      content_type:
+                        type: string
+                        readOnly: true
+                        description: Content type of the wiki (`text/markdown`).
+                      path:
+                        type: string
+                        readOnly: true
+                        description: Path to the wiki object.
+                      current_user_can_comment:
+                        type: string
+                        readOnly: true
+                        description: Whether the current user is allowed to post comments on this wiki.
+                      materialized_path:
+                        type: string
+                        readOnly: true
+                        description: Materialized path to the wiki object.
+                      size:
+                        type: string
+                        readOnly: true
+                        description: Size of the wiki.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: false
+                    description: URLs to other entities or entity collections that have a relationship to the wiki.
+                    required:
+                    - node
+                    - user
+                    - comments
+                    properties:
+                      node:
+                        type: string
+                        readOnly: false
+                        description: A relationship to the associated node.
+                      user:
+                        type: string
+                        readOnly: false
+                        description: A relationship to the user associated with this wiki.
+                      comments:
+                        type: string
+                        readOnly: false
+                        description: A relationship to the comments related to this wiki.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs to alternative representations of the wiki.
+                    properties:
+                      download:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: The URL to download the content of the wiki.
+                      info:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the wiki.
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the wiki.
+              example:
+                data:
+                  id: '4'
+                  type: wiki-versions
+                  attributes:
+                    date_created: '2024-03-10T12:00:00Z'
+                    size: 1024
+                    content_type: text/markdown
+                  relationships:
+                    wiki_page:
+                      data:
+                        id: abc12
+                        type: wikis
+                    user:
+                      data:
+                        id: user456
+                        type: users
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to view this wiki version.
+        '404':
+          description: Wiki version not found.
+  /wikis/{wiki_id}/versions/{version_id}/content/:
+    get:
+      summary: Retrieve the raw content of a specific wiki version
+      description: 'Retrieve the plain text content of a specific version of a wiki page.
+
+
+        This endpoint returns the actual content stored in the wiki page for the specified version.
+
+        The response is returned as plain text (`text/plain`).
+
+
+        ### Permissions
+
+        - Public nodes: Anyone can view wiki version content.
+
+        - Private nodes: Only contributors can view wiki version content.
+
+        - Withdrawn registrations: Wiki version content is not accessible.'
+      tags:
+      - Wikis
+      operationId: retrieve_wiki_version_content
+      parameters:
+      - name: wiki_id
+        in: path
+        required: true
+        description: The unique identifier for the wiki page.
+        schema:
+          type: string
+      - name: version_id
+        in: path
+        required: true
+        description: The version identifier for the specific wiki version.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved raw wiki content.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "# My Wiki Page  \nThis is the content of my wiki page in version 4.\n"
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to view this wiki version content.
+        '404':
+          description: Wiki version not found.
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

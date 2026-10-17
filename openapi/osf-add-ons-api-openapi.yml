@@ -1,0 +1,249 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Addons API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Add Ons
+  description: Addons represent a user connection to an external service, some addons allow for additional storage, some modify user authentication or add a redirect link to a project.
+paths:
+  /addons/:
+    get:
+      summary: List all addons
+      description: 'A paginated list of addons configurable with the OSF, for read purposes only.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of up to 10 addons. Each resource in the array is a separate addon object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+        #### Errors
+
+        This request should never return an error.'
+      tags:
+      - Add Ons
+      operationId: addons_list
+      x-response-schema: Addon
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Addon
+                  properties:
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: true
+                      description: The properties of the addon entity.
+                      properties:
+                        url:
+                          type: string
+                          readOnly: true
+                          description: The URL to the third-party service provider.
+                        name:
+                          type: string
+                          readOnly: true
+                          description: The name of the third-party service provider.
+                        description:
+                          type: string
+                          readOnly: true
+                          description: The description of the service provider.
+                        categories:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                            - documentation
+                            - storage
+                            - bibliography
+                            - other
+                            - security
+                            - citations
+                          readOnly: true
+                          description: List of categories this addon belongs to.
+                    type:
+                      type: string
+                      readOnly: true
+                      description: The type identifier of the addon entity (`addons`).
+                    id:
+                      type: string
+                      readOnly: true
+                      description: The identifier of the addon entity.
+              example:
+                data:
+                - links: {}
+                  attributes:
+                    url: http://www.box.com
+                    name: Box
+                    categories:
+                    - storage
+                    description: Box is a file storage add-on. Connect your Box account to an OSF project to interact with files hosted on Box via the OSF.
+                  type: addon
+                  id: box
+                - links: {}
+                  attributes:
+                    url: https://dataverse.harvard.edu/
+                    name: Dataverse
+                    categories:
+                    - storage
+                    description: Dataverse is an open source software application to share, cite, and archive data. Connect your Dataverse account to share your Dataverse datasets via the OSF.
+                  type: addon
+                  id: dataverse
+                - links: {}
+                  attributes:
+                    url: http://www.dropbox.com
+                    name: Dropbox
+                    categories:
+                    - storage
+                    description: Dropbox is a file storage add-on. Connect your Dropbox account to an OSF project to interact with files hosted on Dropbox via the OSF.
+                  type: addon
+                  id: dropbox
+                - links: {}
+                  attributes:
+                    url: http://www.figshare.com
+                    name: figshare
+                    categories:
+                    - storage
+                    description: Figshare is an online digital repository. Connect your figshare account to share your figshare files along with other materials in your OSF project.
+                  type: addon
+                  id: figshare
+                - links: {}
+                  attributes:
+                    url: http://www.github.com
+                    name: GitHub
+                    categories:
+                    - storage
+                    description: GitHub is a web-based Git repository hosting service. Connect your GitHub repo to your OSF project to share your code alongside other materials in your OSF project.
+                  type: addon
+                  id: github
+                - links: {}
+                  attributes:
+                    url: http://www.mendeley.com
+                    name: Mendeley
+                    categories:
+                    - citations
+                    description: Mendeley is a reference management tool. Connecting Mendeley folders to OSF projects allows you and others to view, copy, and download citations that are relevant to your project from the Project Overview page.
+                  type: addon
+                  id: mendeley
+                - links: {}
+                  attributes:
+                    url: http://www.zotero.org
+                    name: Zotero
+                    categories:
+                    - citations
+                    description: Zotero is a reference management tool. Connecting Zotero folders to OSF projects allows you and others to view, copy, and download citations that are relevant to your project from the Project Overview page.
+                  type: addon
+                  id: zotero
+                - links: {}
+                  attributes:
+                    url: https://owncloud.org/
+                    name: ownCloud
+                    categories:
+                    - storage
+                    description: ownCloud is an open source, self-hosted file sync and share app platform. Connect your ownCloud account to an OSF project to interact with files hosted on ownCloud via the OSF.
+                  type: addon
+                  id: owncloud
+                - links: {}
+                  attributes:
+                    url: https://aws.amazon.com/s3/
+                    name: Amazon S3
+                    categories:
+                    - storage
+                    description: Amazon S3 is a file storage add-on. Connect your S3 account to an OSF project to interact with files hosted on S3 via the OSF.
+                  type: addon
+                  id: s3
+                - links: {}
+                  attributes:
+                    url: https://drive.google.com
+                    name: Google Drive
+                    categories:
+                    - storage
+                    description: Google Drive is a file storage add-on. Connect your Google Drive account to an OSF project to interact with files hosted on Google Drive via the OSF.
+                  type: addon
+                  id: googledrive
+                links:
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+                  meta: null
+                  total: 10
+                  per_page: 1000
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

@@ -1,0 +1,223 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Collection Submission Actions API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Collection Submission Actions
+paths:
+  /collection_submission_actions/{collection_submission_id}/:
+    get:
+      summary: Retrieve a Collection Submission Action
+      description: '#### Permissions
+
+        This information is only available to an admin on the Collection Submission in question.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        Returns a JSON object with a `data` key containing the representation of the requested collection submission action object, if the request is successful.'
+      parameters:
+      - in: path
+        required: true
+        name: collection_submission_id
+        description: A short id for that collection submission
+        schema:
+          type: string
+      tags:
+      - Collection Submission Actions
+      operationId: collection_submission_actions
+      x-response-schema: Collection Submission Action
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                  id: 63bc18c66f4506000abae96f
+                  type: collection-submission-actions
+                  attributes:
+                    trigger: remove
+                    from_state: accepted
+                    to_state: removed
+                    comment: test remove!
+                    date_created: '2023-01-09T13:38:14.598839Z'
+                    date_modified: '2023-01-09T13:38:14.598867Z'
+                  relationships:
+                    collection:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/collections/3vpkf/
+                          meta: {}
+                      data:
+                        id: 3vpkf
+                        type: collections
+                    creator:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/users/zpw9n/
+                          meta: {}
+                      data:
+                        id: zpw9n
+                        type: users
+                    target:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/collections/3vpkf/collection_submissions/xhwz7/
+                          meta: {}
+                      data:
+                        id: xhwz7-3vpkf
+                        type: collection-submission
+                  links:
+                    self: https://api.staging.osf.io/v2/actions/63bc18c66f4506000abae96f/
+  /collection_submission_actions/:
+    post:
+      summary: Creates a Collection Submission Action
+      description: 'This adds a Collection Submission Action to the Collection, causing the Collection state machine to perform a transition.
+
+        #### Permissions
+
+        This action is only available to an admin on the Collection Submission, or a moderator for the Collection Provider in question.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+        Returns a JSON object with a `data` key containing the representation of the requested collection submission action object, if the request is successful.'
+      tags:
+      - Collection Submission Actions
+      operationId: postCollectionSubmissionActions
+      x-response-schema: Collection Submission Action
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                  id: 63bc18c66f4506000abae96f
+                  type: collection-submission-actions
+                  attributes:
+                    trigger: remove
+                    from_state: accepted
+                    to_state: removed
+                    comment: test remove!
+                    date_created: '2023-01-09T13:38:14.598839Z'
+                    date_modified: '2023-01-09T13:38:14.598867Z'
+                  relationships:
+                    collection:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/collections/3vpkf/
+                          meta: {}
+                      data:
+                        id: 3vpkf
+                        type: collections
+                    creator:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/users/zpw9n/
+                          meta: {}
+                      data:
+                        id: zpw9n
+                        type: users
+                    target:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/collections/3vpkf/collection_submissions/xhwz7/
+                          meta: {}
+                      data:
+                        id: xhwz7-3vpkf
+                        type: collection-submission
+                  links:
+                    self: https://api.staging.osf.io/v2/actions/63bc18c66f4506000abae96f/
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                  type: collection-submission-actions
+                  attributes:
+                    comment: some comment
+                    trigger: remove
+                  relationships:
+                    target:
+                      data:
+                        id: '{node_id}-{collection_id}'
+                        type: collection-submission
+        required: true
+      x-operation-id-source: normalized
+      x-operation-id-original: collection_submission_actions
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

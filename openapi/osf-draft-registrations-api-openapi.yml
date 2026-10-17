@@ -1,0 +1,2472 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Draft Registrations API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Draft Registrations
+  description: A Draft Registration is a object that allows a user to edit and revise a registration before it is registered. Draft Registrations allow contributors to coordinate on a single registration, so they can upload files and change Registration metadata before the Registration is archived.
+paths:
+  /nodes/{node_id}/draft_registrations/{draft_id}/:
+    get:
+      summary: Retrieve a Draft Registration
+      description: 'Retrieve the details of a given draft registration.
+
+        Draft Registrations contain Registration questions that will become part of the Registration. A Registration is a frozen version of the project that can never be deleted, but can be withdrawn and have it''s metadata edited.
+
+
+        Your original project remains editable but will now have the draft registration linked to it.
+
+        #### Permissions
+
+        Only project administrators may view draft registrations.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested draft registration, if the request is successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        name: node_id
+        required: true
+        description: The unique identifier of the node.
+        schema:
+          type: string
+      - in: path
+        name: draft_id
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      tags:
+      - Draft Registrations
+      operationId: nodes_draft_registrations_read
+      x-response-schema: Draft Registration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Draft Registration
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                - links
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The unique identifier of the draft registration entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the draft registration entity (`draft_registrations`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: false
+                    description: The properties of the Draft Registration entity.
+                    properties:
+                      title:
+                        type: string
+                        readOnly: false
+                        description: The title of the Draft Registration.
+                      description:
+                        type: string
+                        readOnly: false
+                        description: The description of the Draft Registration.
+                      category:
+                        type: string
+                        readOnly: false
+                        description: The category of the Draft Registration.
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: false
+                        description: The searchable tags of the Draft Registration.
+                      node_license:
+                        type: object
+                        title: Node License
+                        properties:
+                          copyright_holders:
+                            type: array
+                            readOnly: false
+                            description: A list of names of copyright holders for the license.
+                            items:
+                              type: string
+                              readOnly: true
+                              description: A copyright holders for the license.
+                          year:
+                            type: integer
+                            readOnly: false
+                            description: The year the copyright was made.
+                      current_user_permissions:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: true
+                        description: The current users permission level for the Draft Registration.
+                      has_project:
+                        type: boolean
+                        readOnly: true
+                        description: This indicates whether a Draft Registration was branched from a project.
+                      datetime_initiated:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The time at which the draft registration was first initiated, as an iso8601 formatted timestamp.
+                      datetime_updated:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The time at which the draft registration was last updated, as an iso8601 formatted timestamp.
+                      registration_metadata:
+                        type: object
+                        readOnly: false
+                        description: This is a legacy format for `registration_responses`.
+                      registration_responses:
+                        type: object
+                        readOnly: false
+                        description: A dictionary of question IDs and responses from the registration schema.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: URLs to other entities or entity collections that have a relationship to the draft registration entity.
+                    properties:
+                      branched_from:
+                        type: string
+                        readOnly: true
+                        description: A link to the node that this draft registration was created from.
+                      initiator:
+                        type: string
+                        readOnly: true
+                        description: A link to the user who initiated the draft registration.
+                      registration_schema:
+                        type: string
+                        readOnly: true
+                        description: A link to the detailed registration schema that this draft conforms to.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    required:
+                    - html
+                    description: URLs to alternative representations of the draft registration entity.
+                    properties:
+                      html:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the draft registration's page on the OSF.
+                example:
+                  data:
+                    type: draft_registrations
+                    relationships:
+                      registration_schema:
+                        data:
+                          id: 61e02b6c90de34000ae3447a
+                          type: registration_schemas
+              example:
+                data:
+                - id: ''
+                  type: draft_registrations
+                  attributes:
+                    datetime_initiated: ''
+                    datetime_updated: ''
+                    registration_metadata: {}
+                    registration_supplement: ''
+                  relationships:
+                    branched_from:
+                      links:
+                        related:
+                          href: ''
+                          meta: {}
+                    initiator:
+                      links:
+                        related:
+                          href: ''
+                          meta: {}
+                    registration_schema:
+                      links:
+                        related:
+                          href: ''
+                          meta: {}
+                  links:
+                    html: ''
+                links:
+                  first: ''
+                  last: ''
+                  prev: ''
+                  next: ''
+                  meta:
+                    total: ''
+                    per_page: 10
+  /draft_registrations/:
+    get:
+      summary: Retrieve a list of Draft Registrations
+      description: 'Retrieve a list of all currently available Draft Registrations for that user.
+
+        #### Permissions
+
+        Only Draft Registration contributors may view draft registrations.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested draft registration, if the request is successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      tags:
+      - Draft Registrations
+      operationId: draft_registrations_read
+      x-response-schema: Draft Registration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Draft Registration
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                - links
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The unique identifier of the draft registration entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the draft registration entity (`draft_registrations`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: false
+                    description: The properties of the Draft Registration entity.
+                    properties:
+                      title:
+                        type: string
+                        readOnly: false
+                        description: The title of the Draft Registration.
+                      description:
+                        type: string
+                        readOnly: false
+                        description: The description of the Draft Registration.
+                      category:
+                        type: string
+                        readOnly: false
+                        description: The category of the Draft Registration.
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: false
+                        description: The searchable tags of the Draft Registration.
+                      node_license:
+                        type: object
+                        title: Node License
+                        properties:
+                          copyright_holders:
+                            type: array
+                            readOnly: false
+                            description: A list of names of copyright holders for the license.
+                            items:
+                              type: string
+                              readOnly: true
+                              description: A copyright holders for the license.
+                          year:
+                            type: integer
+                            readOnly: false
+                            description: The year the copyright was made.
+                      current_user_permissions:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: true
+                        description: The current users permission level for the Draft Registration.
+                      has_project:
+                        type: boolean
+                        readOnly: true
+                        description: This indicates whether a Draft Registration was branched from a project.
+                      datetime_initiated:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The time at which the draft registration was first initiated, as an iso8601 formatted timestamp.
+                      datetime_updated:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The time at which the draft registration was last updated, as an iso8601 formatted timestamp.
+                      registration_metadata:
+                        type: object
+                        readOnly: false
+                        description: This is a legacy format for `registration_responses`.
+                      registration_responses:
+                        type: object
+                        readOnly: false
+                        description: A dictionary of question IDs and responses from the registration schema.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: URLs to other entities or entity collections that have a relationship to the draft registration entity.
+                    properties:
+                      branched_from:
+                        type: string
+                        readOnly: true
+                        description: A link to the node that this draft registration was created from.
+                      initiator:
+                        type: string
+                        readOnly: true
+                        description: A link to the user who initiated the draft registration.
+                      registration_schema:
+                        type: string
+                        readOnly: true
+                        description: A link to the detailed registration schema that this draft conforms to.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    required:
+                    - html
+                    description: URLs to alternative representations of the draft registration entity.
+                    properties:
+                      html:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the draft registration's page on the OSF.
+                example:
+                  data:
+                    type: draft_registrations
+                    relationships:
+                      registration_schema:
+                        data:
+                          id: 61e02b6c90de34000ae3447a
+                          type: registration_schemas
+              example:
+                data:
+                - id: 626170854968470203611e2c
+                  type: draft-registrations
+                  attributes:
+                    registration_metadata: {}
+                    registration_responses: {}
+                    datetime_initiated: '2022-04-21T14:56:05.674349Z'
+                    datetime_updated: '2022-04-21T14:56:05.908546Z'
+                    title: Test Draft
+                    description: Test
+                    category: ''
+                    tags: []
+                    node_license: null
+                    current_user_permissions:
+                    - admin
+                    - write
+                    - read
+                    has_project: false
+                  relationships:
+                    initiator:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/gyht4/
+                          meta: {}
+                      data:
+                        id: gyht4
+                        type: users
+                    branched_from:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_nodes/yt5fw/
+                          meta: {}
+                      data:
+                        id: yt5fw
+                        type: draft_nodes
+                    registration_schema:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/5e795fc0d2833800195735d0/
+                          meta: {}
+                      data:
+                        id: 5e795fc0d2833800195735d0
+                        type: registration-schemas
+                    provider:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/registrations/osf/
+                          meta: {}
+                      data:
+                        id: osf
+                        type: registration-providers
+                    affiliated_institutions:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/institutions/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/relationships/institutions/
+                          meta: {}
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/contributors/
+                          meta: {}
+                    bibliographic_contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/bibliographic_contributors/
+                          meta: {}
+                    license:
+                      data: null
+                    subjects:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/subjects/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/relationships/subjects/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/
+                meta:
+                  total: 1
+                  per_page: 10
+                  version: '2.20'
+                links:
+                  self: https://api.osf.io/v2/draft_registrations/
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+    post:
+      summary: Create a Draft Registration
+      description: 'This creates a Draft Registration that can be used to edit and register research.
+
+        Draft Registrations contain Registration questions that will become part of the Registration. A Registration is a frozen version of the project that can never be deleted, but can be withdrawn and have it''s metadata edited.
+
+        A Draft Registration created by this endpoint will not have a Project linked with it by default, but if the user includes a `branched_from` attribute in their Draft Registration creation payload with the value of the `branched_from` being guid of a Project they have permissions for the Draft Registration will be linked to the Project. If you linked your Draft Registration on a Project, your original Project remains editable and will now have the Draft Registration linked to it.
+
+        #### Permissions
+
+        Any user can create a Draft Registration. If the `branched_from` attribute is provided, then the user must be an ADMIN contributor on the Project being registered.
+
+        #### Required
+
+        Required fields for creating a Draft Registration include:
+
+
+        `schema_id`
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the created Draft Registration, if the request is successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      tags:
+      - Draft Registrations
+      operationId: draft_registrations_create
+      x-response-schema: Draft Registration
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Draft Registration
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                - links
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The unique identifier of the draft registration entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the draft registration entity (`draft_registrations`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: false
+                    description: The properties of the Draft Registration entity.
+                    properties:
+                      title:
+                        type: string
+                        readOnly: false
+                        description: The title of the Draft Registration.
+                      description:
+                        type: string
+                        readOnly: false
+                        description: The description of the Draft Registration.
+                      category:
+                        type: string
+                        readOnly: false
+                        description: The category of the Draft Registration.
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: false
+                        description: The searchable tags of the Draft Registration.
+                      node_license:
+                        type: object
+                        title: Node License
+                        properties:
+                          copyright_holders:
+                            type: array
+                            readOnly: false
+                            description: A list of names of copyright holders for the license.
+                            items:
+                              type: string
+                              readOnly: true
+                              description: A copyright holders for the license.
+                          year:
+                            type: integer
+                            readOnly: false
+                            description: The year the copyright was made.
+                      current_user_permissions:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: true
+                        description: The current users permission level for the Draft Registration.
+                      has_project:
+                        type: boolean
+                        readOnly: true
+                        description: This indicates whether a Draft Registration was branched from a project.
+                      datetime_initiated:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The time at which the draft registration was first initiated, as an iso8601 formatted timestamp.
+                      datetime_updated:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The time at which the draft registration was last updated, as an iso8601 formatted timestamp.
+                      registration_metadata:
+                        type: object
+                        readOnly: false
+                        description: This is a legacy format for `registration_responses`.
+                      registration_responses:
+                        type: object
+                        readOnly: false
+                        description: A dictionary of question IDs and responses from the registration schema.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: URLs to other entities or entity collections that have a relationship to the draft registration entity.
+                    properties:
+                      branched_from:
+                        type: string
+                        readOnly: true
+                        description: A link to the node that this draft registration was created from.
+                      initiator:
+                        type: string
+                        readOnly: true
+                        description: A link to the user who initiated the draft registration.
+                      registration_schema:
+                        type: string
+                        readOnly: true
+                        description: A link to the detailed registration schema that this draft conforms to.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    required:
+                    - html
+                    description: URLs to alternative representations of the draft registration entity.
+                    properties:
+                      html:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the draft registration's page on the OSF.
+                example:
+                  data:
+                    type: draft_registrations
+                    relationships:
+                      registration_schema:
+                        data:
+                          id: 61e02b6c90de34000ae3447a
+                          type: registration_schemas
+              example:
+                data:
+                  id: 62716076d90ebe0017f2bf42
+                  type: draft_registrations
+                  attributes:
+                    registration_metadata: {}
+                    registration_responses: {}
+                    datetime_initiated: '2022-05-03T17:03:50.288542'
+                    datetime_updated: '2022-05-03T17:03:50.560153'
+                    title: Untitled
+                    description: ''
+                    category: ''
+                    tags: []
+                    node_license: null
+                  relationships:
+                    initiator:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/fgvc6/
+                          meta: {}
+                      data:
+                        id: fgvc6
+                        type: users
+                    branched_from:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_nodes/nmj5w/
+                          meta: {}
+                    registration_schema:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/61e02b6c90de34000ae3447a/
+                          meta: {}
+                      data:
+                        id: 61e02b6c90de34000ae3447a
+                        type: registration-schemas
+                    provider:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/registrations/osf/
+                          meta: {}
+                      data:
+                        id: osf
+                        type: registration-providers
+                    affiliated_institutions:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/62716076d90ebe0017f2bf42/institutions/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/draft_registrations/62716076d90ebe0017f2bf42/relationships/institutions/
+                          meta: {}
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/62716076d90ebe0017f2bf42/contributors/
+                          meta: {}
+                    subjects:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/62716076d90ebe0017f2bf42/subjects/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/draft_registrations/62716076d90ebe0017f2bf42/relationships/subjects/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/draft_registrations/62716076d90ebe0017f2bf42/
+                meta:
+                  version: '2.0'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Draft Registration
+              required:
+              - id
+              - type
+              - attributes
+              - relationships
+              - links
+              properties:
+                id:
+                  type: string
+                  readOnly: true
+                  description: The unique identifier of the draft registration entity.
+                type:
+                  type: string
+                  readOnly: true
+                  description: The type identifier of the draft registration entity (`draft_registrations`).
+                attributes:
+                  type: object
+                  title: Attributes
+                  readOnly: false
+                  description: The properties of the Draft Registration entity.
+                  properties:
+                    title:
+                      type: string
+                      readOnly: false
+                      description: The title of the Draft Registration.
+                    description:
+                      type: string
+                      readOnly: false
+                      description: The description of the Draft Registration.
+                    category:
+                      type: string
+                      readOnly: false
+                      description: The category of the Draft Registration.
+                    tags:
+                      type: array
+                      items:
+                        type: string
+                      readOnly: false
+                      description: The searchable tags of the Draft Registration.
+                    node_license:
+                      type: object
+                      title: Node License
+                      properties:
+                        copyright_holders:
+                          type: array
+                          readOnly: false
+                          description: A list of names of copyright holders for the license.
+                          items:
+                            type: string
+                            readOnly: true
+                            description: A copyright holders for the license.
+                        year:
+                          type: integer
+                          readOnly: false
+                          description: The year the copyright was made.
+                    current_user_permissions:
+                      type: array
+                      items:
+                        type: string
+                      readOnly: true
+                      description: The current users permission level for the Draft Registration.
+                    has_project:
+                      type: boolean
+                      readOnly: true
+                      description: This indicates whether a Draft Registration was branched from a project.
+                    datetime_initiated:
+                      type: string
+                      format: date-time
+                      readOnly: true
+                      description: The time at which the draft registration was first initiated, as an iso8601 formatted timestamp.
+                    datetime_updated:
+                      type: string
+                      format: date-time
+                      readOnly: true
+                      description: The time at which the draft registration was last updated, as an iso8601 formatted timestamp.
+                    registration_metadata:
+                      type: object
+                      readOnly: false
+                      description: This is a legacy format for `registration_responses`.
+                    registration_responses:
+                      type: object
+                      readOnly: false
+                      description: A dictionary of question IDs and responses from the registration schema.
+                relationships:
+                  type: object
+                  title: Relationships
+                  readOnly: true
+                  description: URLs to other entities or entity collections that have a relationship to the draft registration entity.
+                  properties:
+                    branched_from:
+                      type: string
+                      readOnly: true
+                      description: A link to the node that this draft registration was created from.
+                    initiator:
+                      type: string
+                      readOnly: true
+                      description: A link to the user who initiated the draft registration.
+                    registration_schema:
+                      type: string
+                      readOnly: true
+                      description: A link to the detailed registration schema that this draft conforms to.
+                links:
+                  type: object
+                  title: Links
+                  readOnly: true
+                  required:
+                  - html
+                  description: URLs to alternative representations of the draft registration entity.
+                  properties:
+                    html:
+                      type: string
+                      format: URL
+                      readOnly: true
+                      description: A link to the draft registration's page on the OSF.
+              example:
+                data:
+                  type: draft_registrations
+                  relationships:
+                    registration_schema:
+                      data:
+                        id: 61e02b6c90de34000ae3447a
+                        type: registration_schemas
+        required: true
+  /draft_registrations/{draft_id}/:
+    get:
+      summary: Retrieve a Draft Registration
+      description: 'Retrieve the details of a given Draft Registration
+
+        Draft Registrations contain Registration questions that will become part of the Registration. A Registration is a frozen version of the project that can never be deleted, but can be withdrawn and have it''s metadata edited.
+
+
+        If you based your Draft Registration on a Project, your original Project remains editable but will now have the Draft Registration linked to it.
+
+        #### Permissions
+
+        Only draft registration contributors may view draft registrations.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested draft registration, if the request is successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        name: draft_id
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      tags:
+      - Draft Registrations
+      operationId: getDraftRegistrationsByDraftId
+      x-response-schema: Draft Registration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Draft Registration
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                - links
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The unique identifier of the draft registration entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the draft registration entity (`draft_registrations`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: false
+                    description: The properties of the Draft Registration entity.
+                    properties:
+                      title:
+                        type: string
+                        readOnly: false
+                        description: The title of the Draft Registration.
+                      description:
+                        type: string
+                        readOnly: false
+                        description: The description of the Draft Registration.
+                      category:
+                        type: string
+                        readOnly: false
+                        description: The category of the Draft Registration.
+                      tags:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: false
+                        description: The searchable tags of the Draft Registration.
+                      node_license:
+                        type: object
+                        title: Node License
+                        properties:
+                          copyright_holders:
+                            type: array
+                            readOnly: false
+                            description: A list of names of copyright holders for the license.
+                            items:
+                              type: string
+                              readOnly: true
+                              description: A copyright holders for the license.
+                          year:
+                            type: integer
+                            readOnly: false
+                            description: The year the copyright was made.
+                      current_user_permissions:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: true
+                        description: The current users permission level for the Draft Registration.
+                      has_project:
+                        type: boolean
+                        readOnly: true
+                        description: This indicates whether a Draft Registration was branched from a project.
+                      datetime_initiated:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The time at which the draft registration was first initiated, as an iso8601 formatted timestamp.
+                      datetime_updated:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The time at which the draft registration was last updated, as an iso8601 formatted timestamp.
+                      registration_metadata:
+                        type: object
+                        readOnly: false
+                        description: This is a legacy format for `registration_responses`.
+                      registration_responses:
+                        type: object
+                        readOnly: false
+                        description: A dictionary of question IDs and responses from the registration schema.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: URLs to other entities or entity collections that have a relationship to the draft registration entity.
+                    properties:
+                      branched_from:
+                        type: string
+                        readOnly: true
+                        description: A link to the node that this draft registration was created from.
+                      initiator:
+                        type: string
+                        readOnly: true
+                        description: A link to the user who initiated the draft registration.
+                      registration_schema:
+                        type: string
+                        readOnly: true
+                        description: A link to the detailed registration schema that this draft conforms to.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    required:
+                    - html
+                    description: URLs to alternative representations of the draft registration entity.
+                    properties:
+                      html:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the draft registration's page on the OSF.
+                example:
+                  data:
+                    type: draft_registrations
+                    relationships:
+                      registration_schema:
+                        data:
+                          id: 61e02b6c90de34000ae3447a
+                          type: registration_schemas
+              example:
+                data:
+                  id: 626ffc1ad90ebe0011fc7601
+                  type: draft-registrations
+                  attributes:
+                    registration_metadata: {}
+                    registration_responses: {}
+                    datetime_initiated: '2022-05-02T15:43:22.981108Z'
+                    datetime_updated: '2022-05-03T13:08:47.334711Z'
+                    title: Untitled
+                    description: ''
+                    category: ''
+                    tags: []
+                    node_license: null
+                  relationships:
+                    initiator:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/fgvc6/
+                          meta: {}
+                      data:
+                        id: fgvc6
+                        type: users
+                    branched_from:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_nodes/ng4w2/
+                          meta: {}
+                    registration_schema:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/61e02b6c90de34000ae3447a/
+                          meta: {}
+                      data:
+                        id: 61e02b6c90de34000ae3447a
+                        type: registration-schemas
+                    provider:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/registrations/osf/
+                          meta: {}
+                      data:
+                        id: osf
+                        type: registration-providers
+                    affiliated_institutions:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/institutions/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/relationships/institutions/
+                          meta: {}
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/contributors/
+                          meta: {}
+                    license:
+                      data: null
+                    subjects:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/subjects/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/relationships/subjects/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/
+                meta:
+                  version: '2.20'
+      x-operation-id-source: normalized
+      x-operation-id-original: nodes_draft_registrations_read
+    patch:
+      summary: Update a Draft Registration
+      description: 'Updates a Draft Registration by setting the values of the attributes specified in the request body. Any unspecified attributes will be left unchanged. Note this will not register or change the machine state of a Draft Registration, it can only edit the Draft Registration''s attributes prior to its registration.
+
+        #### Permissions
+
+        Only draft registration contributors may view draft registrations and only draft registration contributors with WRITE or ADMIN permissions may update draft registrations.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the new representation of the updated draft registration, if the request is successful.
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        name: draft_id
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      tags:
+      - Draft Registrations
+      operationId: nodes_draft_registrations_partial_update
+      x-response-schema: Draft Registration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                  id: 626ffc1ad90ebe0011fc7601
+                  type: draft_registrations
+                  attributes:
+                    registration_metadata:
+                      summary:
+                        comments: []
+                        value: Test
+                        extra: []
+                      uploader:
+                        comments: []
+                        value: ''
+                        extra: []
+                    registration_responses:
+                      summary: Test Value
+                    datetime_initiated: '2022-05-02T15:43:22.981108'
+                    datetime_updated: '2022-05-03T18:34:29.504428'
+                    title: test title change
+                    description: ''
+                    category: ''
+                    tags: []
+                    node_license: None
+                  relationships:
+                    initiator:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/fgvc6/
+                          meta: {}
+                      data:
+                        id: fgvc6
+                        type: users
+                    branched_from:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_nodes/ng4w2/
+                          meta: {}
+                    registration_schema:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/61e02b6c90de34000ae3447a/
+                          meta: {}
+                      data:
+                        id: 61e02b6c90de34000ae3447a
+                        type: registration-schemas
+                    provider:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/registrations/osf/
+                          meta: {}
+                      data:
+                        id: osf
+                        type: registration-providers
+                    affiliated_institutions:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/institutions/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/relationships/institutions/
+                          meta: {}
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/contributors/
+                          meta: {}
+                    subjects:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/subjects/
+                          meta: {}
+                        self:
+                          href: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/relationships/subjects/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/
+                meta:
+                  version: '2.0'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                  id: 626ffc1ad90ebe0011fc7601
+                  type: draft_registrations
+                  attributes:
+                    title: test title change
+                    registration_responses:
+                      summary: Test Value
+        required: true
+    delete:
+      summary: Delete a draft registration
+      description: 'Permanently deletes a draft registration. A draft that has already been registered cannot be deleted.
+
+        #### Permissions
+
+        Only draft registration contributors with ADMIN permissions may delete draft registrations
+
+        #### Returns
+
+        If the request is successful, no content is returned.
+
+        If the request is unsuccessful, a JSON object with an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        name: draft_id
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      tags:
+      - Draft Registrations
+      operationId: nodes_draft_registrations_delete
+      responses:
+        '204':
+          description: No Content
+  /draft_registrations/{draft_id}/contributors/:
+    get:
+      summary: Retreive a list Contributors from a Draft Registration
+      description: 'Retrieves the details of all given Contributors for a Draft Registration.
+
+        Contributors are users who can make changes to the Draft Registration.
+
+        Contributors are categorized as either "bibliographic" or "non-bibliographic". From a permissions standpoint, both are the same, but bibliographic contributors are included in citations and are listed on the project overview page on the OSF, while non-bibliographic contributors are not.'
+      parameters:
+      - in: path
+        name: draft_id
+        required: true
+        description: The unique identifier of the Draft Registration.
+        schema:
+          type: string
+      tags:
+      - Draft Registrations
+      operationId: draft_registration_contributors_list
+      x-response-schema: Contributor
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              example:
+                data:
+                - id: 626170854968470203611e2c-gyht4
+                  type: contributors
+                  attributes:
+                    index: 0
+                    bibliographic: true
+                    permission: admin
+                    unregistered_contributor: null
+                  relationships:
+                    users:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/gyht4/
+                          meta: {}
+                      data:
+                        id: gyht4
+                        type: users
+                    draft_registration:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/
+                          meta: {}
+                  embeds:
+                    users:
+                      data:
+                        id: gyht4
+                        type: users
+                        attributes:
+                          full_name: John Tordoff
+                          given_name: John
+                          middle_names: ''
+                          family_name: Tordoff
+                          suffix: ''
+                          date_registered: '2017-04-26T15:39:29.779518Z'
+                          active: true
+                          timezone: America/New_York
+                          locale: en_US
+                          social:
+                            ssrn: ''
+                            orcid: 0000-0001-8693-9390
+                            github:
+                            - Johnetordoff
+                            scholar: ''
+                            twitter: []
+                            linkedIn: []
+                            impactStory: ''
+                            baiduScholar: ''
+                            researchGate: ''
+                            researcherId: ''
+                            profileWebsites:
+                            - https://test.com
+                            academiaProfileID: ''
+                            academiaInstitution: ''
+                          employment: []
+                          education: []
+                          can_view_reviews: []
+                          accepted_terms_of_service: true
+                        relationships:
+                          nodes:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/nodes/
+                                meta: {}
+                          groups:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/groups/
+                                meta: {}
+                          registrations:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/registrations/
+                                meta: {}
+                          institutions:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/institutions/
+                                meta: {}
+                              self:
+                                href: https://api.osf.io/v2/users/gyht4/relationships/institutions/
+                                meta: {}
+                          preprints:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/preprints/
+                                meta: {}
+                          emails:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/settings/emails/
+                                meta: {}
+                          default_region:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/regions/us/
+                                meta: {}
+                            data:
+                              id: us
+                              type: regions
+                          settings:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/settings/
+                                meta: {}
+                            data:
+                              id: gyht4
+                              type: user-settings
+                        links:
+                          html: https://osf.io/gyht4/
+                          profile_image: https://secure.gravatar.com/avatar/a61b3827662ddbc604c78e1c8f6a3636?d=identicon
+                          self: https://api.osf.io/v2/users/gyht4/
+                  links:
+                    self: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/contributors/gyht4/
+                meta:
+                  total: 1
+                  per_page: 10
+                  total_bibliographic: 1
+                  version: '2.20'
+                links:
+                  self: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/contributors/
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+    post:
+      summary: Add a contributor to a Draft Registration
+      description: 'Adds a contributor to a Draft Registration, contributors can view, edit, register or delete a Draft Registration depending on their permissions.
+
+        Contributors are categorized as either "bibliographic" or "non-bibliographic" contributors. From a permissions standpoint, both are the same, but bibliographic contributors are included in citations and are listed on the project overview page on the OSF, while non-bibliographic contributors are not.
+
+        #### Permissions
+
+        Only project administrators can add contributors to a Draft Registration.
+
+        #### Required
+
+        A relationship object with a `data` key, containing the `users` type and valid user ID is required.
+
+        All attributes describing the relationship between the node and the user are optional.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the new contributor, if the request is successful.
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        name: draft_id
+        required: true
+        description: The unique identifier of the Draft Registration.
+        schema:
+          type: string
+      tags:
+      - Draft Registrations
+      operationId: draft_registration_contributors_create
+      x-response-schema: Contributor
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              example:
+                data:
+                  id: 62718748d90ebe0012c38815-tmxzg
+                  type: contributors
+                  attributes:
+                    index: 2
+                    bibliographic: true
+                    permission: write
+                    unregistered_contributor: null
+                  relationships:
+                    users:
+                      links:
+                        related:
+                          href: http://localhost:8000/v2/users/tmxzg/
+                          meta: {}
+                      data:
+                        id: tmxzg
+                        type: users
+                    draft_registration:
+                      links:
+                        related:
+                          href: http://localhost:8000/v2/draft_registrations/62718748d90ebe0012c38815/
+                          meta: {}
+                  embeds:
+                    users:
+                      data:
+                        id: tmxzg
+                        type: users
+                        attributes:
+                          full_name: Paul Dominguez
+                          given_name: Paul
+                          middle_names: ''
+                          family_name: Dominguez
+                          suffix: ''
+                          date_registered: '2022-03-04T20:13:35.594990'
+                          active: true
+                          timezone: Etc/UTC
+                          locale: en_US
+                          social: {}
+                          employment: []
+                          education: []
+                        relationships:
+                          nodes:
+                            links:
+                              related:
+                                href: http://localhost:8000/v2/users/tmxzg/nodes/
+                                meta: {}
+                          groups:
+                            links:
+                              related:
+                                href: http://localhost:8000/v2/users/tmxzg/groups/
+                                meta: {}
+                          registrations:
+                            links:
+                              related:
+                                href: http://localhost:8000/v2/users/tmxzg/registrations/
+                                meta: {}
+                          institutions:
+                            links:
+                              related:
+                                href: http://localhost:8000/v2/users/tmxzg/institutions/
+                                meta: {}
+                              self:
+                                href: http://localhost:8000/v2/users/tmxzg/relationships/institutions/
+                                meta: {}
+                          preprints:
+                            links:
+                              related:
+                                href: http://localhost:8000/v2/users/tmxzg/preprints/
+                                meta: {}
+                        links:
+                          html: http://localhost:5000/tmxzg/
+                          profile_image: https://secure.gravatar.com/avatar/c16b8f65c6ac5dc8511fbffab8ef8918?d=identicon
+                          self: http://localhost:8000/v2/users/tmxzg/
+                  links:
+                    self: http://localhost:8000/v2/draft_registrations/62718748d90ebe0012c38815/contributors/tmxzg/
+                meta:
+                  version: '2.0'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Contributor
+              required:
+              - type
+              - relationships
+              properties:
+                id:
+                  type: string
+                  readOnly: true
+                  description: The identifier of the contributor entity. Contributor identifiers have the form {node_id}-{user_id}.
+                type:
+                  type: string
+                  readOnly: true
+                  description: The type identifier of the contributor entity (`contributors`).
+                attributes:
+                  type: object
+                  title: Attributes
+                  readOnly: false
+                  description: The properties of the contributor entity.
+                  properties:
+                    bibliographic:
+                      type: boolean
+                      readOnly: false
+                      description: Whether or not the contributor will be included in citations for the node. The default value is true.
+                    index:
+                      type: integer
+                      readOnly: false
+                      description: The position of this contributor in the list of project contributors and in project citations.
+                    permission:
+                      type: string
+                      enum:
+                      - read
+                      - write
+                      - admin
+                      readOnly: false
+                      description: The permission level of the contributor. The default value is 'write'.
+                    unregistered_contributor:
+                      type: string
+                      readOnly: true
+                      description: The assigned name of the contributor if the contributor has not yet claimed their account.
+                relationships:
+                  type: object
+                  title: Relationships
+                  readOnly: false
+                  description: URLs to other entities or entity collections that have a relationship to the contributor entity.
+                  required:
+                  - node
+                  - user
+                  properties:
+                    node:
+                      type: string
+                      readOnly: true
+                      description: A relationship to the node that was created for the preprint, or from which the preprint was created.
+                    user:
+                      type: string
+                      readOnly: false
+                      description: A relationship to the file that is designated as the preprint's primary file, or the manuscript of the preprint.
+                links:
+                  type: object
+                  title: Links
+                  readOnly: true
+                  description: URLs to alternative representations of the contributor entity.
+                  properties:
+                    self:
+                      type: string
+                      format: URL
+                      readOnly: true
+                      description: A link to the the canonical API endpoint for the contributor.
+              example:
+                data:
+                  type: contributors
+                  attributes: {}
+                  relationships:
+                    user:
+                      data:
+                        type: users
+                        id: guid0
+        required: true
+  /draft_registrations/{draft_id}/contributors/{user_id}/:
+    get:
+      summary: Retreive a Contributor from a Draft Registration
+      description: 'Retrieves the details of a given contributor.
+
+
+        Contributors are users who can view or edit to the Draft Registrations.
+
+
+        Contributors are categorized as either "bibliographic" or "non-bibliographic". From a permissions standpoint, both are the same, but bibliographic contributors are included in citations and are listed on the project overview page on the OSF, while non-bibliographic contributors are not.'
+      parameters:
+      - in: path
+        name: draft_id
+        required: true
+        description: The unique identifier of the Draft Registration.
+        schema:
+          type: string
+      - in: path
+        name: user_id
+        required: true
+        description: The unique identifier of the Contributor.
+        schema:
+          type: string
+      tags:
+      - Draft Registrations
+      operationId: getDraftRegistrationsByDraftIdContributorsByUserId
+      x-response-schema: Contributor
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              example:
+                data:
+                  id: 626170854968470203611e2c-gyht4
+                  type: contributors
+                  attributes:
+                    index: 0
+                    bibliographic: true
+                    permission: admin
+                    unregistered_contributor: null
+                  relationships:
+                    users:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/gyht4/
+                          meta: {}
+                      data:
+                        id: gyht4
+                        type: users
+                    draft_registration:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/
+                          meta: {}
+                  embeds:
+                    users:
+                      data:
+                        id: gyht4
+                        type: users
+                        attributes:
+                          full_name: John Tordoff
+                          given_name: John
+                          middle_names: ''
+                          family_name: Tordoff
+                          suffix: ''
+                          date_registered: '2017-04-26T15:39:29.779518Z'
+                          active: true
+                          timezone: America/New_York
+                          locale: en_US
+                          social:
+                            ssrn: ''
+                            orcid: 0000-0001-8693-9390
+                            github:
+                            - Johnetordoff
+                            scholar: ''
+                            twitter: []
+                            linkedIn: []
+                            impactStory: ''
+                            baiduScholar: ''
+                            researchGate: ''
+                            researcherId: ''
+                            profileWebsites:
+                            - https://test.com
+                            academiaProfileID: ''
+                            academiaInstitution: ''
+                          employment: []
+                          education: []
+                          can_view_reviews: []
+                          accepted_terms_of_service: true
+                        relationships:
+                          nodes:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/nodes/
+                                meta: {}
+                          groups:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/groups/
+                                meta: {}
+                          registrations:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/registrations/
+                                meta: {}
+                          institutions:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/institutions/
+                                meta: {}
+                              self:
+                                href: https://api.osf.io/v2/users/gyht4/relationships/institutions/
+                                meta: {}
+                          preprints:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/preprints/
+                                meta: {}
+                          emails:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/settings/emails/
+                                meta: {}
+                          default_region:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/regions/us/
+                                meta: {}
+                            data:
+                              id: us
+                              type: regions
+                          settings:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/users/gyht4/settings/
+                                meta: {}
+                            data:
+                              id: gyht4
+                              type: user-settings
+                        links:
+                          html: https://osf.io/gyht4/
+                          profile_image: https://secure.gravatar.com/avatar/a61b3827662ddbc604c78e1c8f6a3636?d=identicon
+                          self: https://api.osf.io/v2/users/gyht4/
+                  links:
+                    self: https://api.osf.io/v2/draft_registrations/626170854968470203611e2c/contributors/gyht4/
+                meta:
+                  version: '2.20'
+      x-operation-id-source: normalized
+      x-operation-id-original: draft_registration_contributors_create
+  /draft_registrations/{draft_id}/institutions/:
+    get:
+      summary: Retrieve Institutions afilliated with a Draft Registration
+      description: Once a properly authenticated user has marked their registration as affiliated with an institution, that institution and any others added will appear in this list.
+      parameters:
+      - in: path
+        name: draft_id
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      tags:
+      - Draft Registrations
+      operationId: getDraftRegistrationsByDraftIdInstitutions
+      x-response-schema: Draft Registration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Institution
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the institution entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the institution entity (`institutions`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: false
+                    description: The properties of the institution entity.
+                    properties:
+                      name:
+                        type: string
+                        readOnly: true
+                        description: Full name of the institution.
+                      description:
+                        type: string
+                        readOnly: true
+                        description: Description of the institution.
+                      iri:
+                        type: string
+                        readOnly: true
+                        description: Internationalized Resource Identifier (IRI) of the institution.
+                      ror_iri:
+                        type: string
+                        readOnly: true
+                        description: Research Organization Registry (ROR) IRI of the institution.
+                      iris:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: true
+                        description: List of IRIs associated with the institution.
+                      assets:
+                        type: object
+                        properties:
+                          logo:
+                            type: string
+                            readOnly: true
+                            description: URL to the institution's logo.
+                          logo_rounded:
+                            type: string
+                            readOnly: true
+                            description: URL to the institution's logo with rounded corners.
+                          banner:
+                            type: string
+                            readOnly: true
+                            description: URL to the institution's banner.
+                          logo_path:
+                            type: string
+                            readOnly: true
+                            description: Static path to the institution specific logo.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: URLs to other entities or entity collections that have a relationship to the institution entity.
+                    properties:
+                      nodes:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A relationship to the nodes affiliated with the institution.
+                      users:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A relationship to the users affiliated with the institution.
+                      registrations:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A relationship to the registrations affiliated with the institution.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs to alternative representations of the institutions entity.
+                    properties:
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the institution.
+              example:
+                data:
+                - id: lab
+                  type: institutions
+                  attributes:
+                    name: Lab [Test]
+                    description: Lab test
+                    assets:
+                      logo: /static/img/institutions/shields/lab-shield.png
+                      logo_rounded: /static/img/institutions/shields-rounded-corners/lab-shield-rounded-corners.png
+                  relationships:
+                    nodes:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/lab/nodes/
+                          meta: {}
+                    registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/lab/registrations/
+                          meta: {}
+                    users:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/lab/users/
+                          meta: {}
+                    department_metrics:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/lab/metrics/departments/
+                          meta: {}
+                    user_metrics:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/lab/metrics/users/
+                          meta: {}
+                    summary_metrics:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/lab/metrics/summary/
+                          meta: {}
+                      data:
+                        id: a2jlab
+                        type: institution-summary-metrics
+                  links:
+                    self: https://api.osf.io/v2/institutions/lab/
+                    html: http://localhost:5000/institutions/lab/
+                meta:
+                  total: 1
+                  per_page: 10
+                  version: '2.20'
+                links:
+                  self: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/institutions/
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+      x-operation-id-source: normalized
+      x-operation-id-original: nodes_draft_registrations_read
+  /draft_registrations/{draft_id}/subjects/:
+    get:
+      summary: Retrieve Subjects associated with a Draft Registration
+      description: This retrieves a list of subjects associated with a Draft Registration. Subjects are formatted here in a flat paginated list, but are hierarchical and nested by specificity of subject matter.
+      parameters:
+      - in: path
+        name: draft_id
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      tags:
+      - Draft Registrations
+      operationId: nodes_draft_registrations_subjects
+      x-response-schema: Draft Registration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subject
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The unique identifier of the Subject.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the Subject (`subject`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The attributes of the Subject.
+                    properties:
+                      text:
+                        type: string
+                        readOnly: true
+                        description: The name for the subject (`Arts and Humanities`)
+                      taxonomy_name:
+                        type: string
+                        readOnly: true
+                        description: The name for the taxonomy used to name subjects (`bepress`)
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Links to other entities or entity collections that have a relationship to the file entity.
+                    properties:
+                      parent:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the parent for this Subject.
+                      children:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the children for this Subject.
+                  embeds:
+                    type: object
+                    title: Embeds
+                    readOnly: true
+                    description: The parent is always embedded in the Subject response.
+                    properties:
+                      parent:
+                        type: object
+                        title: parent
+                        readOnly: true
+                        description: The parent of the Subject.
+                        properties:
+                          data:
+                            type: object
+                            title: data
+                            readOnly: true
+                            properties:
+                              data:
+                                type: object
+                                title: data
+                                readOnly: true
+                                description: A JSON object containing the embedded information.
+                              id:
+                                type: string
+                                readOnly: true
+                                description: The unique identifier of the Subject.
+                              type:
+                                type: string
+                                readOnly: true
+                                description: The type identifier of the Subject (`subject`).
+                              attributes:
+                                type: object
+                                title: Attributes
+                                readOnly: true
+                                description: The attributes of the Subject.
+                                properties:
+                                  text:
+                                    type: string
+                                    readOnly: true
+                                    description: The name for the subject (`Arts and Humanities`)
+                                  taxonomy_name:
+                                    type: string
+                                    readOnly: true
+                                    description: The name for the taxonmy used to name subjects (`bepress`)
+                              relationships:
+                                type: object
+                                title: Relationships
+                                readOnly: true
+                                description: Links to other entities or entity collections that have a relationship to the file entity.
+                                properties:
+                                  parent:
+                                    type: string
+                                    format: URL
+                                    readOnly: true
+                                    description: A link to the parent for this Subject.
+                                  children:
+                                    type: string
+                                    format: URL
+                                    readOnly: true
+                                    description: A link to the children for this Subject.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs to alternative representations of the Subject entity.
+                    properties:
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for a Subject.
+              example:
+                data:
+                - id: 61e02bee90de34000ae3449e
+                  type: subjects
+                  attributes:
+                    text: Philosophy
+                    taxonomy_name: ''
+                  relationships:
+                    parent:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/subjects/61e02bee90de34000ae344b5/
+                          meta: {}
+                      data:
+                        id: 61e02bee90de34000ae344b5
+                        type: subjects
+                    children:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/subjects/61e02bee90de34000ae3449e/children/
+                          meta: {}
+                  embeds:
+                    parent:
+                      data:
+                        id: 61e02bee90de34000ae344b5
+                        type: subjects
+                        attributes:
+                          text: Arts and Humanities
+                          taxonomy_name: ''
+                        relationships:
+                          parent:
+                            data: null
+                          children:
+                            links:
+                              related:
+                                href: https://api.osf.io/v2/subjects/61e02bee90de34000ae344b5/children/
+                                meta: {}
+                        embeds:
+                          parent:
+                            errors:
+                            - detail: Not found.
+                        links:
+                          self: https://api.osf.io/v2/subjects/61e02bee90de34000ae344b5/
+                  links:
+                    self: https://api.osf.io/v2/subjects/61e02bee90de34000ae3449e/
+                meta:
+                  total: 1
+                  per_page: 10
+                  version: '2.20'
+                links:
+                  self: https://api.osf.io/v2/draft_registrations/626ffc1ad90ebe0011fc7601/subjects/
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+  /draft_registrations/{draft_id}/bibliographic_contributors/:
+    get:
+      summary: List bibliographic contributors on a draft registration
+      description: Retrieve a list of contributors marked as bibliographic (visible) for a draft registration.
+      tags:
+      - Draft Registrations
+      operationId: draft_registration_bibliographic_contributors_list
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: Draft registration ID.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Bibliographic contributors retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - attributes
+                      properties:
+                        id:
+                          type: string
+                          description: Contributor ID
+                        type:
+                          type: string
+                          example: contributors
+                        attributes:
+                          type: object
+                          properties:
+                            full_name:
+                              type: string
+                            bibliographic:
+                              type: boolean
+                              description: Indicates if the contributor is visible.
+                            email:
+                              type: string
+                              description: Email of the contributor.
+                example:
+                  data:
+                  - id: user123
+                    type: contributors
+                    attributes:
+                      full_name: Alice Smith
+                      bibliographic: true
+                      email: alice@example.com
+                  - id: user456
+                    type: contributors
+                    attributes:
+                      full_name: Bob Jones
+                      bibliographic: true
+                      email: bob@example.com
+        '403':
+          description: Forbidden.
+        '404':
+          description: Draft registration not found.
+  /draft_registrations/{draft_id}/relationships/institutions/:
+    get:
+      summary: Retrieve affiliated institutions for a draft registration
+      description: 'Retrieve the list of institutions currently affiliated with a draft registration.
+
+        Returns institution IDs in JSON:API relationship format.'
+      tags:
+      - Draft Registrations
+      operationId: draft_registration_institutions_relationship_retrieve
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Institutions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - type
+                      - id
+                      properties:
+                        type:
+                          type: string
+                          example: institutions
+                          description: The resource type; must be `institutions`.
+                        id:
+                          type: string
+                          example: inst123
+                          description: The unique identifier of the institution.
+                example:
+                  data:
+                  - type: institutions
+                    id: inst123
+                  - type: institutions
+                    id: inst456
+        '403':
+          description: Forbidden. You do not have permission to view affiliated institutions.
+        '404':
+          description: Draft registration not found.
+    post:
+      summary: Add affiliated institutions to a draft registration
+      description: 'Add one or more institutions to a draft registration by their identifiers.
+
+        The user must be affiliated with the institutions they are attempting to add.'
+      tags:
+      - Draft Registrations
+      operationId: draft_registration_institutions_relationship_add
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Institutions added successfully.
+        '400':
+          description: Bad Request. User is not affiliated with the specified institution(s).
+        '403':
+          description: Forbidden. You do not have permission to add institutions.
+        '404':
+          description: Draft registration not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - type
+                    - id
+                    properties:
+                      type:
+                        type: string
+                        example: institutions
+                        description: The resource type; must be `institutions`.
+                      id:
+                        type: string
+                        example: inst123
+                        description: The unique ID of the institution to add.
+        description: JSON:API list of institution identifiers to associate with the draft registration.
+        required: true
+    delete:
+      summary: Remove affiliated institutions from a draft registration
+      description: 'Remove one or more institutions from the draft registration by their identifiers.
+
+        This operation only modifies the relationship and does not delete the institutions themselves.'
+      tags:
+      - Draft Registrations
+      operationId: draft_registration_institutions_relationship_delete
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Institutions removed successfully.
+        '403':
+          description: Forbidden. You do not have permission to modify institutions.
+        '404':
+          description: Draft registration not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - type
+                    - id
+                    properties:
+                      type:
+                        type: string
+                        example: institutions
+                        description: The resource type; must be `institutions`.
+                      id:
+                        type: string
+                        example: inst456
+                        description: The unique ID of the institution to remove.
+        description: JSON:API list of institution identifiers to disassociate from the draft registration.
+        required: true
+  /draft_registrations/{draft_id}/relationships/subjects/:
+    get:
+      summary: Retrieve subjects relationship for a draft registration
+      description: 'Retrieve the list of subjects currently associated with a draft registration.
+
+        This endpoint returns subject IDs in the JSON:API relationship format.'
+      tags:
+      - Draft Registrations
+      operationId: draft_registration_subjects_relationship_retrieve
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Subjects retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - type
+                      - id
+                      properties:
+                        type:
+                          type: string
+                          example: subjects
+                          description: The resource type; always `subjects`.
+                        id:
+                          type: string
+                          example: abc123
+                          description: The unique identifier for the subject.
+                example:
+                  data:
+                  - type: subjects
+                    id: abc123
+                  - type: subjects
+                    id: def456
+        '403':
+          description: Forbidden. You don't have permission to view these subjects.
+        '404':
+          description: Draft registration not found.
+    post:
+      summary: Add subjects to a draft registration
+      description: 'Add one or more subjects to the draft registration by their identifiers.
+
+        This modifies the subjects relationship and does not affect the subject resource itself.'
+      tags:
+      - Draft Registrations
+      operationId: draft_registration_subjects_relationship_add
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Subjects added successfully.
+        '403':
+          description: Forbidden. You don't have permission to modify subjects.
+        '404':
+          description: Draft registration not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - type
+                    - id
+                    properties:
+                      type:
+                        type: string
+                        example: subjects
+                        description: The resource type; must be `subjects`.
+                      id:
+                        type: string
+                        example: abc123
+                        description: The unique ID of the subject to add.
+        description: JSON:API list of subject identifiers to associate with the draft registration.
+        required: true
+    delete:
+      summary: Remove subjects from a draft registration
+      description: 'Remove one or more subjects from the draft registration by their identifiers.
+
+        This only updates the relationship and does not delete the subject resource.'
+      tags:
+      - Draft Registrations
+      operationId: draft_registration_subjects_relationship_delete
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Subjects removed successfully.
+        '403':
+          description: Forbidden. You don't have permission to modify subjects.
+        '404':
+          description: Draft registration not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - type
+                    - id
+                    properties:
+                      type:
+                        type: string
+                        example: subjects
+                        description: The resource type; must be `subjects`.
+                      id:
+                        type: string
+                        example: def456
+                        description: The unique ID of the subject to remove.
+        description: JSON:API list of subject identifiers to disassociate from the draft registration.
+        required: true
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

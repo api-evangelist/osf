@@ -1,0 +1,520 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Logs API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Logs
+paths:
+  /logs/{log_id}/:
+    get:
+      summary: Retrieve a log
+      description: 'Retrieves the details of a log.
+
+        A log is permanent immutable record of a node''s history. A log is created when a user performs one of many actions. See the actions section for more details.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested log, if the request was successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - description: The unique identifier of the log you wish to retrieve.
+        required: true
+        name: log_id
+        in: path
+        schema:
+          type: string
+      tags:
+      - Logs
+      operationId: logs_read
+      x-response-schema: Log
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Log
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                - links
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the log.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the log (`logs`)
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The properties of the log.
+                    required:
+                    - action
+                    - date
+                    properties:
+                      date:
+                        type: string
+                        format: date-time
+                        readOnly: true
+                        description: The date and time at which the log was created, as an iso8601 formatted timestamp.
+                      action:
+                        type: string
+                        readOnly: true
+                        description: The type of action performed on the OSF. See actions section for full list of possible actions.
+                      params:
+                        type: object
+                        title: Log Params
+                        readOnly: true
+                        description: The type of action performed on the OSF. See description for full list of possible actions.
+                        properties:
+                          addon:
+                            type: string
+                            readOnly: true
+                            description: The addon associated with the connected node.
+                          anonymous_link:
+                            type: boolean
+                            readOnly: true
+                            description: The view only link added to the node was anonymous.
+                          bucket:
+                            type: string
+                            readOnly: true
+                            description: The Amazon s3 bucket connected to the connected node.
+                          citation_name:
+                            type: string
+                            readOnly: true
+                            description: Name of citation associated with the connected node.
+                          contributors:
+                            type: string
+                            readOnly: true
+                            description: List of contributors on the connected node involved in the action represented by this node log.
+                          data_set:
+                            type: string
+                            readOnly: true
+                            description: The dataset associated with the connected node.
+                          destination:
+                            type: string
+                            readOnly: true
+                            description: A dictionary with information about the destination for the move of the item on the node associated with this log. Details include the path, url, addon, node_url and node_title.
+                          figshare_title:
+                            type: string
+                            readOnly: true
+                            description: Title of the fighshare project associated with this node log
+                          forward_url:
+                            type: string
+                            readOnly: true
+                            description: URL that the connected node forwards to.
+                          github_user:
+                            type: string
+                            readOnly: true
+                            description: The github user involved with the action represented by this node log.
+                          github_repo:
+                            type: string
+                            readOnly: true
+                            description: The github repository involved with the action represented by this node log.
+                          file:
+                            type: string
+                            readOnly: true
+                            description: Dictionary with information about the file involved with the log.
+                          filename:
+                            type: string
+                            readOnly: true
+                            description: Filename for the file associated with the log.
+                          kind:
+                            type: string
+                            readOnly: true
+                            description: Kind of the object associated with the log.
+                          folder:
+                            type: string
+                            readOnly: true
+                            description: Folder associated with the log.
+                          folder_name:
+                            type: string
+                            readOnly: true
+                            description: Name of the folder associated with the log.
+                          license:
+                            type: string
+                            readOnly: true
+                            description: License for the associated node.
+                          identifiers:
+                            type: string
+                            readOnly: true
+                            description: Dictionary containing the DOI and ARK ID for a preprint associated with the log.
+                          institution:
+                            type: string
+                            readOnly: true
+                            description: Dictionary containing the ID and Name of the institution associated with the log.
+                          old_page:
+                            type: string
+                            readOnly: true
+                            description: Old name of wiki page for a wiki rename log action.
+                          page:
+                            type: string
+                            readOnly: true
+                            description: Current name of wiki page for rename log action.
+                          page_id:
+                            type: string
+                            readOnly: true
+                            description: Primary key of the wiki page associated with the log.
+                          params_node:
+                            type: string
+                            readOnly: true
+                            description: Node that is refered to in the params of the log.
+                          params_project:
+                            type: string
+                            readOnly: true
+                            description: Project that is refered to in the params of the log.
+                          path:
+                            type: string
+                            readOnly: true
+                            description: Path for a file associated with the log.
+                          pointer:
+                            type: string
+                            readOnly: true
+                            description: A dictionary with information about the node that is linked to the associated node.
+                          preprint:
+                            type: string
+                            readOnly: true
+                            description: Preprint related to the associated node.
+                          preprint_provider:
+                            type: string
+                            readOnly: true
+                            description: Preprint provider for the associated node.
+                          previous_institution:
+                            type: string
+                            readOnly: true
+                            description: If a primary institution for the associated node is changed, this will show the previous institution.
+                          source:
+                            type: string
+                            readOnly: true
+                            description: A dictionary with information about the source of a move related event for a log. Details include the path, url, addon, node_url and node_title.
+                          study:
+                            type: string
+                            readOnly: true
+                            description: Dataverse study linked to the associated node.
+                          tag:
+                            type: string
+                            readOnly: true
+                            description: Tag associated with the associated node.
+                          tags:
+                            type: string
+                            readOnly: true
+                            description: Tags associated with the associated node.
+                          target:
+                            type: string
+                            readOnly: true
+                            description: A dictionary containing details about the target of the log. Details include the path, url, addon, node_url and node_title.
+                          template_node:
+                            type: string
+                            readOnly: true
+                            description: A dictionary containing information about the node that was used as a template for the associated node.
+                          title_new:
+                            type: string
+                            readOnly: true
+                            description: The new title for the associated node.
+                          title_original:
+                            type: string
+                            readOnly: true
+                            description: The original title for the associated node
+                          updated_fields:
+                            type: string
+                            readOnly: true
+                            description: A dictionary containing all of the fields updated on the associated node.
+                          urls:
+                            type: string
+                            readOnly: true
+                            description: Links to access information about the file associated with this log.
+                          version:
+                            type: string
+                            readOnly: true
+                            description: Version of the wiki page associated with this log.
+                          wiki:
+                            type: string
+                            readOnly: true
+                            description: A dictionary with information about the wiki page associated with the log.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: URLs to other entities or entity collections that have a relationship to the log.
+                    required:
+                    - node
+                    properties:
+                      node:
+                        description: A relationship to the node associated with this log.
+                        readOnly: true
+                        type: string
+                      original_node:
+                        description: A relationship to the original node that was associated with this log, in case this log was copied from a node to a fork or registration.
+                        readOnly: true
+                        type: string
+                      user:
+                        description: A relationship to the user who performed the log action.
+                        readOnly: true
+                        type: string
+                      linked_node:
+                        description: A relationship to the node linked to this log.
+                        readOnly: true
+                        type: string
+                      template_node:
+                        description: A relationship to the node used as a template for this log.
+                        readOnly: true
+                        type: string
+                  links:
+                    description: URLs to alternative representations of the log entity.
+                    readOnly: true
+                    type: object
+                    title: Links
+                    required:
+                    - self
+                    properties:
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the log.
+                example:
+                  data:
+                    relationships:
+                      node:
+                        links:
+                          related:
+                            href: https://api.osf.io/v2/nodes/ezcuj/
+                            meta: {}
+                      original_node:
+                        links:
+                          related:
+                            href: https://api.osf.io/v2/nodes/ezcuj/
+                            meta: {}
+                      user:
+                        links:
+                          related:
+                            href: https://api.osf.io/v2/users/jk5cv/
+                            meta: {}
+                    links:
+                      self: https://api.osf.io/v2/logs/4fc706a80b6e9118ef000122/
+                    attributes:
+                      date: '2012-05-31T05:50:32.083000'
+                      action: contributor_added
+                      params:
+                        params_node:
+                          id: ezcuj
+                          title: 'Reproducibility Project: Psychology'
+                        contributors:
+                        - family_name: Nosek
+                          middle_names: A.
+                          given_name: Brian
+                          full_name: Brian A. Nosek
+                          active: true
+                          id: cdi38
+                    type: logs
+                    id: 4fc706a80b6e9118ef000122
+  /actions/:
+    get:
+      summary: Actions
+      description: 'A log can have one of many actions. The complete list of loggable actions (in the format {identifier}: {description}) is as follows:
+
+        * `project_created`: A Node is created
+
+        * `project_registered`: A Node is registered
+
+        * `project_deleted`: A Node is deleted
+
+        * `created_from`: A Node is created using an existing Node as a template
+
+        * `pointer_created`: A Pointer is created
+
+        * `pointer_forked`: A Pointer is forked
+
+        * `pointer_removed`: A Pointer is removed
+
+        * `node_removed`: A component is deleted
+
+        * `node_forked`: A Node is forked
+
+        ---
+
+        * `made_public`: A Node is made public
+
+        * `made_private`: A Node is made private
+
+        * `tag_added`: A tag is added to a Node
+
+        * `tag_removed`: A tag is removed from a Node
+
+        * `edit_title`: A Node''s title is changed
+
+        * `edit_description`: A Node''s description is changed
+
+        * `updated_fields`: One or more of a Node''s fields are changed
+
+        * `external_ids_added`: An external identifier is added to a Node (e.g. DOI, ARK)
+
+        * `view_only_link_added`: A view-only link was added to a Node
+
+        * `view_only_link_removed`: A view-only link was removed from a Node
+
+        ---
+
+        * `contributor_added`: A Contributor is added to a Node
+
+        * `contributor_removed`: A Contributor is removed from a Node
+
+        * `contributors_reordered`: A Contributor''s position in a Node''s bibliography is changed
+
+        * `permissions_updated`: A Contributor`s permissions on a Node are changed
+
+        * `made_contributor_visible`: A Contributor is made bibliographically visible on a Node
+
+        * `made_contributor_invisible`: A Contributor is made bibliographically invisible on a Node
+
+        ---
+
+        * `wiki_updated`: A Node''s wiki is updated
+
+        * `wiki_deleted`: A Node''s wiki is deleted
+
+        * `wiki_renamed`: A Node''s wiki is renamed
+
+        * `made_wiki_public`: A Node''s wiki is made public
+
+        * `made_wiki_private`: A Node''s wiki is made private
+
+        ---
+
+        * `addon_added`: An add-on is linked to a Node
+
+        * `addon_removed`: An add-on is unlinked from a Node
+
+        * `addon_file_moved`: A File in a Node''s linked add-on is moved
+
+        * `addon_file_copied`: A File in a Node''s linked add-on is copied
+
+        * `addon_file_renamed`: A File in a Node''s linked add-on is renamed
+
+        * `node_authorized`: An addon is authorized for a project
+
+        * `node_deauthorized`: An addon is deauthorized for a project
+
+        * `folder_created`: A Folder is created in a Node''s linked add-on
+
+        * `file_added`: A File is added to a Node''s linked add-on
+
+        * `file_updated`: A File is updated on a Node''s linked add-on
+
+        * `file_removed`: A File is removed from a Node''s linked add-on
+
+        * `file_restored`: A File is restored in a Node''s linked add-on
+
+        ---
+
+        * `comment_added`: A Comment is added to some item
+
+        * `comment_removed`: A Comment is removed from some item
+
+        * `comment_updated`: A Comment is updated on some item
+
+        ---
+
+        * `embargo_initiated`: An embargoed Registration is proposed on a Node
+
+        * `embargo_approved`: A proposed Embargo of a Node is approved
+
+        * `embargo_cancelled`: A proposed Embargo of a Node is cancelled
+
+        * `embargo_completed`: A proposed Embargo of a Node is completed
+
+        * `retraction_initiated`: A Withdrawal of a Registration is proposed
+
+        * `retraction_approved`: A Withdrawal of a Registration is approved
+
+        * `retraction_cancelled`: A Withdrawal of a Registration is cancelled
+
+        * `registration_initiated`: A Registration of a Node is proposed
+
+        * `registration_approved`: A proposed Registration is approved
+
+        * `registration_cancelled`: A proposed Registration is cancelled'
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Logs
+      operationId: logs_actions
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

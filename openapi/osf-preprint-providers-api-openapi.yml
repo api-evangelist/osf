@@ -1,0 +1,2884 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Preprint Providers API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Preprint Providers
+  description: Preprint Providers are entities that manage and moderate groups of preprints on the OSF platform.
+paths:
+  /providers/preprints/:
+    get:
+      summary: List all preprint providers
+      description: 'A paginated list of all preprint providers. The returned preprint providers are sorted by their creation date, with the most recent preprints appearing first.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of 10 preprint providers. Each resource in the array is a separate preprint provider object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+
+        This request should never return an error.
+
+        #### Filtering
+
+        You can optionally request that the response only include preprint providers that match your filters by utilizing the `filter` query parameter, e.g. https://api.osf.io/v2/providers/preprints/?filter[id]=osf.
+
+
+        Preprint Providers may be filtered by their `id`, `name`, and `description`'
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_list
+      x-response-schema: Preprint Provider
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Preprint Providers
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the preprint provider entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the preprint provider entity (`preprint_providers`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The properties of the preprint provider entity.
+                    properties:
+                      social_instagram:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                      advisory_board:
+                        type: string
+                        readOnly: true
+                        description: The HTML representation of the preprint provider's advisory board.
+                      email_support:
+                        type: string
+                        readOnly: true
+                        description: The preprint providers's support email address.
+                      banner_path:
+                        type: string
+                        readOnly: true
+                        description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                      logo_path:
+                        type: string
+                        readOnly: true
+                        description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                      subjects_acceptable:
+                        type: string
+                        readOnly: true
+                        description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                      description:
+                        type: string
+                        readOnly: true
+                        description: The description of the preprint provider.
+                      social_facebook:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                      email_contact:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                      example:
+                        type: string
+                        readOnly: true
+                        description: The GUID for an example preprint from this preprint provider.
+                      name:
+                        type: string
+                        readOnly: true
+                        description: The name of the preprint provider.
+                      domain:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                      domain_redirect_enabled:
+                        type: boolean
+                        readOnly: true
+                        description: Whether or not redirects are enabled for the provider's domain.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                    properties:
+                      licenses_acceptable:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to licenses the preprint provider allows.
+                      taxonomies:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the taxonomies the preprint provider allows.
+                      preprints:
+                        type: string
+                        readOnly: true
+                        description: A link to the preprint list page for the preprint provider.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: Links to alternative representations of the preprint entity.
+                    properties:
+                      external_url:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the external website for the preprint provider.
+                      preprints:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the preprint list page for the preprint provider.
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the preprint provider.
+              example:
+                data:
+                - relationships:
+                    licenses_acceptable:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/preprints/osf/licenses/
+                          meta: {}
+                    taxonomies:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/preprints/osf/taxonomies/
+                          meta: {}
+                    preprints:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/preprints/osf/preprints/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/providers/preprints/osf/
+                    preprints: https://api.osf.io/v2/providers/preprints/osf/preprints/
+                    external_url: https://osf.io/preprints/
+                  attributes:
+                    social_instagram: ''
+                    advisory_board: ''
+                    email_support: ''
+                    banner_path: /static/img/providers/preprints/cos-logo.png
+                    logo_path: /static/img/providers/preprints/cos-logo.png
+                    subjects_acceptable: []
+                    description: A scholarly commons to connect the entire research cycle
+                    social_facebook: ''
+                    header_text: ''
+                    social_twitter: ''
+                    email_contact: ''
+                    example: khbvy
+                    name: Open Science Framework
+                    domain: osf.io
+                  type: preprint_providers
+                  id: osf
+  /providers/preprints/{provider_id}/:
+    get:
+      summary: Retrieve a preprint provider
+      description: 'Retrieves the details of a preprint provider.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested preprint provider, if the request is successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.
+
+
+        #### Acceptable Subjects Structure
+
+        Each preprint provider specifies acceptable subjects.
+
+        `subjects_acceptable` is an array found in `attributes`.
+
+        Subjects consist of general parent subjects (e.g., Engineering), more specific child subjects (e.g., Aerospace Engineering), and even more specific grandchild subjects (e.g., Aerodynamics and Fluid Mechanics). Subjects can only be nested 3 deep.
+
+
+        "subjects_acceptable": [
+
+        [
+
+        [
+
+        # Parent Subject:
+
+        # Architecture
+
+        "584240d954be81056ceca9e5",
+
+
+        # Child Subject:
+
+        # Architectural Engineering
+
+        "584240da54be81056cecac87"
+
+        ],
+
+        # Include all Architectural Engineering''s children:
+
+        true
+
+        ],
+
+        [
+
+        [
+
+        # Parent Subject:
+
+        # Engineering
+
+        "584240da54be81056cecaca9",
+
+
+        # Child Subject:
+
+        # Aerospace Engineering
+
+        "584240db54be81056cecacd6",
+
+
+        # Grandchild Subject:
+
+        # Aerodynamics and Fluid Mechanics
+
+        "584240da54be81056cecaa74"
+
+        ],
+
+        # All nestings 3 deep must be false
+
+        false
+
+        ]
+
+        ]
+
+
+        The above structure would allow Architecture, Architectural Engineering, all of Architectural Engineering''s children, Engineering, Aerospace Engineering, and Aerodynamics and Fluid Mechanics.'
+      parameters:
+      - in: path
+        required: true
+        name: provider_id
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_detail
+      x-response-schema: Preprint Provider
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Preprint Providers
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the preprint provider entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the preprint provider entity (`preprint_providers`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The properties of the preprint provider entity.
+                    properties:
+                      social_instagram:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                      advisory_board:
+                        type: string
+                        readOnly: true
+                        description: The HTML representation of the preprint provider's advisory board.
+                      email_support:
+                        type: string
+                        readOnly: true
+                        description: The preprint providers's support email address.
+                      banner_path:
+                        type: string
+                        readOnly: true
+                        description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                      logo_path:
+                        type: string
+                        readOnly: true
+                        description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                      subjects_acceptable:
+                        type: string
+                        readOnly: true
+                        description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                      description:
+                        type: string
+                        readOnly: true
+                        description: The description of the preprint provider.
+                      social_facebook:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                      email_contact:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                      example:
+                        type: string
+                        readOnly: true
+                        description: The GUID for an example preprint from this preprint provider.
+                      name:
+                        type: string
+                        readOnly: true
+                        description: The name of the preprint provider.
+                      domain:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                      domain_redirect_enabled:
+                        type: boolean
+                        readOnly: true
+                        description: Whether or not redirects are enabled for the provider's domain.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                    properties:
+                      licenses_acceptable:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to licenses the preprint provider allows.
+                      taxonomies:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the taxonomies the preprint provider allows.
+                      preprints:
+                        type: string
+                        readOnly: true
+                        description: A link to the preprint list page for the preprint provider.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: Links to alternative representations of the preprint entity.
+                    properties:
+                      external_url:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the external website for the preprint provider.
+                      preprints:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the preprint list page for the preprint provider.
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the preprint provider.
+              example:
+                data:
+                  relationships:
+                    licenses_acceptable:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/preprints/osf/licenses/
+                          meta: {}
+                    taxonomies:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/preprints/osf/taxonomies/
+                          meta: {}
+                    preprints:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/preprints/osf/preprints/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/providers/preprints/osf/
+                    preprints: https://api.osf.io/v2/providers/preprints/osf/preprints/
+                    external_url: https://osf.io/preprints/
+                  attributes:
+                    social_instagram: ''
+                    advisory_board: ''
+                    email_support: ''
+                    banner_path: /static/img/providers/preprints/cos-logo.png
+                    logo_path: /static/img/providers/preprints/cos-logo.png
+                    subjects_acceptable: []
+                    description: A scholarly commons to connect the entire research cycle
+                    social_facebook: ''
+                    header_text: ''
+                    social_twitter: ''
+                    email_contact: ''
+                    example: khbvy
+                    name: Open Science Framework
+                    domain: osf.io
+                  type: preprint_providers
+                  id: osf
+                links:
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+                  meta:
+                    total: 5
+                    per_page: 10
+  /providers/preprints/{provider_id}/preprints/:
+    get:
+      summary: List all preprints
+      description: 'A paginated list of preprints from the specified preprint provider. The returned preprints are sorted by their creation date, with the most recent preprints appearing first.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of 10 preprints. Each resource in the array is a separate preprint object.
+
+
+        The `links` key contains a dictionary with keys that can be used for pagination.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.
+
+
+        #### Filtering
+
+        You can optionally request that the response only include preprints that match your filters by utilizing the `filter` query parameter, e.g. https://api.osf.io/v2/providers/preprints/osf/preprints/?filter[is_published]=true.
+
+
+        Preprints may be filtered by their `id`, `is_published`, `date_created`, `date_modified`, and `provider`.'
+      parameters:
+      - in: path
+        required: true
+        name: provider_id
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      tags:
+      - Preprint Providers
+      operationId: preprint_providers_preprints_list
+      x-response-schema: Preprint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Preprint
+                  required:
+                  - type
+                  - relationships
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: The identifier of the preprint entity.
+                    type:
+                      type: string
+                      readOnly: false
+                      description: The type identifier of the preprint entity (`preprints`).
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: false
+                      description: The properties of the preprint entity.
+                      properties:
+                        date_created:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the preprint was created, as an iso8601 formatted timestamp.
+                        date_modified:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the preprint was last modified, as an iso8601 formatted timestamp.
+                        date_published:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the preprint was published, as an iso8601 formatted timestamp.
+                        doi:
+                          type: string
+                          readOnly: false
+                          description: The DOI of the associated journal article, as entered by the user, if the preprint is published.
+                        title:
+                          type: string
+                          readOnly: false
+                          description: The title of the preprint.
+                        description:
+                          type: string
+                          readOnly: false
+                          description: The description of the preprint.
+                        is_preprint_orphan:
+                          type: boolean
+                          readOnly: true
+                          description: Whether or not the preprint is orphaned. A preprint can be orphaned if it's primary file was removed from the preprint node. This field may be deprecated in future versions.
+                        license_record:
+                          type: string
+                          readOnly: false
+                          description: The metadata (copyright year and holder) associated with a license, required for certain licenses.
+                        tags:
+                          type: string
+                          readOnly: false
+                          description: The tags given to a preprint.
+                        preprint_doi_created:
+                          type: string
+                          readOnly: false
+                          description: When the preprint DOI was created.
+                        date_withdrawn:
+                          type: boolean
+                          readOnly: false
+                          description: The date the preprint was withdrawn, null if it was never withdrawn.
+                        current_user_permissions:
+                          type: string
+                          readOnly: false
+                          description: The list of permissions the current user has.
+                        public:
+                          type: boolean
+                          readOnly: false
+                          description: The wheter the preprint is public.
+                        reviews_state:
+                          type: string
+                          readOnly: false
+                          description: The a label to indicate the state of review a preprint is in.
+                        date_last_transitioned:
+                          type: string
+                          readOnly: false
+                          description: The date the reviews state of the preprint changed.
+                        has_coi:
+                          type: boolean
+                          readOnly: false
+                          description: A value indicating whether the preprint has a conflict of interest statement.
+                          enum:
+                          - true
+                          - false
+                          - null
+                        conflict_of_interest_statement:
+                          type: string
+                          readOnly: false
+                          description: The text of the conflict of interest statement for the preprint.
+                        has_data_links:
+                          type: string
+                          readOnly: false
+                          description: A value indicating whether the preprint has a links to data.
+                          enum:
+                          - 'no'
+                          - available
+                          - not_applicable
+                          - null
+                        why_no_data:
+                          type: string
+                          readOnly: false
+                          description: A value for a field explaining why preregistration data was not included.
+                        data_links:
+                          type: string
+                          readOnly: false
+                          description: Any links to a preprints supplemental data go here.
+                          enum:
+                          - available
+                          - 'no'
+                          - not_applicable
+                        has_prereg_links:
+                          type: string
+                          readOnly: false
+                          description: A value indicating whether the preprint has any preregistration links.
+                          enum:
+                          - available
+                          - 'no'
+                          - not_applicable
+                        why_no_prereg:
+                          type: boolean
+                          readOnly: false
+                          description: A value for a field explaining why preregistration links weren't included.
+                        prereg_links:
+                          type: string
+                          readOnly: false
+                          description: Any links to a preprints preregistrations go here.
+                        prereg_link_info:
+                          type: string
+                          readOnly: false
+                          description: The text of the any explanation of preprint preregistration link infomation.
+                        version:
+                          type: integer
+                          readOnly: true
+                          description: Preprint version
+                    relationships:
+                      type: object
+                      title: Relationships
+                      readOnly: false
+                      description: URLs to other entities or entity collections that have a relationship to the preprint entity.
+                      required:
+                      - node
+                      - primary_file
+                      - provider
+                      properties:
+                        contributors:
+                          type: string
+                          readOnly: false
+                          description: A relationship to the all contributors that are listed as contributing to this preprint.
+                        bibliographic_contributors:
+                          type: string
+                          readOnly: false
+                          description: A relationship to the bibliographic contributors that are listed as contributing to this preprint.
+                        citation:
+                          type: string
+                          readOnly: true
+                          description: A relationship to the citation of the preprint.
+                        identifiers:
+                          type: string
+                          readOnly: true
+                          description: A relationship to the identifiers associated with the preprint.
+                        node:
+                          type: string
+                          readOnly: false
+                          description: A relationship to the node that was created for the preprint, or from which the preprint was created.
+                        license:
+                          type: string
+                          readOnly: false
+                          description: A relationship to the license that has been applied to the preprint.
+                        provider:
+                          type: string
+                          readOnly: false
+                          description: A relationship to the preprint provider under which the preprint was created (OSF, socarxiv, psyarxiv, etc.).
+                        files:
+                          type: string
+                          readOnly: false
+                          description: A relationship to files of the preprint.
+                        review_actions:
+                          type: string
+                          readOnly: false
+                          description: A relationship to the review actions made of that preprint.
+                        requests:
+                          type: string
+                          readOnly: false
+                          description: A relationship to the requests for sanction changes that was made to the preprint.
+                        affiliated_institutions:
+                          type: string
+                          readOnly: false
+                          description: A relationship to the file that is designated as the preprint's primary file, or the manuscript of the preprint.
+                        subjects:
+                          type: string
+                          readOnly: false
+                          description: A relationship to the academic subjects for the preprint.
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: URLs to alternative representations of the preprint entity.
+                      properties:
+                        iri:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: The URL representation preprint of the OSF.
+                        html:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the project on the OSF that was created for the preprint, or from which the preprint was created.
+                        preprint_doi:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: The URL representation of the OSF assigned DOI for the preprint.
+                        self:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the detail page for the preprint.
+                  example:
+                    data:
+                      attributes: {}
+                      relationships:
+                        node:
+                          data:
+                            type: nodes
+                            id: '{node_id}'
+                        primary_file:
+                          data:
+                            type: primary_files
+                            id: '{primary_file_id}'
+                        provider:
+                          data:
+                            type: preprint-providers
+                            id: '{provider_id}'
+              example:
+                data:
+                - relationships:
+                    node:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/5xuck/
+                          meta: {}
+                    citation:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/preprints/hqb2p/citation/
+                          meta: {}
+                    primary_file:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/files/5894204f594d900200ed23f2/
+                          meta: {}
+                    license:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/licenses/563c1cf88c5e4a3877f9e96a/
+                          meta: {}
+                    provider:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/providers/preprints/socarxiv/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/preprints/hqb2p/
+                    html: https://osf.io/preprints/socarxiv/hqb2p/
+                  attributes:
+                    doi: null
+                    license_record:
+                      copyright_holders: []
+                      year: '2017'
+                    date_modified: '2017-02-03T06:19:00.158000'
+                    is_preprint_orphan: false
+                    date_published: '2017-02-03T06:18:59.788000'
+                    subjects:
+                    - - text: Social and Behavioral Sciences
+                        id: 584240da54be81056cecac48
+                      - text: Political Science
+                        id: 584240da54be81056cecac1a
+                    date_created: '2017-02-03T06:16:57.129000'
+                    is_published: true
+                  type: preprints
+                  id: hqb2p
+                links:
+                  first: null
+                  last: https://api.osf.io/v2/preprints/?page=172
+                  prev: null
+                  next: https://api.osf.io/v2/preprints/?page=2
+                  meta:
+                    total: 1720
+                    per_page: 10
+  /providers/preprints/{provider_id}/taxonomies/:
+    get:
+      summary: List Taxonomies for a Preprint Provider (Deprecated)
+      description: 'Retrieve a list of all taxonomies (subjects) associated with a specific preprint provider.
+
+        These taxonomies can be used to categorize and filter preprints submitted to this provider.
+
+        **Deprecated:** Use `subjects` endpoints instead.
+
+        #### Permissions - No authentication required for public providers. - Only authorized users can access restricted providers.
+
+        #### Returns - A JSON object with a `data` key containing an array of taxonomy resources. - Each taxonomy represents a subject that can be assigned to preprints.'
+      deprecated: true
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_taxonomies_list
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of taxonomies for the preprint provider.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      title: Preprint Providers
+                      properties:
+                        id:
+                          type: string
+                          readOnly: true
+                          description: The identifier of the preprint provider entity.
+                        type:
+                          type: string
+                          readOnly: true
+                          description: The type identifier of the preprint provider entity (`preprint_providers`).
+                        attributes:
+                          type: object
+                          title: Attributes
+                          readOnly: true
+                          description: The properties of the preprint provider entity.
+                          properties:
+                            social_instagram:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                            advisory_board:
+                              type: string
+                              readOnly: true
+                              description: The HTML representation of the preprint provider's advisory board.
+                            email_support:
+                              type: string
+                              readOnly: true
+                              description: The preprint providers's support email address.
+                            banner_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                            logo_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                            subjects_acceptable:
+                              type: string
+                              readOnly: true
+                              description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                            description:
+                              type: string
+                              readOnly: true
+                              description: The description of the preprint provider.
+                            social_facebook:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                            email_contact:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                            example:
+                              type: string
+                              readOnly: true
+                              description: The GUID for an example preprint from this preprint provider.
+                            name:
+                              type: string
+                              readOnly: true
+                              description: The name of the preprint provider.
+                            domain:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                            domain_redirect_enabled:
+                              type: boolean
+                              readOnly: true
+                              description: Whether or not redirects are enabled for the provider's domain.
+                        relationships:
+                          type: object
+                          title: Relationships
+                          readOnly: true
+                          description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                          properties:
+                            licenses_acceptable:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to licenses the preprint provider allows.
+                            taxonomies:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the taxonomies the preprint provider allows.
+                            preprints:
+                              type: string
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                        links:
+                          type: object
+                          title: Links
+                          readOnly: true
+                          description: Links to alternative representations of the preprint entity.
+                          properties:
+                            external_url:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the external website for the preprint provider.
+                            preprints:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                            self:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the detail page for the preprint provider.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        description: Link to the current page of results.
+                      next:
+                        type: string
+                        description: Link to the next page of results (if applicable).
+                      prev:
+                        type: string
+                        description: Link to the previous page of results (if applicable).
+                  meta:
+                    type: object
+                    description: Meta information about the response (e.g., total number of results).
+              example:
+                data:
+                - id: engineering
+                  type: taxonomy
+                  attributes:
+                    text: Engineering
+                    parent: null
+                    has_children: true
+                  links:
+                    self: https://api.test.osf.io/v2/taxonomies/engineering/
+                - id: biology
+                  type: taxonomy
+                  attributes:
+                    text: Biology
+                    parent: null
+                    has_children: true
+                  links:
+                    self: https://api.test.osf.io/v2/taxonomies/biology/
+                links:
+                  self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/taxonomies/
+                  next: null
+                  prev: null
+                meta:
+                  total: 2
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access taxonomies for this provider.
+        '404':
+          description: Not Found. No preprint provider matches the given ID.
+  /providers/preprints/{provider_id}/taxonomies/highlighted/:
+    get:
+      summary: List Highlighted Taxonomies for a Preprint Provider (Deprecated)
+      description: 'Retrieve a list of highlighted taxonomies (subjects) for a specific preprint provider.
+
+        Highlighted taxonomies are the primary subjects that the preprint provider chooses to showcase for organizing and filtering preprints.
+
+        **Deprecated:** Use the `highlighted subjects` endpoint instead.
+
+        #### Permissions - No authentication required for public providers. - Only authorized users can access restricted providers.
+
+        #### Returns - A JSON object with a `data` key containing an array of taxonomy resources. - Each taxonomy represents a subject that can be assigned to preprints.'
+      deprecated: true
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_taxonomies_highlighted_list
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of highlighted taxonomies.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      title: Preprint Providers
+                      properties:
+                        id:
+                          type: string
+                          readOnly: true
+                          description: The identifier of the preprint provider entity.
+                        type:
+                          type: string
+                          readOnly: true
+                          description: The type identifier of the preprint provider entity (`preprint_providers`).
+                        attributes:
+                          type: object
+                          title: Attributes
+                          readOnly: true
+                          description: The properties of the preprint provider entity.
+                          properties:
+                            social_instagram:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                            advisory_board:
+                              type: string
+                              readOnly: true
+                              description: The HTML representation of the preprint provider's advisory board.
+                            email_support:
+                              type: string
+                              readOnly: true
+                              description: The preprint providers's support email address.
+                            banner_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                            logo_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                            subjects_acceptable:
+                              type: string
+                              readOnly: true
+                              description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                            description:
+                              type: string
+                              readOnly: true
+                              description: The description of the preprint provider.
+                            social_facebook:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                            email_contact:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                            example:
+                              type: string
+                              readOnly: true
+                              description: The GUID for an example preprint from this preprint provider.
+                            name:
+                              type: string
+                              readOnly: true
+                              description: The name of the preprint provider.
+                            domain:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                            domain_redirect_enabled:
+                              type: boolean
+                              readOnly: true
+                              description: Whether or not redirects are enabled for the provider's domain.
+                        relationships:
+                          type: object
+                          title: Relationships
+                          readOnly: true
+                          description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                          properties:
+                            licenses_acceptable:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to licenses the preprint provider allows.
+                            taxonomies:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the taxonomies the preprint provider allows.
+                            preprints:
+                              type: string
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                        links:
+                          type: object
+                          title: Links
+                          readOnly: true
+                          description: Links to alternative representations of the preprint entity.
+                          properties:
+                            external_url:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the external website for the preprint provider.
+                            preprints:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                            self:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the detail page for the preprint provider.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        description: Link to the current page of results.
+                      next:
+                        type: string
+                        description: Link to the next page of results (if applicable).
+                      prev:
+                        type: string
+                        description: Link to the previous page of results (if applicable).
+                  meta:
+                    type: object
+                    description: Meta information about the response (e.g., total number of results).
+              example:
+                data:
+                - id: sociology
+                  type: taxonomy
+                  attributes:
+                    text: Sociology
+                    parent: null
+                    has_children: true
+                  links:
+                    self: https://api.test.osf.io/v2/taxonomies/sociology/
+                - id: psychology
+                  type: taxonomy
+                  attributes:
+                    text: Psychology
+                    parent: null
+                    has_children: true
+                  links:
+                    self: https://api.test.osf.io/v2/taxonomies/psychology/
+                links:
+                  self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/taxonomies/highlighted/
+                  next: null
+                  prev: null
+                meta:
+                  total: 2
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access taxonomies for this provider.
+        '404':
+          description: Not Found. No preprint provider matches the given ID.
+  /providers/preprints/{provider_id}/citation_styles/:
+    get:
+      summary: List Citation Styles for a Preprint Provider
+      description: 'Retrieve a list of citation styles supported by a specific preprint provider.
+
+        These citation styles can be used to generate formatted citations for preprints associated with this provider.
+
+        #### Permissions - No authentication required for public providers. - Only authorized users can access restricted providers.
+
+        #### Returns - A JSON object with a `data` key containing an array of citation style resources. - Each citation style includes its ID, title, and whether it is the default style.'
+      tags:
+      - Preprint Providers
+      operationId: providers_preprint_citation_styles_list
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      - in: query
+        name: filter[default]
+        required: false
+        description: Filter citation styles by whether they are marked as default.
+        schema:
+          type: boolean
+      - in: query
+        name: page
+        required: false
+        description: Page number of results to return (for pagination).
+        schema:
+          type: integer
+      - in: query
+        name: per_page
+        required: false
+        description: Number of results per page. Defaults to 10.
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful retrieval of citation styles.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      title: Preprint Providers
+                      properties:
+                        id:
+                          type: string
+                          readOnly: true
+                          description: The identifier of the preprint provider entity.
+                        type:
+                          type: string
+                          readOnly: true
+                          description: The type identifier of the preprint provider entity (`preprint_providers`).
+                        attributes:
+                          type: object
+                          title: Attributes
+                          readOnly: true
+                          description: The properties of the preprint provider entity.
+                          properties:
+                            social_instagram:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                            advisory_board:
+                              type: string
+                              readOnly: true
+                              description: The HTML representation of the preprint provider's advisory board.
+                            email_support:
+                              type: string
+                              readOnly: true
+                              description: The preprint providers's support email address.
+                            banner_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                            logo_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                            subjects_acceptable:
+                              type: string
+                              readOnly: true
+                              description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                            description:
+                              type: string
+                              readOnly: true
+                              description: The description of the preprint provider.
+                            social_facebook:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                            email_contact:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                            example:
+                              type: string
+                              readOnly: true
+                              description: The GUID for an example preprint from this preprint provider.
+                            name:
+                              type: string
+                              readOnly: true
+                              description: The name of the preprint provider.
+                            domain:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                            domain_redirect_enabled:
+                              type: boolean
+                              readOnly: true
+                              description: Whether or not redirects are enabled for the provider's domain.
+                        relationships:
+                          type: object
+                          title: Relationships
+                          readOnly: true
+                          description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                          properties:
+                            licenses_acceptable:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to licenses the preprint provider allows.
+                            taxonomies:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the taxonomies the preprint provider allows.
+                            preprints:
+                              type: string
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                        links:
+                          type: object
+                          title: Links
+                          readOnly: true
+                          description: Links to alternative representations of the preprint entity.
+                          properties:
+                            external_url:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the external website for the preprint provider.
+                            preprints:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                            self:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the detail page for the preprint provider.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        description: Link to the current page of results.
+                      next:
+                        type: string
+                        description: Link to the next page of results (if applicable).
+                      prev:
+                        type: string
+                        description: Link to the previous page of results (if applicable).
+                  meta:
+                    type: object
+                    description: Meta information about the response (e.g., total number of results).
+              example:
+                data:
+                - id: apa
+                  type: citation-style
+                  attributes:
+                    title: APA 7th Edition
+                    short_name: APA
+                    default: true
+                  links:
+                    self: https://api.test.osf.io/v2/citations/styles/apa/
+                - id: mla
+                  type: citation-style
+                  attributes:
+                    title: MLA 8th Edition
+                    short_name: MLA
+                    default: false
+                  links:
+                    self: https://api.test.osf.io/v2/citations/styles/mla/
+                links:
+                  self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/citation_styles/
+                  next: null
+                  prev: null
+                meta:
+                  total: 2
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access citation styles for this provider.
+        '404':
+          description: Not Found. No preprint provider matches the given ID.
+  /providers/preprints/{provider_id}/licenses/:
+    get:
+      summary: List all licenses
+      description: 'A paginated list of the licenses allowed by a preprint provider.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of 10 preprint providers. Each resource in the array is a separate preprint provider object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        required: true
+        name: provider_id
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_licenses_list
+      x-response-schema: Licenses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: License
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the license.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the license (`license`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The properties of the license.
+                    properties:
+                      name:
+                        type: string
+                        readOnly: true
+                        description: Name of the license.
+                      text:
+                        type: string
+                        readOnly: true
+                        description: Full text of the license.
+                      required_fields:
+                        type: array
+                        readOnly: true
+                        description: Fields required for this license (provided to help front-end validators). Maps to properties on the NodeLicense model.
+                        items:
+                          type: string
+                          readOnly: true
+                          description: Individual fields required by this license.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs to alternative representations of the license.
+                    properties:
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the license.
+              example:
+                data:
+                - links:
+                    self: https://api.osf.io/v2/licenses/563c1cf88c5e4a3877f9e965/
+                  attributes:
+                    text: Copyright {{year}} {{copyrightHolders}}
+                    required_fields:
+                    - year
+                    - copyrightHolders
+                    name: No license
+                  type: licenses
+                  id: 563c1cf88c5e4a3877f9e965
+                links:
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+                  meta:
+                    total: 3
+                    per_page: 10
+  /providers/preprints/{provider_id}/moderators/:
+    get:
+      summary: List Moderators for a Preprint Provider
+      description: 'Retrieve a list of all moderators assigned to a specific preprint provider.
+
+        ## Permissions
+
+        - The authenticated user must be an administrator of the preprint provider.
+
+
+        ## Returns
+
+        - A JSON object with a `data` key containing an array of moderator records.
+
+        - Each moderator includes their permission group and basic user information.'
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_moderator_list
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        description: Page number of results to view.
+        schema:
+          type: integer
+      - in: query
+        name: filter[permission_group]
+        required: false
+        description: Filter moderators by permission group (`moderator` or `admin`).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of the moderators list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      title: Preprint Providers
+                      properties:
+                        id:
+                          type: string
+                          readOnly: true
+                          description: The identifier of the preprint provider entity.
+                        type:
+                          type: string
+                          readOnly: true
+                          description: The type identifier of the preprint provider entity (`preprint_providers`).
+                        attributes:
+                          type: object
+                          title: Attributes
+                          readOnly: true
+                          description: The properties of the preprint provider entity.
+                          properties:
+                            social_instagram:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                            advisory_board:
+                              type: string
+                              readOnly: true
+                              description: The HTML representation of the preprint provider's advisory board.
+                            email_support:
+                              type: string
+                              readOnly: true
+                              description: The preprint providers's support email address.
+                            banner_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                            logo_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                            subjects_acceptable:
+                              type: string
+                              readOnly: true
+                              description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                            description:
+                              type: string
+                              readOnly: true
+                              description: The description of the preprint provider.
+                            social_facebook:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                            email_contact:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                            example:
+                              type: string
+                              readOnly: true
+                              description: The GUID for an example preprint from this preprint provider.
+                            name:
+                              type: string
+                              readOnly: true
+                              description: The name of the preprint provider.
+                            domain:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                            domain_redirect_enabled:
+                              type: boolean
+                              readOnly: true
+                              description: Whether or not redirects are enabled for the provider's domain.
+                        relationships:
+                          type: object
+                          title: Relationships
+                          readOnly: true
+                          description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                          properties:
+                            licenses_acceptable:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to licenses the preprint provider allows.
+                            taxonomies:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the taxonomies the preprint provider allows.
+                            preprints:
+                              type: string
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                        links:
+                          type: object
+                          title: Links
+                          readOnly: true
+                          description: Links to alternative representations of the preprint entity.
+                          properties:
+                            external_url:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the external website for the preprint provider.
+                            preprints:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                            self:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the detail page for the preprint provider.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        description: Link to the current page of results.
+                      next:
+                        type: string
+                        description: Link to the next page of results, if available.
+                      prev:
+                        type: string
+                        description: Link to the previous page of results, if available.
+                  meta:
+                    type: object
+                    description: Meta information about the response, including pagination info.
+              example:
+                data:
+                - id: moderator_1
+                  type: moderators
+                  attributes:
+                    full_name: Ada Lovelace
+                    email: ada.lovelace@example.com
+                    permission_group: admin
+                    date_added: '2024-01-15T12:34:56Z'
+                  relationships:
+                    preprint_provider:
+                      data:
+                        type: preprint_providers
+                        id: '{provider_id}'
+                  links:
+                    self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/moderators/moderator_1/
+                - id: moderator_2
+                  type: moderators
+                  attributes:
+                    full_name: Alan Turing
+                    email: alan.turing@example.com
+                    permission_group: moderator
+                    date_added: '2024-01-20T10:00:00Z'
+                  relationships:
+                    preprint_provider:
+                      data:
+                        type: preprint_providers
+                        id: '{provider_id}'
+                  links:
+                    self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/moderators/moderator_2/
+                links:
+                  self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/moderators/
+                  next: null
+                  prev: null
+                meta:
+                  total: 2
+                  per_page: 10
+                  page: 1
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access this list.
+        '404':
+          description: Not Found. No preprint provider matches the given ID.
+    post:
+      summary: Add a Moderator to a Preprint Provider
+      description: 'Add a new moderator to the specified preprint provider.
+
+        ## Permissions
+
+        - The authenticated user must be an administrator of the preprint provider.
+
+
+        ## Request Body Provide the `permission_group` and the `user_id` for the moderator in the `relationships` object.
+
+        #### Returns
+
+        - A JSON object with the newly created moderator details under the `data` key if successful.
+
+        - If unsuccessful, returns an `errors` object detailing the validation issues.'
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_moderator_create
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Moderator successfully added.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Preprint Providers
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the preprint provider entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the preprint provider entity (`preprint_providers`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The properties of the preprint provider entity.
+                    properties:
+                      social_instagram:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                      advisory_board:
+                        type: string
+                        readOnly: true
+                        description: The HTML representation of the preprint provider's advisory board.
+                      email_support:
+                        type: string
+                        readOnly: true
+                        description: The preprint providers's support email address.
+                      banner_path:
+                        type: string
+                        readOnly: true
+                        description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                      logo_path:
+                        type: string
+                        readOnly: true
+                        description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                      subjects_acceptable:
+                        type: string
+                        readOnly: true
+                        description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                      description:
+                        type: string
+                        readOnly: true
+                        description: The description of the preprint provider.
+                      social_facebook:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                      email_contact:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                      example:
+                        type: string
+                        readOnly: true
+                        description: The GUID for an example preprint from this preprint provider.
+                      name:
+                        type: string
+                        readOnly: true
+                        description: The name of the preprint provider.
+                      domain:
+                        type: string
+                        readOnly: true
+                        description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                      domain_redirect_enabled:
+                        type: boolean
+                        readOnly: true
+                        description: Whether or not redirects are enabled for the provider's domain.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                    properties:
+                      licenses_acceptable:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to licenses the preprint provider allows.
+                      taxonomies:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the taxonomies the preprint provider allows.
+                      preprints:
+                        type: string
+                        readOnly: true
+                        description: A link to the preprint list page for the preprint provider.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: Links to alternative representations of the preprint entity.
+                    properties:
+                      external_url:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the external website for the preprint provider.
+                      preprints:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the preprint list page for the preprint provider.
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the preprint provider.
+              example:
+                data:
+                  id: moderator_3
+                  type: moderators
+                  attributes:
+                    full_name: Grace Hopper
+                    email: grace.hopper@example.com
+                    permission_group: moderator
+                    date_added: '2024-02-01T14:20:00Z'
+                  relationships:
+                    preprint_provider:
+                      data:
+                        type: preprint_providers
+                        id: '{provider_id}'
+                  links:
+                    self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/moderators/moderator_3/
+                meta:
+                  version: '2.0'
+        '400':
+          description: Bad Request. Invalid input provided.
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to add a moderator.
+        '404':
+          description: Not Found. No preprint provider matches the given ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - attributes
+                  - relationships
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - moderators
+                      description: Must be `moderators`.
+                    attributes:
+                      type: object
+                      required:
+                      - permission_group
+                      properties:
+                        permission_group:
+                          type: string
+                          enum:
+                          - moderator
+                          - admin
+                          description: 'The permission group for the moderator:
+
+                            - `moderator`: Can review and moderate preprint submissions.
+
+                            - `admin`: Can manage submissions and other moderators.
+
+                            '
+                    relationships:
+                      type: object
+                      required:
+                      - user
+                      properties:
+                        user:
+                          type: object
+                          required:
+                          - data
+                          properties:
+                            data:
+                              type: object
+                              required:
+                              - type
+                              - id
+                              properties:
+                                type:
+                                  type: string
+                                  enum:
+                                  - users
+                                id:
+                                  type: string
+                                  description: The user ID of the person you wish to add as a moderator.
+              example:
+                data:
+                  type: moderators
+                  attributes:
+                    permission_group: moderator
+                  relationships:
+                    user:
+                      data:
+                        type: users
+                        id: user_123
+        required: true
+  /providers/preprints/{provider_id}/moderators/{moderator_id}/:
+    get:
+      summary: Retrieve a Moderator for a Preprint Provider
+      description: 'Retrieve the details of a specific moderator for a preprint provider, including their permission group and user information.
+
+        #### Permissions - The authenticated user must be an administrator of the preprint provider.
+
+        #### Returns - A JSON object with a `data` key containing the moderator''s details. - Each moderator includes their permission group and basic user information.'
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_moderator_detail
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      - in: path
+        name: moderator_id
+        required: true
+        description: The unique identifier of the moderator.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of the moderator.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A moderator for a preprint provider.
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                - links
+                properties:
+                  id:
+                    type: string
+                    description: The unique identifier of the moderator.
+                    example: moderator_1
+                  type:
+                    type: string
+                    enum:
+                    - moderators
+                    description: Must be 'moderators'.
+                    example: moderators
+                  attributes:
+                    type: object
+                    required:
+                    - full_name
+                    - email
+                    - permission_group
+                    - date_added
+                    properties:
+                      full_name:
+                        type: string
+                        description: Full name of the moderator.
+                        example: Ada Lovelace
+                      email:
+                        type: string
+                        format: email
+                        description: Email address of the moderator.
+                        example: ada.lovelace@example.com
+                      permission_group:
+                        type: string
+                        enum:
+                        - moderator
+                        - admin
+                        description: 'The permission group for the moderator.
+
+                          - `moderator`: Can review and moderate preprint submissions.
+
+                          - `admin`: Can manage submissions and other moderators.
+
+                          '
+                        example: admin
+                      date_added:
+                        type: string
+                        format: date-time
+                        description: The date the moderator was added to the provider.
+                        example: '2024-01-15T12:34:56Z'
+                  relationships:
+                    type: object
+                    properties:
+                      preprint_provider:
+                        type: object
+                        required:
+                        - data
+                        properties:
+                          data:
+                            type: object
+                            required:
+                            - type
+                            - id
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - preprint_providers
+                                description: Must be 'preprint_providers'.
+                                example: preprint_providers
+                              id:
+                                type: string
+                                description: The unique identifier of the preprint provider.
+                                example: provider_1
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: A link to this moderator resource.
+                        example: https://api.test.osf.io/v2/providers/preprints/provider_1/moderators/moderator_1/
+                example:
+                  id: moderator_1
+                  type: moderators
+                  attributes:
+                    full_name: Ada Lovelace
+                    email: ada.lovelace@example.com
+                    permission_group: admin
+                    date_added: '2024-01-15T12:34:56Z'
+                  relationships:
+                    preprint_provider:
+                      data:
+                        type: preprint_providers
+                        id: provider_1
+                  links:
+                    self: https://api.test.osf.io/v2/providers/preprints/provider_1/moderators/moderator_1/
+              example:
+                data:
+                  id: moderator_1
+                  type: moderators
+                  attributes:
+                    full_name: Ada Lovelace
+                    email: ada.lovelace@example.com
+                    permission_group: admin
+                    date_added: '2024-01-15T12:34:56Z'
+                  relationships:
+                    preprint_provider:
+                      data:
+                        type: preprint_providers
+                        id: '{provider_id}'
+                  links:
+                    self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/moderators/moderator_1/
+                meta:
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access this moderator.
+        '404':
+          description: Not Found. No moderator matches the given ID.
+    patch:
+      summary: Update a Moderator's Permission Group for a Preprint Provider
+      description: 'Update the permission group for a specific moderator on a preprint provider.
+
+        ## Permissions - The authenticated user must be an administrator of the preprint provider.
+
+        ## Request Body
+
+        Provide the `permission_group` attribute in the `attributes` object to update the moderator. Available values for `permission_group` are:
+
+        - `moderator`: Can review and moderate preprint submissions.
+
+        - `admin`: Can manage submissions and other moderators.
+
+
+        ## Returns
+
+        - A JSON object with the updated moderator details under the `data` key if the update is successful.
+
+        - If unsuccessful, returns an `errors` object detailing the validation issues.'
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_moderator_update
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      - in: path
+        name: moderator_id
+        required: true
+        description: The unique identifier of the moderator.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Moderator successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A moderator for a preprint provider.
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                - links
+                properties:
+                  id:
+                    type: string
+                    description: The unique identifier of the moderator.
+                    example: moderator_1
+                  type:
+                    type: string
+                    enum:
+                    - moderators
+                    description: Must be 'moderators'.
+                    example: moderators
+                  attributes:
+                    type: object
+                    required:
+                    - full_name
+                    - email
+                    - permission_group
+                    - date_added
+                    properties:
+                      full_name:
+                        type: string
+                        description: Full name of the moderator.
+                        example: Ada Lovelace
+                      email:
+                        type: string
+                        format: email
+                        description: Email address of the moderator.
+                        example: ada.lovelace@example.com
+                      permission_group:
+                        type: string
+                        enum:
+                        - moderator
+                        - admin
+                        description: 'The permission group for the moderator.
+
+                          - `moderator`: Can review and moderate preprint submissions.
+
+                          - `admin`: Can manage submissions and other moderators.
+
+                          '
+                        example: admin
+                      date_added:
+                        type: string
+                        format: date-time
+                        description: The date the moderator was added to the provider.
+                        example: '2024-01-15T12:34:56Z'
+                  relationships:
+                    type: object
+                    properties:
+                      preprint_provider:
+                        type: object
+                        required:
+                        - data
+                        properties:
+                          data:
+                            type: object
+                            required:
+                            - type
+                            - id
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - preprint_providers
+                                description: Must be 'preprint_providers'.
+                                example: preprint_providers
+                              id:
+                                type: string
+                                description: The unique identifier of the preprint provider.
+                                example: provider_1
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: A link to this moderator resource.
+                        example: https://api.test.osf.io/v2/providers/preprints/provider_1/moderators/moderator_1/
+                example:
+                  id: moderator_1
+                  type: moderators
+                  attributes:
+                    full_name: Ada Lovelace
+                    email: ada.lovelace@example.com
+                    permission_group: admin
+                    date_added: '2024-01-15T12:34:56Z'
+                  relationships:
+                    preprint_provider:
+                      data:
+                        type: preprint_providers
+                        id: provider_1
+                  links:
+                    self: https://api.test.osf.io/v2/providers/preprints/provider_1/moderators/moderator_1/
+              example:
+                data:
+                  id: moderator_1
+                  type: moderators
+                  attributes:
+                    full_name: Ada Lovelace
+                    email: ada.lovelace@example.com
+                    permission_group: admin
+                    date_added: '2024-01-15T12:34:56Z'
+                  relationships:
+                    preprint_provider:
+                      data:
+                        type: preprint_providers
+                        id: '{provider_id}'
+                  links:
+                    self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/moderators/moderator_1/
+                meta:
+                  version: '2.0'
+        '400':
+          description: Bad Request. Invalid input provided.
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to update this moderator.
+        '404':
+          description: Not Found. No moderator matches the given ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - id
+                  - attributes
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - moderators
+                      description: Must be `moderators`.
+                    id:
+                      type: string
+                      description: The unique identifier of the moderator.
+                    attributes:
+                      type: object
+                      required:
+                      - permission_group
+                      properties:
+                        permission_group:
+                          type: string
+                          enum:
+                          - moderator
+                          - admin
+                          description: 'The permission group for the moderator:
+
+                            - `moderator`: Can review and moderate preprint submissions.
+
+                            - `admin`: Can manage submissions and other moderators.
+
+                            '
+              example:
+                data:
+                  type: moderators
+                  id: '{moderator_id}'
+                  attributes:
+                    permission_group: admin
+        required: true
+    delete:
+      summary: Remove a Moderator from a Preprint Provider
+      description: 'Remove a moderator from a preprint provider.
+
+        ## Permissions
+
+        - The authenticated user must be an administrator of the preprint provider.
+
+
+        ## Returns
+
+        - Returns a `204 No Content` response if the deletion is successful.
+
+        - If unsuccessful, returns an `errors` object detailing the issue.'
+      tags:
+      - Preprint Providers
+      operationId: preprint_provider_moderator_delete
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      - in: path
+        name: moderator_id
+        required: true
+        description: The unique identifier of the moderator.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Moderator successfully removed. No content returned.
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to remove this moderator.
+        '404':
+          description: Not Found. No moderator matches the given ID.
+  /providers/preprints/{provider_id}/withdraw_requests/:
+    get:
+      summary: List Withdraw Requests for a Preprint Provider
+      description: 'Retrieve a list of withdraw requests for a specific preprint provider.
+
+        Withdraw requests are initiated by contributors to request the withdrawal of a preprint from public view. These requests require moderation and can be either approved or rejected by provider moderators.
+
+        #### Permissions - Admins and moderators for the provider can view all withdraw requests. - Unauthorized users will receive a `403 Forbidden` response.
+
+        #### Returns - A JSON object with a `data` key containing an array of withdraw request resources. - Each withdraw request includes the current state, the associated preprint, and relevant timestamps.'
+      tags:
+      - Preprint Providers
+      operationId: provider_preprints_withdraw_requests_list
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of withdraw requests.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      title: Preprint Providers
+                      properties:
+                        id:
+                          type: string
+                          readOnly: true
+                          description: The identifier of the preprint provider entity.
+                        type:
+                          type: string
+                          readOnly: true
+                          description: The type identifier of the preprint provider entity (`preprint_providers`).
+                        attributes:
+                          type: object
+                          title: Attributes
+                          readOnly: true
+                          description: The properties of the preprint provider entity.
+                          properties:
+                            social_instagram:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                            advisory_board:
+                              type: string
+                              readOnly: true
+                              description: The HTML representation of the preprint provider's advisory board.
+                            email_support:
+                              type: string
+                              readOnly: true
+                              description: The preprint providers's support email address.
+                            banner_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                            logo_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                            subjects_acceptable:
+                              type: string
+                              readOnly: true
+                              description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                            description:
+                              type: string
+                              readOnly: true
+                              description: The description of the preprint provider.
+                            social_facebook:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                            email_contact:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                            example:
+                              type: string
+                              readOnly: true
+                              description: The GUID for an example preprint from this preprint provider.
+                            name:
+                              type: string
+                              readOnly: true
+                              description: The name of the preprint provider.
+                            domain:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                            domain_redirect_enabled:
+                              type: boolean
+                              readOnly: true
+                              description: Whether or not redirects are enabled for the provider's domain.
+                        relationships:
+                          type: object
+                          title: Relationships
+                          readOnly: true
+                          description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                          properties:
+                            licenses_acceptable:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to licenses the preprint provider allows.
+                            taxonomies:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the taxonomies the preprint provider allows.
+                            preprints:
+                              type: string
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                        links:
+                          type: object
+                          title: Links
+                          readOnly: true
+                          description: Links to alternative representations of the preprint entity.
+                          properties:
+                            external_url:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the external website for the preprint provider.
+                            preprints:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                            self:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the detail page for the preprint provider.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        description: Link to the current page of results.
+                      next:
+                        type: string
+                        description: Link to the next page of results (if applicable).
+                      prev:
+                        type: string
+                        description: Link to the previous page of results (if applicable).
+                  meta:
+                    type: object
+                    description: Meta information about the response (e.g., total number of results).
+              example:
+                data:
+                - id: wrq_1234
+                  type: withdraw-request
+                  attributes:
+                    state: pending
+                    justification: Authors discovered a critical error.
+                    date_submitted: '2024-10-15T14:12:00Z'
+                    date_reviewed: null
+                  relationships:
+                    preprint:
+                      data:
+                        type: preprints
+                        id: preprint_5678
+                    provider:
+                      data:
+                        type: preprint_providers
+                        id: '{provider_id}'
+                    reviews_state:
+                      data:
+                        type: reviews_state
+                        id: pending
+                  links:
+                    self: https://api.test.osf.io/v2/withdraw_requests/wrq_1234/
+                - id: wrq_5678
+                  type: withdraw-request
+                  attributes:
+                    state: accepted
+                    justification: Plagiarism identified.
+                    date_submitted: '2024-09-20T08:05:00Z'
+                    date_reviewed: '2024-09-25T16:45:00Z'
+                  relationships:
+                    preprint:
+                      data:
+                        type: preprints
+                        id: preprint_9101
+                    provider:
+                      data:
+                        type: preprint_providers
+                        id: '{provider_id}'
+                    reviews_state:
+                      data:
+                        type: reviews_state
+                        id: accepted
+                  links:
+                    self: https://api.test.osf.io/v2/withdraw_requests/wrq_5678/
+                links:
+                  self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/withdraw_requests/
+                  next: null
+                  prev: null
+                meta:
+                  total: 2
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access withdraw requests for this provider.
+        '404':
+          description: Not Found. No preprint provider matches the given ID.
+  /providers/preprints/{provider_id}/subjects/:
+    get:
+      summary: Preprints Providers Subject List
+      description: 'This returns a list of acceptable subjects for a Preprints Provider.
+
+        #### Permissions
+
+        This information is public.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+        The `data` key contains an array of subject ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: provider_id
+        description: A short id for that preprint
+        schema:
+          type: string
+      tags:
+      - Preprint Providers
+      operationId: getProvidersPreprintsByProviderIdSubjects
+      x-response-schema: Preprint Provider
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - id: 5c3e311a0989e101eede6afa
+                  type: subjects
+                  attributes:
+                    text: Puppy Studies
+                    taxonomy_name: bepress
+                  relationships:
+                    parent:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edc16/
+                          meta: {}
+                      data:
+                        id: 5c252d510989e100220edc16
+                        type: subjects
+                    children:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/subjects/5c3e311a0989e101eede6afa/children/
+                          meta: {}
+                  embeds:
+                    parent:
+                      data:
+                        id: 5c252d510989e100220edc16
+                        type: subjects
+                        attributes:
+                          text: Public Affairs, Public Policy and Public Administration
+                          taxonomy_name: bepress
+                        relationships:
+                          parent:
+                            links:
+                              related:
+                                href: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edc1e/
+                                meta: {}
+                            data:
+                              id: 5c252d510989e100220edc1e
+                              type: subjects
+                          children:
+                            links:
+                              related:
+                                href: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edc16/children/
+                                meta: {}
+                        embeds:
+                          parent:
+                            data:
+                              id: 5c252d510989e100220edc1e
+                              type: subjects
+                              attributes:
+                                text: Social and Behavioral Sciences
+                                taxonomy_name: bepress
+                              relationships:
+                                parent:
+                                  data: null
+                                children:
+                                  links:
+                                    related:
+                                      href: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edc1e/children/
+                                      meta: {}
+                              embeds:
+                                parent:
+                                  errors:
+                                  - detail: Not found.
+                              links:
+                                self: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edc1e/
+                        links:
+                          self: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edc16/
+                  links:
+                    self: https://api.staging.osf.io/v2/subjects/5c3e311a0989e101eede6afa/
+                - id: 5c3e311a0989e101eede6af9
+                  type: subjects
+                  attributes:
+                    text: Transpersonal Psychology
+                    taxonomy_name: bepress
+                  relationships:
+                    parent:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edbad/
+                          meta: {}
+                      data:
+                        id: 5c252d510989e100220edbad
+                        type: subjects
+                    children:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/subjects/5c3e311a0989e101eede6af9/children/
+                          meta: {}
+                  embeds:
+                    parent:
+                      data:
+                        id: 5c252d510989e100220edbad
+                        type: subjects
+                        attributes:
+                          text: Psychology
+                          taxonomy_name: bepress
+                        relationships:
+                          parent:
+                            links:
+                              related:
+                                href: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edc1e/
+                                meta: {}
+                            data:
+                              id: 5c252d510989e100220edc1e
+                              type: subjects
+                          children:
+                            links:
+                              related:
+                                href: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edbad/children/
+                                meta: {}
+                        embeds:
+                          parent:
+                            data:
+                              id: 5c252d510989e100220edc1e
+                              type: subjects
+                              attributes:
+                                text: Social and Behavioral Sciences
+                                taxonomy_name: bepress
+                              relationships:
+                                parent:
+                                  data: null
+                                children:
+                                  links:
+                                    related:
+                                      href: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edc1e/children/
+                                      meta: {}
+                              embeds:
+                                parent:
+                                  errors:
+                                  - detail: Not found.
+                              links:
+                                self: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edc1e/
+                        links:
+                          self: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edbad/
+                  links:
+                    self: https://api.staging.osf.io/v2/subjects/5c3e311a0989e101eede6af9/
+                meta:
+                  total: 1239
+                  per_page: 2
+                  version: '2.20'
+                links:
+                  self: https://api.staging.osf.io/v2/providers/preprints/temp/subjects/?page%5Bsize%5D=2
+                  first: null
+                  last: https://api.staging.osf.io/v2/providers/preprints/temp/subjects/?page=620&page%5Bsize%5D=2
+                  prev: null
+                  next: https://api.staging.osf.io/v2/providers/preprints/temp/subjects/?page=2&page%5Bsize%5D=2
+      x-operation-id-source: normalized
+      x-operation-id-original: preprint_provider_detail
+  /providers/preprints/{provider_id}/subjects/highlighted/:
+    get:
+      summary: Preprints Providers Highlighted Subject List
+      description: 'This returns a list of highlighted subjects for a Preprints Provider.
+
+        #### Permissions
+
+        This information is public.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+        The `data` key contains an array of subject ids.
+
+        The `links` key contains a dictionary of links that can be used for pagination.'
+      parameters:
+      - in: path
+        required: true
+        name: provider_id
+        description: A short id for that preprint
+        schema:
+          type: string
+      tags:
+      - Preprint Providers
+      operationId: getProvidersPreprintsByProviderIdSubjectsHighlighted
+      x-response-schema: Preprint Provider
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - id: 5c252d520989e100220edc4f
+                  type: subjects
+                  attributes:
+                    text: Architecture
+                    taxonomy_name: bepress
+                  relationships:
+                    parent:
+                      data: null
+                    children:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/subjects/5c252d520989e100220edc4f/children/
+                          meta: {}
+                  embeds:
+                    parent:
+                      errors:
+                      - detail: Not found.
+                  links:
+                    self: https://api.staging.osf.io/v2/subjects/5c252d520989e100220edc4f/
+                - id: 5c252d510989e100220edba7
+                  type: subjects
+                  attributes:
+                    text: Arts and Humanities
+                    taxonomy_name: bepress
+                  relationships:
+                    parent:
+                      data: null
+                    children:
+                      links:
+                        related:
+                          href: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edba7/children/
+                          meta: {}
+                  embeds:
+                    parent:
+                      errors:
+                      - detail: Not found.
+                  links:
+                    self: https://api.staging.osf.io/v2/subjects/5c252d510989e100220edba7/
+                meta:
+                  total: 10
+                  per_page: 2
+                  version: '2.20'
+                links:
+                  self: https://api.staging.osf.io/v2/providers/preprints/temp/subjects/highlighted/?page%5Bsize%5D=2
+                  first: null
+                  last: https://api.staging.osf.io/v2/providers/preprints/temp/subjects/highlighted/?page=5&page%5Bsize%5D=2
+                  prev: null
+                  next: https://api.staging.osf.io/v2/providers/preprints/temp/subjects/highlighted/?page=2&page%5Bsize%5D=2
+      x-operation-id-source: normalized
+      x-operation-id-original: preprint_provider_detail
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

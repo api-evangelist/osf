@@ -1,0 +1,698 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Identifiers API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Identifiers
+  description: Identifiers are unique strings associated with various entities in the OSF system, such as project nodes, registrations or preprints.
+paths:
+  /nodes/{node_id}/identifiers/:
+    get:
+      summary: Retrieve Identifiers for a Node
+      description: 'Retrieve a list of all identifiers (such as DOIs or ARKs) associated with the specified node.
+
+        Identifiers are unique strings that reference the node in external systems. These can include persistent identifiers such as DOIs (Digital Object Identifiers) or ARKs (Archival Resource Keys).
+
+        #### Response Structure
+
+        The response returns a JSON object containing the following top-level keys:
+
+
+        - `data`: An array of identifier resources.
+
+        - `links`: Pagination links (if applicable).
+
+
+        Each item in the `data` array is a distinct identifier object, containing details such as the identifier `category` (e.g., `doi`, `ark`), its `value`, and links to the associated node.
+
+        #### Filtering
+
+        You may filter the returned identifiers by category using the `filter[category]` query parameter.
+
+        **Example:**
+
+        Supported filter categories include:
+
+        - `doi` - Digital Object Identifier
+
+        - `ark` - Archival Resource Key
+
+
+        #### Permissions
+
+
+        - This endpoint is public for nodes that are public.
+
+        - Authentication is required to access identifiers on private nodes, and the authenticated user must have read access.'
+      parameters:
+      - in: path
+        name: node_id
+        required: true
+        description: The unique identifier of the node for which you want to retrieve associated identifiers.
+        schema:
+          type: string
+      tags:
+      - Identifiers
+      operationId: nodes_identifiers_list
+      x-response-schema: Identifier
+      responses:
+        '200':
+          description: Successful retrieval of identifiers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Identifier
+                  description: Representation of an identifier entity within the OSF API.
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: Unique identifier for the identifier entity.
+                    type:
+                      type: string
+                      readOnly: true
+                      description: Resource type, always `identifiers` for identifier entities.
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: true
+                      description: Attributes of the identifier entity, including category and value.
+                      properties:
+                        category:
+                          type: string
+                          enum:
+                          - doi
+                          readOnly: true
+                          description: The category of the identifier, such as ARK or DOI.
+                        value:
+                          type: string
+                          readOnly: true
+                          description: The actual value of the identifier.
+                    relationships:
+                      type: object
+                      title: Relationships
+                      readOnly: true
+                      description: Relationships to other entities, indicating the node this identifier refers to.
+                      properties:
+                        referent:
+                          type: object
+                          description: Relationship object linking to the node associated with this identifier.
+                          properties:
+                            links:
+                              type: object
+                              properties:
+                                related:
+                                  type: string
+                                  format: url
+                                  description: URL to the related node.
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: Links to representations of the identifier entity.
+                      properties:
+                        self:
+                          type: string
+                          format: url
+                          readOnly: true
+                          description: URL to the detail page for this identifier.
+              example:
+                data:
+                - id: 57f1641db83f6901ed94b459
+                  type: identifiers
+                  attributes:
+                    category: doi
+                    value: 10.17605/OSF.IO/73PND
+                  relationships:
+                    referent:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/73pnd/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/identifiers/57f1641db83f6901ed94b459/
+                - id: 57f1641db83f6901ed94b45a
+                  type: identifiers
+                  attributes:
+                    category: ark
+                    value: c7605/osf.io/73pnd
+                  relationships:
+                    referent:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/73pnd/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/identifiers/57f1641db83f6901ed94b45a/
+                links:
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+                  meta:
+                    total: 2
+                    per_page: 10
+    post:
+      summary: Mint a New Identifier for a Node
+      description: 'Mint (create) a new identifier for the specified node.
+
+        Currently, the OSF supports minting **DOI** identifiers through this endpoint. Once created, identifiers are permanent and cannot be modified or deleted.
+
+        #### Supported Identifier Categories
+
+
+        - `doi`: Digital Object Identifier.
+
+
+        #### Requirements
+
+
+        - You must have **Admin** or **Write** permissions on the node.
+
+        - The node must be **public** and must **not** be a collection or folder.
+
+        - Only nodes representing individual projects or components are eligible for DOI creation.
+
+
+        #### Example Request Payload
+
+
+        ```json
+
+        {
+
+        "data": {
+
+        "type": "identifiers",
+
+        "attributes": {
+
+        "category": "doi"
+
+        }
+
+        }
+
+        }
+
+        ```
+
+
+        #### Permissions
+
+        - Only authenticated users with the required permissions can mint new identifiers.
+
+        - This endpoint is does not authenticate for nodes that are private or not publicly available.'
+      operationId: nodes_identifiers_create
+      tags:
+      - Identifiers
+      parameters:
+      - in: path
+        name: node_id
+        required: true
+        description: The unique identifier of the node for which you want to create an identifier.
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Identifier successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Identifier
+                description: Representation of an identifier entity within the OSF API.
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: Unique identifier for the identifier entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: Resource type, always `identifiers` for identifier entities.
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: Attributes of the identifier entity, including category and value.
+                    properties:
+                      category:
+                        type: string
+                        enum:
+                        - doi
+                        readOnly: true
+                        description: The category of the identifier, such as ARK or DOI.
+                      value:
+                        type: string
+                        readOnly: true
+                        description: The actual value of the identifier.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Relationships to other entities, indicating the node this identifier refers to.
+                    properties:
+                      referent:
+                        type: object
+                        description: Relationship object linking to the node associated with this identifier.
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: url
+                                description: URL to the related node.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: Links to representations of the identifier entity.
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        readOnly: true
+                        description: URL to the detail page for this identifier.
+              example:
+                data:
+                  id: 57f1641db83f6901ed94b459
+                  type: identifiers
+                  attributes:
+                    category: doi
+                    value: 10.17605/OSF.IO/73PND
+                  relationships:
+                    referent:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/73pnd/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/identifiers/57f1641db83f6901ed94b459/
+        '400':
+          description: "Bad Request. Possible reasons include:\n - The node already has a DOI identifier.\n - The requested identifier category is not supported (only `doi` is allowed).\n - The node is not eligible for DOI creation (e.g., it's a folder or collection)."
+        '403':
+          description: "Forbidden. You do not have permission to create identifiers on this node. This may occur if:\n - The node is private.\n - You do not have Admin or Write access to the node."
+        '404':
+          description: Node not found. Verify the node ID is correct and that you have permission to view the node.
+        '405':
+          description: Returned if write access to this node has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+  /preprints/{preprint_id}/identifiers/:
+    get:
+      summary: List identifiers for a preprint
+      description: 'Retrieves a list of identifiers associated with the specified preprint. Identifiers include DOIs, ARKs, and other unique resource locators.
+
+        #### Permissions
+
+        - Public identifiers are accessible to unauthenticated users.
+
+        - Private preprints require read access to view their identifiers.'
+      tags:
+      - Identifiers
+      operationId: preprint_identifiers_list
+      parameters:
+      - name: preprint_id
+        in: path
+        required: true
+        description: The unique identifier of the preprint.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of preprint identifiers.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - attributes
+                      properties:
+                        id:
+                          type: string
+                          description: The identifier value itself.
+                          example: doi:10.1234/osf.io/abcde
+                        type:
+                          type: string
+                          description: The type of this resource object.
+                          example: identifiers
+                        attributes:
+                          type: object
+                          required:
+                          - category
+                          - value
+                          properties:
+                            category:
+                              type: string
+                              description: The category of the identifier (e.g., DOI, ARK).
+                              example: doi
+                            value:
+                              type: string
+                              description: The identifier value.
+                              example: 10.1234/osf.io/abcde
+                  links:
+                    type: object
+                    description: Links for pagination and resource access.
+                    properties:
+                      self:
+                        type: string
+                        description: Link to the current page of results.
+                      next:
+                        type: string
+                        description: Link to the next page of results (if available).
+                      prev:
+                        type: string
+                        description: Link to the previous page of results (if available).
+                example:
+                  data:
+                  - id: doi:10.1234/osf.io/abcde
+                    type: identifiers
+                    attributes:
+                      category: doi
+                      value: 10.1234/osf.io/abcde
+                  - id: ark:/12345/osf.io/xyz12
+                    type: identifiers
+                    attributes:
+                      category: ark
+                      value: ark:/12345/osf.io/xyz12
+                  links:
+                    self: https://api.osf.io/v2/preprints/abc12/identifiers/
+                    next: null
+                    prev: null
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to view identifiers for this preprint.
+        '404':
+          description: Not Found. No preprint matches the given ID.
+  /identifiers/{identifier_id}/:
+    get:
+      summary: Retrieve a Specific Identifier
+      description: 'Retrieve the details of a specific identifier by its unique identifier ID.
+
+        Identifiers represent permanent references to OSF nodes, often registered with external services like DataCite (for DOIs) or ARK registries. This endpoint provides information about the identifier’s category (e.g., DOI or ARK), its value, and its association with the referent node.
+
+        #### Permissions
+
+
+        - Public identifiers are accessible by any user.
+
+        - Private node identifiers require authentication and appropriate permissions (at least read access).'
+      parameters:
+      - in: path
+        name: identifier_id
+        required: true
+        description: The unique identifier for the identifier resource.
+        schema:
+          type: string
+      tags:
+      - Identifiers
+      operationId: identifiers_read
+      x-response-schema: Identifier
+      responses:
+        '200':
+          description: Successful retrieval of the identifier.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Identifier
+                description: Representation of an identifier entity within the OSF API.
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: Unique identifier for the identifier entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: Resource type, always `identifiers` for identifier entities.
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: Attributes of the identifier entity, including category and value.
+                    properties:
+                      category:
+                        type: string
+                        enum:
+                        - doi
+                        readOnly: true
+                        description: The category of the identifier, such as ARK or DOI.
+                      value:
+                        type: string
+                        readOnly: true
+                        description: The actual value of the identifier.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Relationships to other entities, indicating the node this identifier refers to.
+                    properties:
+                      referent:
+                        type: object
+                        description: Relationship object linking to the node associated with this identifier.
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: url
+                                description: URL to the related node.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: Links to representations of the identifier entity.
+                    properties:
+                      self:
+                        type: string
+                        format: url
+                        readOnly: true
+                        description: URL to the detail page for this identifier.
+              example:
+                data:
+                  id: 57f1641db83f6901ed94b45a
+                  type: identifiers
+                  attributes:
+                    category: ark
+                    value: c7605/osf.io/73pnd
+                  relationships:
+                    referent:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/73pnd/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/identifiers/57f1641db83f6901ed94b45a/
+  /identifiers/{node_id}/identifiers/:
+    get:
+      summary: List all identifiers
+      description: 'List of all identifiers for a given node.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of identifiers. Each resource in the array is a separate identifier object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+        #### Filtering
+
+        You can optionally request that the response only include identifiers that match your filters by utilizing the `filter` query parameter, e.g. https://api.osf.io/v2/identifiers/73pnd/identifiers/?filter[category]=doi.
+
+        Identifiers may be filtered by their `category` e.g `ark` or `doi`.'
+      parameters:
+      - in: path
+        name: node_id
+        required: true
+        description: The unique identifier of the node.
+        schema:
+          type: string
+      tags:
+      - Identifiers
+      operationId: identifiers_list
+      x-response-schema: Identifier
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Identifier
+                  description: Representation of an identifier entity within the OSF API.
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: Unique identifier for the identifier entity.
+                    type:
+                      type: string
+                      readOnly: true
+                      description: Resource type, always `identifiers` for identifier entities.
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: true
+                      description: Attributes of the identifier entity, including category and value.
+                      properties:
+                        category:
+                          type: string
+                          enum:
+                          - doi
+                          readOnly: true
+                          description: The category of the identifier, such as ARK or DOI.
+                        value:
+                          type: string
+                          readOnly: true
+                          description: The actual value of the identifier.
+                    relationships:
+                      type: object
+                      title: Relationships
+                      readOnly: true
+                      description: Relationships to other entities, indicating the node this identifier refers to.
+                      properties:
+                        referent:
+                          type: object
+                          description: Relationship object linking to the node associated with this identifier.
+                          properties:
+                            links:
+                              type: object
+                              properties:
+                                related:
+                                  type: string
+                                  format: url
+                                  description: URL to the related node.
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: Links to representations of the identifier entity.
+                      properties:
+                        self:
+                          type: string
+                          format: url
+                          readOnly: true
+                          description: URL to the detail page for this identifier.
+              example:
+                data:
+                - relationships:
+                    referent:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/73pnd/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/identifiers/57f1641db83f6901ed94b459/
+                  attributes:
+                    category: doi
+                    value: 10.17605/OSF.IO/73PND
+                  type: identifiers
+                  id: 57f1641db83f6901ed94b459
+                - relationships:
+                    referent:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/73pnd/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/identifiers/57f1641db83f6901ed94b45a/
+                  attributes:
+                    category: ark
+                    value: c7605/osf.io/73pnd
+                  type: identifiers
+                  id: 57f1641db83f6901ed94b45a
+                links:
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+                  meta: null
+                  total: 2
+                  per_page: 10
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

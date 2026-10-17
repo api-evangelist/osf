@@ -1,0 +1,563 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Custom Metadata API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Custom Metadata
+  description: Custom Metadata endpoints allow users to manage freeform or structured metadata associated with OSF nodes and files. Unlike CEDAR metadata, Custom Metadata provides more flexible fields tailored to specific research needs or institutional requirements. Users can create, view, and edit metadata records that describe files or items in OSF, including funder information, language, resource type, and more.
+paths:
+  /custom_file_metadata_records/{file_id}/:
+    get:
+      summary: Retrieve custom file metadata for a file
+      description: Retrieve a custom file metadata record associated with a specific file by its GUID. Custom file metadata includes fields such as title, description, language, and funding information.
+      operationId: getCustomFileMetadataRecord
+      tags:
+      - Custom Metadata
+      parameters:
+      - name: file_id
+        in: path
+        description: The unique identifier of the file.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved custom file metadata record.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - type
+                    - attributes
+                    properties:
+                      type:
+                        type: string
+                        description: The resource type.
+                        example: custom-file-metadata-records
+                      attributes:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                            description: The title of the file.
+                            example: My Dataset File
+                          description:
+                            type: string
+                            description: A description of the file.
+                            example: This file contains raw data collected from fieldwork.
+                          language:
+                            type: string
+                            description: The language of the content.
+                            example: en
+                          resource_type_general:
+                            type: string
+                            description: The general type of the resource.
+                            example: Dataset
+                          funders:
+                            type: array
+                            description: Information about funding sources.
+                            items:
+                              type: object
+                              required:
+                              - funder_name
+                              properties:
+                                funder_name:
+                                  type: string
+                                  example: National Science Foundation
+                                funder_identifier:
+                                  type: string
+                                  example: '123456'
+                                funder_identifier_type:
+                                  type: string
+                                  enum:
+                                  - ISNI
+                                  - GRID
+                                  - Crossref Funder ID
+                                  - ROR
+                                  - Other
+                                  example: ROR
+                                award_number:
+                                  type: string
+                                  example: NSF-1234
+                                award_uri:
+                                  type: string
+                                  example: https://nsf.gov/awardsearch/showAward?AWD_ID=1234
+                                award_title:
+                                  type: string
+                                  example: Climate Change Research Grant
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to access this metadata record.
+        '404':
+          description: Metadata record not found.
+    patch:
+      summary: Update custom file metadata for a file
+      description: Update an existing custom file metadata record. Editable fields include title, description, language, resource type, and funding information.
+      operationId: updateCustomFileMetadataRecord
+      tags:
+      - Custom Metadata
+      parameters:
+      - name: file_id
+        in: path
+        description: The unique identifier of the file.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully updated custom file metadata record.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - type
+                    - attributes
+                    properties:
+                      type:
+                        type: string
+                        description: The resource type.
+                        example: custom-file-metadata-records
+                      attributes:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                            description: The title of the file.
+                            example: My Dataset File
+                          description:
+                            type: string
+                            description: A description of the file.
+                            example: This file contains raw data collected from fieldwork.
+                          language:
+                            type: string
+                            description: The language of the content.
+                            example: en
+                          resource_type_general:
+                            type: string
+                            description: The general type of the resource.
+                            example: Dataset
+                          funders:
+                            type: array
+                            description: Information about funding sources.
+                            items:
+                              type: object
+                              required:
+                              - funder_name
+                              properties:
+                                funder_name:
+                                  type: string
+                                  example: National Science Foundation
+                                funder_identifier:
+                                  type: string
+                                  example: '123456'
+                                funder_identifier_type:
+                                  type: string
+                                  enum:
+                                  - ISNI
+                                  - GRID
+                                  - Crossref Funder ID
+                                  - ROR
+                                  - Other
+                                  example: ROR
+                                award_number:
+                                  type: string
+                                  example: NSF-1234
+                                award_uri:
+                                  type: string
+                                  example: https://nsf.gov/awardsearch/showAward?AWD_ID=1234
+                                award_title:
+                                  type: string
+                                  example: Climate Change Research Grant
+        '400':
+          description: Validation error or invalid data.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to modify this metadata record.
+        '404':
+          description: Metadata record not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - attributes
+                  properties:
+                    type:
+                      type: string
+                      description: The resource type.
+                      example: custom-file-metadata-records
+                    attributes:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          description: The title of the file.
+                          example: My Dataset File
+                        description:
+                          type: string
+                          description: A description of the file.
+                          example: This file contains raw data collected from fieldwork.
+                        language:
+                          type: string
+                          description: The language of the content.
+                          example: en
+                        resource_type_general:
+                          type: string
+                          description: The general type of the resource.
+                          example: Dataset
+                        funders:
+                          type: array
+                          description: Information about funding sources.
+                          items:
+                            type: object
+                            required:
+                            - funder_name
+                            properties:
+                              funder_name:
+                                type: string
+                                example: National Science Foundation
+                              funder_identifier:
+                                type: string
+                                example: '123456'
+                              funder_identifier_type:
+                                type: string
+                                enum:
+                                - ISNI
+                                - GRID
+                                - Crossref Funder ID
+                                - ROR
+                                - Other
+                                example: ROR
+                              award_number:
+                                type: string
+                                example: NSF-1234
+                              award_uri:
+                                type: string
+                                example: https://nsf.gov/awardsearch/showAward?AWD_ID=1234
+                              award_title:
+                                type: string
+                                example: Climate Change Research Grant
+        description: Custom file metadata record object.
+        required: true
+  /custom_item_metadata_records/{guid_id}/:
+    get:
+      summary: Retrieve custom item metadata for a node or preprint
+      description: Retrieve a custom item metadata record associated with a node or preprint by its GUID. Custom item metadata includes fields like language, resource type, and funding information.
+      operationId: getCustomItemMetadataRecord
+      tags:
+      - Custom Metadata
+      parameters:
+      - name: guid_id
+        in: path
+        description: The unique identifier (GUID) of the node or preprint.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved custom item metadata record.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - type
+                    - attributes
+                    properties:
+                      type:
+                        type: string
+                        description: The resource type.
+                        example: custom-item-metadata-records
+                      attributes:
+                        type: object
+                        properties:
+                          language:
+                            type: string
+                            description: The language of the content.
+                            example: en
+                          resource_type_general:
+                            type: string
+                            description: The general type of the resource.
+                            example: Dataset
+                          funders:
+                            type: array
+                            description: Information about funding sources.
+                            items:
+                              type: object
+                              required:
+                              - funder_name
+                              properties:
+                                funder_name:
+                                  type: string
+                                  example: National Science Foundation
+                                funder_identifier:
+                                  type: string
+                                  example: '123456'
+                                funder_identifier_type:
+                                  type: string
+                                  enum:
+                                  - ISNI
+                                  - GRID
+                                  - Crossref Funder ID
+                                  - ROR
+                                  - Other
+                                  example: ROR
+                                award_number:
+                                  type: string
+                                  example: NSF-1234
+                                award_uri:
+                                  type: string
+                                  example: https://nsf.gov/awardsearch/showAward?AWD_ID=1234
+                                award_title:
+                                  type: string
+                                  example: Climate Change Research Grant
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to access this metadata record.
+        '404':
+          description: Metadata record not found.
+    patch:
+      summary: Update custom item metadata for a node or preprint
+      description: Update an existing custom item metadata record for a node or preprint. Editable fields include language, resource type, and funding information.
+      operationId: updateCustomItemMetadataRecord
+      tags:
+      - Custom Metadata
+      parameters:
+      - name: guid_id
+        in: path
+        description: The unique identifier (GUID) of the node or preprint.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully updated custom item metadata record.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - type
+                    - attributes
+                    properties:
+                      type:
+                        type: string
+                        description: The resource type.
+                        example: custom-item-metadata-records
+                      attributes:
+                        type: object
+                        properties:
+                          language:
+                            type: string
+                            description: The language of the content.
+                            example: en
+                          resource_type_general:
+                            type: string
+                            description: The general type of the resource.
+                            example: Dataset
+                          funders:
+                            type: array
+                            description: Information about funding sources.
+                            items:
+                              type: object
+                              required:
+                              - funder_name
+                              properties:
+                                funder_name:
+                                  type: string
+                                  example: National Science Foundation
+                                funder_identifier:
+                                  type: string
+                                  example: '123456'
+                                funder_identifier_type:
+                                  type: string
+                                  enum:
+                                  - ISNI
+                                  - GRID
+                                  - Crossref Funder ID
+                                  - ROR
+                                  - Other
+                                  example: ROR
+                                award_number:
+                                  type: string
+                                  example: NSF-1234
+                                award_uri:
+                                  type: string
+                                  example: https://nsf.gov/awardsearch/showAward?AWD_ID=1234
+                                award_title:
+                                  type: string
+                                  example: Climate Change Research Grant
+        '400':
+          description: Validation error or invalid data.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to modify this metadata record.
+        '404':
+          description: Metadata record not found.
+        '405':
+          description: Returned if write access to the referenced project has been restricted (this restriction does not apply to metadata records associated with files). The response will include the message "This action is no longer available. Contact support if you have any questions."
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - attributes
+                  properties:
+                    type:
+                      type: string
+                      description: The resource type.
+                      example: custom-item-metadata-records
+                    attributes:
+                      type: object
+                      properties:
+                        language:
+                          type: string
+                          description: The language of the content.
+                          example: en
+                        resource_type_general:
+                          type: string
+                          description: The general type of the resource.
+                          example: Dataset
+                        funders:
+                          type: array
+                          description: Information about funding sources.
+                          items:
+                            type: object
+                            required:
+                            - funder_name
+                            properties:
+                              funder_name:
+                                type: string
+                                example: National Science Foundation
+                              funder_identifier:
+                                type: string
+                                example: '123456'
+                              funder_identifier_type:
+                                type: string
+                                enum:
+                                - ISNI
+                                - GRID
+                                - Crossref Funder ID
+                                - ROR
+                                - Other
+                                example: ROR
+                              award_number:
+                                type: string
+                                example: NSF-1234
+                              award_uri:
+                                type: string
+                                example: https://nsf.gov/awardsearch/showAward?AWD_ID=1234
+                              award_title:
+                                type: string
+                                example: Climate Change Research Grant
+        description: Custom item metadata record object.
+        required: true
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

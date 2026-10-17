@@ -1,0 +1,214 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Regions API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Regions
+  description: Storage Regions are predefined geographical or cloud-storage areas where files are stored within OSF Storage.
+paths:
+  /regions/:
+    get:
+      summary: List Regions
+      description: 'Retrieves a list of available storage regions within OSF.
+
+        Regions define geographical or cloud storage locations for storing files uploaded through OSF Storage.
+
+        ## Returns
+
+        A JSON:API-compliant response containing an array of regions under the `data` key, including region attributes such as `id` and `name`.
+
+
+        Supports standard pagination and sorting by name.
+
+        ## Errors
+
+
+        If unsuccessful, returns an `errors` object. Refer to the Errors and Error Codes section for details.'
+      tags:
+      - Regions
+      operationId: region_list
+      responses:
+        '200':
+          description: Successfully retrieved the list of regions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: us-east-1
+                        type:
+                          type: string
+                          example: regions
+                        attributes:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: US East
+                        links:
+                          type: object
+                          properties:
+                            self:
+                              type: string
+                              example: https://api.osf.io/v2/regions/us-east-1/
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 1
+                      per_page:
+                        type: integer
+                        example: 10
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/v2/regions/
+  /regions/{region_id}/:
+    get:
+      summary: Region Detail
+      description: 'Retrieves detailed information for a specific storage region identified by `{region_id}`.
+
+        A storage region defines the geographical or cloud-based location used by OSF Storage for storing files.
+
+        #### Returns
+
+        A JSON:API-compliant response containing a single `region` entity under the `data` key.
+
+        #### Errors
+
+        Returns an `errors` object if unsuccessful:
+
+        - `404 Not Found`: No region matches the provided `region_id`.'
+      tags:
+      - Regions
+      operationId: region_detail
+      parameters:
+      - name: region_id
+        in: path
+        description: The unique identifier for the region.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved region details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: us-east-1
+                      type:
+                        type: string
+                        example: regions
+                      attributes:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: US East
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: https://api.osf.io/v2/regions/us-east-1/
+        '404':
+          description: Region not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        detail:
+                          type: string
+                          example: No region matching that region_id could be found.
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

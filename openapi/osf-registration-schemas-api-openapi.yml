@@ -1,0 +1,322 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Registration Schemas API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Registration Schemas
+  description: A Registration Schemas defines the range of valid responses to a registration. Each Registration Schema is composed of "blocks" that define the individual questions a user responds to. Registration Schemas are created by the Center for Open Science or an affiliated institution and periodically migrated into the system. Registration Schemas are updated and deactivated using an internal versioning system.
+paths:
+  /schemas/registrations/:
+    get:
+      summary: Retrieve a list of Registration Schemas
+      description: 'Retrieve a paginated list of all active Registration Schemas. Registration Schemas describe the supplemental questions that accompany a registration. Registration Schemas are read-only for API users.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+        The `data` key contains an array of 10 Registration Schemas. Each resource in the array is a separate Registration Schemas object.
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+        #### Errors
+
+        This request should never return an error.'
+      tags:
+      - Registration Schemas
+      operationId: registration_schemas_list
+      x-response-schema: Registration Schemas
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Registration Schema
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The unique identifier of the Registration Schema.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the Registration Schema (`registration-schemas`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The attributes of the Registration Schema.
+                    properties:
+                      name:
+                        type: string
+                        readOnly: true
+                        description: The name of the Registration Schema
+                      active:
+                        type: boolean
+                        readOnly: true
+                        description: Bool that represents whether the Registration Schema is active.
+                      schema_version:
+                        type: integer
+                        readOnly: true
+                        description: The version of this Registration Schema
+                      schema:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          items:
+                            type: object
+                        readOnly: true
+                        description: This dictionary is the raw schema that originally defined the Registration Schema object and it's blocks.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs that link to alternative representations of the Registration Schema.
+                    properties:
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for a Registration Schema.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Links to other entities or entity collections that have a relationship to the Registration Schema.
+                    properties:
+                      schema_blocks:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the list of schema blocks that contain the question prompt information for the Registration Schema.
+              example:
+                data:
+                - type: registration-schemas
+                  id: 6176c9d45e01f100091d4f94
+                  attributes:
+                    name: Test Long-Form Registration Schema
+                    schema_version: 2
+                    schema:
+                      title: Test Long-Form Registration Schema
+                      name: Test Long-Form Registration Schema
+                      atomicSchema: true
+                      version: 2
+                      description: This is a test form for documentation purposes.
+                      pages: []
+                      blocks:
+                      - block_type: page-heading
+                        display_text: The title of the page
+                      - block_type: question-label
+                        display_text: The first question, put answer below.
+                      - block_type: long-text-input
+                        registration_response_key: Q1
+                    description: This is a test form for documentation purposes.
+                    active: true
+                  relationships:
+                    schema_blocks:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/6176c9d45e01f100091d4f94/schema_blocks/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/schemas/registrations/6176c9d45e01f100091d4f94/
+                meta:
+                  total: 1
+                  per_page: 20
+                  version: 2.2
+                links:
+                  self: https://api.test.osf.io/v2/schemas/registrations/
+                  first: null
+                  last: https://api.test.osf.io/v2/schemas/registrations/?page=2
+                  prev: null
+                  next: https://api.test.osf.io/v2/schemas/registrations/?page=2
+  /schemas/registrations/{registration_schema_id}:
+    get:
+      summary: Retrieve a Registration Schema
+      description: 'Retrieves the details of a given Registration Schema. Registration Schemas defines the desired supplemental information that should accompany be included in a Registration. Registration Schemas are Read-only to API users.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested Registration Schemas, if the request is successful.
+
+        #### Errors
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        name: registration_schema_id
+        required: true
+        description: The unique identifier of the Registration Schema example `6176c9d45e01f100091d4f94`.
+        schema:
+          type: string
+      tags:
+      - Registration Schemas
+      operationId: registration_schema_read
+      x-response-schema: Registration Schema
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Registration Schema
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The unique identifier of the Registration Schema.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the Registration Schema (`registration-schemas`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The attributes of the Registration Schema.
+                    properties:
+                      name:
+                        type: string
+                        readOnly: true
+                        description: The name of the Registration Schema
+                      active:
+                        type: boolean
+                        readOnly: true
+                        description: Bool that represents whether the Registration Schema is active.
+                      schema_version:
+                        type: integer
+                        readOnly: true
+                        description: The version of this Registration Schema
+                      schema:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          items:
+                            type: object
+                        readOnly: true
+                        description: This dictionary is the raw schema that originally defined the Registration Schema object and it's blocks.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs that link to alternative representations of the Registration Schema.
+                    properties:
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for a Registration Schema.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Links to other entities or entity collections that have a relationship to the Registration Schema.
+                    properties:
+                      schema_blocks:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the list of schema blocks that contain the question prompt information for the Registration Schema.
+              example:
+                data:
+                  type: registration-schemas
+                  id: 6176c9d45e01f100091d4f94
+                  attributes:
+                    name: Test Long-Form Registration Schema
+                    schema_version: 2
+                    schema:
+                      title: Test Long-Form Registration Schema
+                      name: Test Long-Form Registration Schema
+                      version: 2
+                      description: This is a test form for documentation purposes.
+                      pages: []
+                      blocks:
+                      - block_type: page-heading
+                        display_text: The title of the page
+                      - block_type: question-label
+                        display_text: The first question, put answer below.
+                      - block_type: long-text-input
+                        registration_response_key: Q1
+                      atomicSchema: true
+                    description: This is a test form for documentation purposes.
+                    active: true
+                  relationships:
+                    schema_blocks:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/6176c9d45e01f100091d4f94/schema_blocks/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/schemas/registrations/6176c9d45e01f100091d4f94/
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

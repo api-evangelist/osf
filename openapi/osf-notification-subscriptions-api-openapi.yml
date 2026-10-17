@@ -1,0 +1,3027 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Notification Subscriptions API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Notification Subscriptions
+  description: '**Notification Subscriptions** allow users to manage how they receive alerts about activities and events related to OSF resources, such as projects, preprints, registrations, and collections.'
+paths:
+  /subscriptions/:
+    get:
+      summary: Retrieve a List of Notification Subscriptions
+      description: 'Retrieve a paginated list of the authenticated user''s notification subscriptions.
+
+        Each subscription describes the user''s preferences for receiving notifications about specific events on OSF resources such as projects, preprints, registrations, or collections.
+
+        ## Permissions
+
+        - The authenticated user can only retrieve their own subscriptions. - Authentication is required.
+
+        ## Returns
+
+        - A JSON object containing a `data` array of subscription resources, each representing a single subscription. - Each subscription includes details such as the `event_name`, `frequency`, and links to related resources. - The response also includes `links` and `meta` keys for pagination support.'
+      tags:
+      - Notification Subscriptions
+      operationId: subscriptions_list
+      parameters:
+      - in: query
+        name: page
+        required: false
+        description: The page number of the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: filter[event_name]
+        required: false
+        description: Filter subscriptions by `event_name`.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of the user's notification subscriptions.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+              example:
+                data:
+                - id: mindrxiv_new_pending_submissions
+                  type: subscription
+                  attributes:
+                    event_name: new_pending_submissions
+                    frequency: instant
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/mindrxiv_new_pending_submissions/
+                - id: eartharxiv_new_pending_submissions
+                  type: subscription
+                  attributes:
+                    event_name: new_pending_submissions
+                    frequency: instant
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/eartharxiv_new_pending_submissions/
+                - id: osf.io/preprints/africar_new_pending_submissions
+                  type: subscription
+                  attributes:
+                    event_name: new_pending_submissions
+                    frequency: instant
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/osf.io/preprints/africar_new_pending_submissions/
+                - id: ydhnf_global_comment_replies
+                  type: subscription
+                  attributes:
+                    event_name: global_comment_replies
+                    frequency: none
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/ydhnf_global_comment_replies/
+                - id: ydhnf_global_comments
+                  type: subscription
+                  attributes:
+                    event_name: global_comments
+                    frequency: daily
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/ydhnf_global_comments/
+                - id: ydhnf_global_file_updated
+                  type: subscription
+                  attributes:
+                    event_name: global_file_updated
+                    frequency: daily
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/ydhnf_global_file_updated/
+                - id: ydhnf_global_mentions
+                  type: subscription
+                  attributes:
+                    event_name: global_mentions
+                    frequency: instant
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/ydhnf_global_mentions/
+                - id: ydhnf_global_reviews
+                  type: subscription
+                  attributes:
+                    event_name: global_reviews
+                    frequency: daily
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/ydhnf_global_reviews/
+                - id: vbks5_file_updated
+                  type: subscription
+                  attributes:
+                    event_name: file_updated
+                    frequency: instant
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/vbks5_file_updated/
+                - id: vbks5_comments
+                  type: subscription
+                  attributes:
+                    event_name: comments
+                    frequency: instant
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/vbks5_comments/
+                links:
+                  self: https://api.test.osf.io/v2/subscriptions/?page=1
+                  first: https://api.test.osf.io/v2/subscriptions/?page=1
+                  prev: null
+                  next: https://api.test.osf.io/v2/subscriptions/?page=2
+                  last: https://api.test.osf.io/v2/subscriptions/?page=4
+                meta:
+                  total: 33
+                  per_page: 10
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access these subscriptions.
+        '404':
+          description: Not Found. No subscriptions found for the user.
+  /subscriptions/{subscription_id}/:
+    get:
+      summary: Retrieve a Notification Subscription
+      description: 'Retrieve the details of a specific notification subscription, including its event name and notification frequency.
+
+        #### Permissions - The authenticated user must be the owner of the subscription.
+
+        #### Returns - A JSON object with a `data` key containing the subscription details. - Each subscription describes the event being subscribed to and the frequency at which notifications are sent.'
+      tags:
+      - Notification Subscriptions
+      operationId: subscription_detail
+      parameters:
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of the subscription.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+              example:
+                data:
+                  id: '{subscription_id}'
+                  type: subscription
+                  attributes:
+                    event_name: global_mentions
+                    frequency: instant
+                  relationships:
+                    user:
+                      data:
+                        type: users
+                        id: user_id
+                    provider:
+                      data:
+                        type: providers
+                        id: provider_id
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/{subscription_id}/
+                meta:
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access this subscription.
+        '404':
+          description: Not Found. No subscription matches the given ID.
+    patch:
+      summary: Update a Notification Subscription
+      description: 'Update the notification frequency for a specific subscription. Only the frequency attribute can be modified.
+
+        ## Permissions
+
+        - The authenticated user must be the owner of the subscription.
+
+        ## Request Body
+
+        Provide the `frequency` attribute within the `attributes` object to update the subscription. Available values for `frequency` are:
+
+        - `instant`: Receive immediate email notifications.
+
+        - `daily`: Receive a daily summary email.
+
+        - `none`: Disable email notifications for this subscription.
+
+
+        ## Returns
+
+        - A JSON object with the updated subscription details under the `data` key if the update is successful. - If unsuccessful, returns an `errors` object detailing the validation issues.'
+      tags:
+      - Notification Subscriptions
+      operationId: subscription_update
+      parameters:
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Subscription successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+              example:
+                data:
+                  id: '{subscription_id}'
+                  type: subscription
+                  attributes:
+                    event_name: global_mentions
+                    frequency: daily
+                  links:
+                    self: https://api.test.osf.io/v2/subscriptions/{subscription_id}/
+        '400':
+          description: Bad Request. Invalid input provided.
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to modify this subscription.
+        '404':
+          description: Not Found. No subscription matches the given ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - id
+                  - attributes
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - subscription
+                      description: Must be `subscription`.
+                    id:
+                      type: string
+                      description: The unique identifier of the subscription.
+                    attributes:
+                      type: object
+                      required:
+                      - frequency
+                      properties:
+                        frequency:
+                          type: string
+                          enum:
+                          - instant
+                          - daily
+                          - none
+                          description: 'The notification frequency for this subscription.
+
+                            - `instant`: Immediate email notifications.
+
+                            - `daily`: Daily summary emails.
+
+                            - `none`: No notifications.
+
+                            '
+              example:
+                data:
+                  type: subscription
+                  id: '{subscription_id}'
+                  attributes:
+                    frequency: daily
+        required: true
+  /providers/collections/{provider_id}/subscriptions/:
+    get:
+      summary: List Notification Subscriptions for a Collection Provider
+      description: 'Retrieve a paginated list of notification subscriptions associated with a specific collection provider for the authenticated user.
+
+        Each subscription resource represents the user''s notification preferences for specific events (e.g., new pending submissions) within the specified collection provider.
+
+        ## Permissions
+
+        - The user must be authenticated.
+
+        - The user must have existing subscriptions for the specified collection provider.
+
+
+        ## Response Format
+
+        - Returns a JSON:API compliant response with a `data` array containing subscription resources.
+
+        - Each subscription includes:
+
+        - `event_name`: The event that triggers notifications (e.g., `new_pending_submissions`).
+
+        - `frequency`: How often notifications are sent (`instant`, `daily`, `none`).
+
+        - `provider`: Relationship object linking to the collection provider.
+
+
+        ## Pagination
+
+        - Standard JSON:API pagination links (`first`, `last`, `prev`, `next`) and `meta` information
+
+        (e.g., `total`, `per_page`) are included in the response.'
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the collection provider.
+        schema:
+          type: string
+      tags:
+      - Notification Subscriptions
+      operationId: collection_provider_subscription_list
+      responses:
+        '200':
+          description: Successful response with a paginated list of subscriptions.
+          content:
+            application/json:
+              example:
+                schema:
+                  type: object
+                  title: Subscription
+                  description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: 'The unique identifier of the Subscription.
+
+                        This corresponds to the `_id` field on the NotificationSubscription model.
+
+                        '
+                    type:
+                      type: string
+                      readOnly: true
+                      enum:
+                      - subscription
+                      description: 'The type identifier of this resource. Always `subscription`.
+
+                        '
+                    attributes:
+                      type: object
+                      title: Attributes
+                      description: 'Attributes describing the subscription event and notification frequency.
+
+                        '
+                      properties:
+                        event_name:
+                          type: string
+                          readOnly: true
+                          description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                        frequency:
+                          type: string
+                          description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                          enum:
+                          - instant
+                          - daily
+                          - none
+                    relationships:
+                      type: object
+                      title: Relationships
+                      description: 'Links to related resources: the user and (optionally) a provider.
+
+                        '
+                      properties:
+                        user:
+                          type: object
+                          description: 'The user associated with this subscription.
+
+                            '
+                          properties:
+                            links:
+                              type: object
+                              properties:
+                                related:
+                                  type: string
+                                  format: uri
+                                  description: 'A link to the user resource.
+
+                                    '
+                            data:
+                              type: object
+                              properties:
+                                type:
+                                  type: string
+                                  enum:
+                                  - users
+                                  description: 'The resource type (`users`).
+
+                                    '
+                                id:
+                                  type: string
+                                  description: 'The unique identifier of the user.
+
+                                    '
+                        provider:
+                          type: object
+                          description: 'The provider associated with this subscription.
+
+                            This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                            '
+                          properties:
+                            links:
+                              type: object
+                              properties:
+                                related:
+                                  type: string
+                                  format: uri
+                                  description: 'A link to the provider resource.
+
+                                    '
+                            data:
+                              type: object
+                              properties:
+                                type:
+                                  type: string
+                                  enum:
+                                  - providers
+                                  description: 'The resource type (`providers`).
+
+                                    '
+                                id:
+                                  type: string
+                                  description: 'The unique identifier of the provider.
+
+                                    '
+                    links:
+                      type: object
+                      title: Links
+                      description: 'Links to alternative representations or actions for the Subscription resource.
+
+                        '
+                      properties:
+                        self:
+                          type: string
+                          format: uri
+                          description: 'A link to the detail page for this subscription.
+
+                            '
+                  example:
+                    data:
+                      id: abcd1234
+                      type: subscription
+                      attributes:
+                        event_name: new_pending_submissions
+                        frequency: instant
+                      relationships:
+                        user:
+                          data:
+                            type: users
+                            id: user_id
+                          links:
+                            related: https://api.osf.io/v2/users/user_id/
+                        provider:
+                          data:
+                            type: providers
+                            id: provider_id
+                          links:
+                            related: https://api.osf.io/v2/providers/collections/provider_id/
+                      links:
+                        self: https://api.osf.io/v2/subscriptions/abcd1234/
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. The user does not have permission to access subscriptions for this provider.
+        '404':
+          description: Not Found. The specified collection provider does not exist or has no subscriptions for the user.
+  /providers/collections/{provider_id}/subscriptions/{subscription_id}/:
+    get:
+      summary: Retrieve a Collection Provider Notification Subscription
+      description: 'Retrieve the details of a specific notification subscription associated with a collection provider.
+
+        ## Permissions
+
+        - The authenticated user must be the owner of the subscription.
+
+
+        ## Returns
+
+        - A JSON object with a `data` key containing the subscription details.
+
+        - Each subscription describes the event being subscribed to and the frequency at which notifications are sent.'
+      tags:
+      - Notification Subscriptions
+      operationId: collection_provider_subscription_detail
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the collection provider.
+        schema:
+          type: string
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of the subscription.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+              example:
+                data:
+                  id: collection123_subscription456
+                  type: subscription
+                  attributes:
+                    event_name: new_pending_submissions
+                    frequency: instant
+                  relationships:
+                    user:
+                      data:
+                        type: users
+                        id: user_id
+                    provider:
+                      data:
+                        type: providers
+                        id: collection123
+                  links:
+                    self: https://api.osf.io/v2/providers/collections/collection123/subscriptions/collection123_subscription456/
+                meta:
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication credentials are missing or invalid.
+        '403':
+          description: Forbidden. You do not have permission to access this subscription.
+        '404':
+          description: Not Found. No subscription matches the given ID or the collection provider does not exist.
+    patch:
+      summary: Update a Collection Provider Notification Subscription
+      description: 'Update the notification frequency for a specific subscription associated with a collection provider.
+
+        #### Permissions - The authenticated user must be the owner of the subscription.
+
+        #### Request Body Provide the `frequency` attribute within the `attributes` object to update the subscription.
+
+        #### Available Frequency Values:
+
+        - `instant`: Immediate email notifications.
+
+        - `daily`: Daily summary emails.
+
+        - `none`: Disable email notifications.
+
+
+        #### Returns - A JSON object with the updated subscription details under the `data` key if the update is successful. - If unsuccessful, returns an `errors` object detailing the validation issues.'
+      tags:
+      - Notification Subscriptions
+      operationId: collection_provider_subscription_patch
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the collection provider.
+        schema:
+          type: string
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Subscription successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+              example:
+                data:
+                  id: collection123_subscription456
+                  type: subscription
+                  attributes:
+                    event_name: new_pending_submissions
+                    frequency: daily
+                  relationships:
+                    user:
+                      data:
+                        type: users
+                        id: user_id
+                    provider:
+                      data:
+                        type: providers
+                        id: collection123
+                  links:
+                    self: https://api.osf.io/v2/providers/collections/collection123/subscriptions/collection123_subscription456/
+                meta:
+                  version: '2.0'
+        '400':
+          description: Bad Request. Invalid input provided or missing required fields.
+        '401':
+          description: Unauthorized. Authentication credentials are missing or invalid.
+        '403':
+          description: Forbidden. You do not have permission to update this subscription.
+        '404':
+          description: Not Found. No subscription matches the given ID or the collection provider does not exist.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - id
+                  - attributes
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - subscription
+                      description: Must be `subscription`.
+                    id:
+                      type: string
+                      description: The unique identifier of the subscription.
+                    attributes:
+                      type: object
+                      required:
+                      - frequency
+                      properties:
+                        frequency:
+                          type: string
+                          enum:
+                          - instant
+                          - daily
+                          - none
+                          description: 'The notification frequency for this subscription.
+
+                            - `instant`: Immediate email notifications.
+
+                            - `daily`: Daily summary emails.
+
+                            - `none`: No notifications.
+
+                            '
+              example:
+                data:
+                  type: subscription
+                  id: collection123_subscription456
+                  attributes:
+                    frequency: daily
+        required: true
+  /providers/preprints/{provider_id}/subscriptions/:
+    get:
+      summary: List Preprint Provider Subscriptions
+      description: 'Retrieve a paginated list of notification subscriptions for a specific preprint provider associated with the authenticated user.
+
+        ## Permissions
+
+        User must be authenticated and must have subscriptions for the specified preprint provider.
+
+        ## Returns
+
+        A JSON object with a paginated list of notification subscriptions, including subscription frequency, event type, and provider details.'
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        description: The page number of results to retrieve.
+        schema:
+          type: integer
+      tags:
+      - Notification Subscriptions
+      operationId: preprint_provider_subscription_list
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /providers/preprints/{provider_id}/subscriptions/{subscription_id}/:
+    get:
+      summary: Retrieve a Preprint Provider Subscription
+      description: 'Retrieve details of an individual notification subscription associated with a preprint provider.
+
+        ## Permissions
+
+        User must be authenticated and subscribed to the specified preprint provider notification.
+
+        ## Returns
+
+        A JSON object containing details about the requested subscription, including frequency, event type, and provider information.'
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the subscription.
+        schema:
+          type: string
+      tags:
+      - Notification Subscriptions
+      operationId: preprint_provider_subscription_detail
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: provider123_subscription456
+                      type:
+                        type: string
+                        example: notification_subscriptions
+                      attributes:
+                        type: object
+                        properties:
+                          frequency:
+                            type: string
+                            enum:
+                            - none
+                            - email_digest
+                            - email_transactional
+                          event_name:
+                            type: string
+                            example: preprint_added
+                          provider_name:
+                            type: string
+                            example: TestArXiv
+                          provider_id:
+                            type: string
+                            example: testarxiv
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            format: uri
+                            example: https://api.osf.io/v2/providers/preprints/testarxiv/subscriptions/provider123_subscription456/
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    patch:
+      summary: Update a Preprint Provider Subscription
+      description: 'Updates a preprint provider subscription by setting the values specified in the request body. Unspecified attributes remain unchanged.
+
+        The subscription can be updated using a **PATCH** request. The only editable attribute is `frequency`.
+
+        ## Permissions
+
+        User must be authenticated and the owner of the subscription.
+
+        ## Returns
+
+        A JSON object containing the updated subscription details.'
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the subscription.
+        schema:
+          type: string
+      tags:
+      - Notification Subscriptions
+      operationId: preprint_provider_subscription_update
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: provider123_subscription456
+                      type:
+                        type: string
+                        example: notification_subscriptions
+                      attributes:
+                        type: object
+                        properties:
+                          frequency:
+                            type: string
+                            enum:
+                            - none
+                            - email_digest
+                            - email_transactional
+                          event_name:
+                            type: string
+                            example: preprint_added
+                          provider_name:
+                            type: string
+                            example: TestArXiv
+                          provider_id:
+                            type: string
+                            example: testarxiv
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            format: uri
+                            example: https://api.osf.io/v2/providers/preprints/testarxiv/subscriptions/provider123_subscription456/
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                  type: notification_subscriptions
+                  id: provider123_subscription456
+                  attributes:
+                    frequency: email_digest
+        required: true
+  /providers/registrations/{provider_id}/subscriptions/:
+    get:
+      summary: List Registration Provider Subscriptions
+      description: 'Retrieve a list of notification subscriptions for a specific registration provider associated with the authenticated user.
+
+        ## Permissions
+
+        User must be authenticated to access their registration provider subscriptions.
+
+        ## Returns
+
+        A paginated JSON object containing notification subscriptions for the registration provider.'
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the registration provider.
+        schema:
+          type: string
+      - in: query
+        name: page
+        required: false
+        description: Page number of the results to retrieve.
+        schema:
+          type: integer
+      tags:
+      - Notification Subscriptions
+      operationId: registration_subscription_list
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+  /providers/registrations/{provider_id}/subscriptions/{subscription_id}/:
+    get:
+      summary: Retrieve a Registration Provider Notification Subscription
+      description: 'Retrieve the details of a specific notification subscription associated with a registration provider.
+
+        This endpoint allows an authenticated user to view their current subscription preferences for events related to a specific registration provider.
+
+        ## Permissions
+
+        - The requesting user **must be authenticated**.
+
+        - The requesting user **must be the owner** of the subscription.
+
+
+        Unauthorized or forbidden access attempts will result in `401 Unauthorized` or `403 Forbidden` errors.
+
+        ## Returns A JSON object representing the notification subscription, including:
+
+
+        - `id`: Unique identifier of the subscription.
+
+        - `type`: Resource type (always `subscription`).
+
+        - `attributes`: Event type and notification frequency.
+
+        - `relationships`: Links to the associated user and provider resources.
+
+        - `links`: A `self` link to this subscription resource.'
+      tags:
+      - Notification Subscriptions
+      operationId: registration_provider_subscription_detail
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the registration provider associated with this subscription.
+        schema:
+          type: string
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Subscription successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+              example:
+                data:
+                  id: reg123_subscription456
+                  type: subscription
+                  attributes:
+                    event_name: new_pending_submissions
+                    frequency: instant
+                  relationships:
+                    user:
+                      data:
+                        type: users
+                        id: user_id
+                    provider:
+                      data:
+                        type: providers
+                        id: reg123
+                  links:
+                    self: https://api.osf.io/v2/providers/registrations/reg123/subscriptions/reg123_subscription456/
+                meta:
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication credentials are missing or invalid.
+        '403':
+          description: Forbidden. You do not have permission to access this subscription.
+        '404':
+          description: Not Found. The subscription or provider does not exist.
+    patch:
+      summary: Update a Registration Provider Notification Subscription
+      description: 'Update a specific notification subscription associated with a registration provider.
+
+        Typically, this endpoint is used to change the notification `frequency` for the subscription.
+
+        ## Permissions
+
+        - The requesting user **must be authenticated**.
+
+        - The requesting user **must be the owner** of the subscription.
+
+
+        Unauthorized or forbidden access attempts will result in `401 Unauthorized` or `403 Forbidden` errors.
+
+        ## Request Body Provide the subscription ID and the updated `frequency` attribute.
+
+        ## Available Frequency Values
+
+        - `instant`: Immediate email notifications.
+
+        - `daily`: Daily summary emails.
+
+        - `none`: No notifications.
+
+
+        ## Returns A JSON object representing the updated subscription.'
+      tags:
+      - Notification Subscriptions
+      operationId: registration_provider_subscription_patch
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the registration provider associated with this subscription.
+        schema:
+          type: string
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Subscription successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+              example:
+                data:
+                  id: reg123_subscription456
+                  type: subscription
+                  attributes:
+                    event_name: new_pending_submissions
+                    frequency: daily
+                  relationships:
+                    user:
+                      data:
+                        type: users
+                        id: user_id
+                    provider:
+                      data:
+                        type: providers
+                        id: reg123
+                  links:
+                    self: https://api.osf.io/v2/providers/registrations/reg123/subscriptions/reg123_subscription456/
+                meta:
+                  version: '2.0'
+        '400':
+          description: Bad Request. The request body is malformed or missing required fields.
+        '401':
+          description: Unauthorized. Authentication credentials are missing or invalid.
+        '403':
+          description: Forbidden. You do not have permission to modify this subscription.
+        '404':
+          description: Not Found. The subscription or provider does not exist.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - id
+                  - attributes
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - subscription
+                      description: The resource type. Must be `subscription`.
+                    id:
+                      type: string
+                      description: The unique identifier of the subscription.
+                    attributes:
+                      type: object
+                      required:
+                      - frequency
+                      properties:
+                        frequency:
+                          type: string
+                          enum:
+                          - instant
+                          - daily
+                          - none
+                          description: 'Determines how frequently the user receives notifications.
+
+                            - `instant`: Immediate email notifications.
+
+                            - `daily`: Daily summary emails.
+
+                            - `none`: No notifications.
+
+                            '
+              example:
+                data:
+                  type: subscription
+                  id: reg123_subscription456
+                  attributes:
+                    frequency: daily
+        description: JSON API-formatted payload specifying the updated subscription attributes.
+        required: true
+  /registration_subscriptions/{subscription_id}/:
+    get:
+      summary: Retrieve a Registration Provider Subscription
+      description: 'Retrieve details of a specific notification subscription for a registration provider.
+
+        ## Permissions
+
+        The user must be authenticated and have permission to access the specified registration provider subscription.
+
+        ## Returns
+
+        A JSON object containing details of the notification subscription for the registration provider.'
+      parameters:
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      tags:
+      - Notification Subscriptions
+      operationId: registration_subscription_detail
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: reg123_subscription456
+                      type:
+                        type: string
+                        example: notification_subscriptions
+                      attributes:
+                        type: object
+                        properties:
+                          frequency:
+                            type: string
+                            enum:
+                            - none
+                            - email_digest
+                            - email_transactional
+                            example: email_transactional
+                          event_name:
+                            type: string
+                            example: new_pending_registration
+                          provider_name:
+                            type: string
+                            example: TestRegistrationProvider
+                          provider_id:
+                            type: string
+                            example: reg123
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            format: uri
+                            example: https://api.osf.io/v2/providers/registrations/reg123/subscriptions/reg123_subscription456/
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    patch:
+      summary: Update a Registration Provider Subscription
+      description: 'Update the frequency of a specific notification subscription for a registration provider.
+
+        ## Permissions
+
+        User must be authenticated and be the owner of the subscription to modify it.
+
+        ## Returns
+
+        A JSON object containing the updated details of the notification subscription.'
+      parameters:
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      tags:
+      - Notification Subscriptions
+      operationId: registration_subscription_update
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                  type: notification_subscriptions
+                  id: reg123_subscription456
+                  attributes:
+                    frequency: none
+        required: true
+  /collection_subscriptions/{subscription_id}/:
+    get:
+      summary: Retrieve a Collection Subscription
+      description: 'Retrieve the details of a specific notification subscription associated with a collection provider.
+
+        ## Permissions
+
+        - The authenticated user **must** be the owner of the subscription.
+
+        - Access is restricted to subscriptions owned by the requesting user.
+
+
+        ## Returns
+
+        - A JSON:API compliant representation of the subscription resource.
+
+        - Includes event name, frequency, user, provider, and related links.'
+      tags:
+      - Notification Subscriptions
+      operationId: collection_subscription_detail
+      parameters:
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Subscription successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+              example:
+                data:
+                  id: collection123_subscription456
+                  type: subscription
+                  attributes:
+                    event_name: new_pending_submissions
+                    frequency: instant
+                  relationships:
+                    user:
+                      data:
+                        type: users
+                        id: user_id
+                    provider:
+                      data:
+                        type: providers
+                        id: collection123
+                  links:
+                    self: https://api.osf.io/v2/collection_subscriptions/collection123_subscription456/
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to view this subscription.
+        '404':
+          description: Not Found. No subscription found matching the given ID.
+    patch:
+      summary: Update a Collection Subscription
+      description: 'Update the notification frequency for a specific collection provider subscription.
+
+        ## Permissions
+
+        - The authenticated user **must** be the owner of the subscription.
+
+        - Only the `frequency` attribute can be modified.
+
+
+        ## Request Body Provide the `frequency` inside the `attributes` object. Valid values include:
+
+        - `instant`: Immediate email notifications.
+
+        - `daily`: Daily digest emails.
+
+        - `none`: Disable notifications for this event.
+
+
+        ## Returns
+
+        - A JSON:API compliant representation of the updated subscription resource.'
+      tags:
+      - Notification Subscriptions
+      operationId: collection_subscription_update
+      parameters:
+      - in: path
+        name: subscription_id
+        required: true
+        description: The unique identifier of the notification subscription.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Subscription successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Subscription
+                description: "A Subscription resource represents a user's notification preferences for specific events\noccurring on the OSF. Subscriptions can be global or tied to specific providers such as \ncollections, preprints, or registrations.\n"
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: 'The unique identifier of the Subscription.
+
+                      This corresponds to the `_id` field on the NotificationSubscription model.
+
+                      '
+                  type:
+                    type: string
+                    readOnly: true
+                    enum:
+                    - subscription
+                    description: 'The type identifier of this resource. Always `subscription`.
+
+                      '
+                  attributes:
+                    type: object
+                    title: Attributes
+                    description: 'Attributes describing the subscription event and notification frequency.
+
+                      '
+                    properties:
+                      event_name:
+                        type: string
+                        readOnly: true
+                        description: "The name of the event that triggers this subscription.\nPossible values include:\n  - `global_comments`\n  - `global_mentions`\n  - `global_reviews`\n  - `global_comment_replies`\n  - `comments`\n  - `file_updated`\n  - `new_pending_submissions`\n"
+                      frequency:
+                        type: string
+                        description: "The notification frequency for the subscribed event.\nAccepted values:\n  - `instant`: Receive email notifications immediately when the event occurs.\n  - `daily`: Receive a daily summary email.\n  - `none`: Do not receive notifications for this subscription.\n"
+                        enum:
+                        - instant
+                        - daily
+                        - none
+                  relationships:
+                    type: object
+                    title: Relationships
+                    description: 'Links to related resources: the user and (optionally) a provider.
+
+                      '
+                    properties:
+                      user:
+                        type: object
+                        description: 'The user associated with this subscription.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the user resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - users
+                                description: 'The resource type (`users`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the user.
+
+                                  '
+                      provider:
+                        type: object
+                        description: 'The provider associated with this subscription.
+
+                          This can be a Collection Provider, Preprint Provider, or Registration Provider.
+
+                          '
+                        properties:
+                          links:
+                            type: object
+                            properties:
+                              related:
+                                type: string
+                                format: uri
+                                description: 'A link to the provider resource.
+
+                                  '
+                          data:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                enum:
+                                - providers
+                                description: 'The resource type (`providers`).
+
+                                  '
+                              id:
+                                type: string
+                                description: 'The unique identifier of the provider.
+
+                                  '
+                  links:
+                    type: object
+                    title: Links
+                    description: 'Links to alternative representations or actions for the Subscription resource.
+
+                      '
+                    properties:
+                      self:
+                        type: string
+                        format: uri
+                        description: 'A link to the detail page for this subscription.
+
+                          '
+                example:
+                  data:
+                    id: abcd1234
+                    type: subscription
+                    attributes:
+                      event_name: new_pending_submissions
+                      frequency: instant
+                    relationships:
+                      user:
+                        data:
+                          type: users
+                          id: user_id
+                        links:
+                          related: https://api.osf.io/v2/users/user_id/
+                      provider:
+                        data:
+                          type: providers
+                          id: provider_id
+                        links:
+                          related: https://api.osf.io/v2/providers/collections/provider_id/
+                    links:
+                      self: https://api.osf.io/v2/subscriptions/abcd1234/
+              example:
+                data:
+                  id: collection123_subscription456
+                  type: subscription
+                  attributes:
+                    event_name: new_pending_submissions
+                    frequency: daily
+                  relationships:
+                    user:
+                      data:
+                        type: users
+                        id: user_id
+                    provider:
+                      data:
+                        type: providers
+                        id: collection123
+                  links:
+                    self: https://api.osf.io/v2/collection_subscriptions/collection123_subscription456/
+        '400':
+          description: Bad Request. Invalid input provided.
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to update this subscription.
+        '404':
+          description: Not Found. No subscription matches the given ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - id
+                  - attributes
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                      - subscription
+                      description: Must be `subscription`.
+                    id:
+                      type: string
+                      description: The unique identifier of the subscription.
+                    attributes:
+                      type: object
+                      required:
+                      - frequency
+                      properties:
+                        frequency:
+                          type: string
+                          enum:
+                          - instant
+                          - daily
+                          - none
+                          description: 'The notification frequency for this subscription.
+
+                            - `instant`: Immediate email notifications.
+
+                            - `daily`: Daily digest emails.
+
+                            - `none`: No notifications.
+
+                            '
+              example:
+                data:
+                  type: subscription
+                  id: collection123_subscription456
+                  attributes:
+                    frequency: daily
+        description: JSON:API-compliant payload specifying the updated subscription attributes.
+        required: true
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

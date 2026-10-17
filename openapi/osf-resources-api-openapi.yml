@@ -1,0 +1,727 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Resources API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Resources
+  description: Resources are structured data artifacts associated with a Registration.
+paths:
+  /registrations/{registration_id}/resources/:
+    get:
+      summary: List Related Resources for a Registration
+      description: 'Retrieve a list of resources associated with a specific registration.
+
+        This endpoint returns a list of nodes, preprints, and other resources that have been explicitly linked to the registration as related resources. These resources help provide additional context, background, or supporting materials for the registration.
+
+        #### Permissions
+
+        - Public registrations expose their related resources publicly.
+
+        - Private registrations require the user to have read access to view related resources.
+
+
+        #### Returns
+
+        - A JSON object with a `data` key containing an array of related resources.
+
+        - Related resources may include nodes, preprints, and other OSF resources.'
+      tags:
+      - Resources
+      operationId: registrations_resources_list
+      parameters:
+      - in: path
+        name: registration_id
+        required: true
+        description: The unique identifier of the registration.
+        schema:
+          type: string
+      - in: query
+        name: page
+        description: Page number of results to return (pagination).
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successfully retrieved related resources for this registration.
+          content:
+            application/json:
+              example:
+                data:
+                - id: xyz123
+                  type: nodes
+                  attributes:
+                    title: Supporting Project A
+                    description: Dataset related to the registration study
+                    public: true
+                    date_created: '2024-01-10T10:00:00Z'
+                    date_modified: '2024-03-22T15:30:00Z'
+                  relationships:
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xyz123/contributors/
+                    affiliated_institutions:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xyz123/institutions/
+                  links:
+                    self: https://api.osf.io/v2/nodes/xyz123/
+                meta:
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required to access related resources for this registration.
+        '403':
+          description: Forbidden. You do not have permission to view the related resources for this registration.
+        '404':
+          description: Not Found. No registration matches the given ID.
+  /resources/:
+    get:
+      summary: List resources
+      description: Retrieve a list of resources associated with registrations.
+      tags:
+      - Resources
+      operationId: listResources
+      responses:
+        '200':
+          description: Successful retrieval of resource list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    description: Array of resource objects.
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - attributes
+                      - relationships
+                      properties:
+                        id:
+                          type: string
+                          example: abc123
+                          description: Unique identifier for the resource.
+                        type:
+                          type: string
+                          example: resources
+                          description: 'The type of this object: `resources`.'
+                        attributes:
+                          type: object
+                          description: Resource metadata.
+                          properties:
+                            date_created:
+                              type: string
+                              format: date-time
+                              example: '2024-01-01T00:00:00Z'
+                              description: When the resource was created.
+                            date_modified:
+                              type: string
+                              format: date-time
+                              example: '2024-01-02T00:00:00Z'
+                              description: When the resource was last updated.
+                            description:
+                              type: string
+                              example: Dataset resource
+                              description: A short summary of the resource.
+                            resource_type:
+                              type: string
+                              example: data
+                              description: "The category of the resource. Valid values include:\n - data\n - analytic_code\n - materials\n - papers\n - supplements\n"
+                            finalized:
+                              type: boolean
+                              example: true
+                              description: Whether the resource is finalized and no longer editable.
+                            pid:
+                              type: string
+                              example: 10.1234/resource.5678
+                              description: A persistent identifier (DOI) assigned to this resource.
+                        relationships:
+                          type: object
+                          description: Relationships for the resource.
+                          properties:
+                            registration:
+                              type: object
+                              description: The registration associated with the resource.
+                              properties:
+                                data:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: reg123
+                                      description: ID of the related registration.
+                                    type:
+                                      type: string
+                                      example: registrations
+                                      description: Type of the related object.
+                        links:
+                          type: object
+                          description: Related API URLs for this resource.
+                          properties:
+                            self:
+                              type: string
+                              example: https://api.osf.io/v2/resources/abc123/
+                              description: URL to the resource detail.
+                  meta:
+                    type: object
+                    description: Metadata for pagination.
+                    properties:
+                      total:
+                        type: integer
+                        example: 1
+                        description: Total number of resources.
+                      per_page:
+                        type: integer
+                        example: 10
+                        description: Results per page.
+                      page:
+                        type: integer
+                        example: 1
+                        description: Current page number.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Permission denied.
+    post:
+      summary: Create a new resource
+      description: Create a new resource associated with a registration.
+      tags:
+      - Resources
+      operationId: createResource
+      responses:
+        '201':
+          description: Successfully created a new resource.
+          content:
+            application/json:
+              schema:
+                description: A resource associated with a registration, such as datasets, materials, code, or papers.
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - id
+                    - type
+                    - attributes
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier of the resource.
+                        example: abc123
+                      type:
+                        type: string
+                        description: The type of the resource object.
+                        example: resources
+                      attributes:
+                        type: object
+                        properties:
+                          date_created:
+                            type: string
+                            format: date-time
+                            example: '2024-01-01T00:00:00Z'
+                            description: The date the resource was created.
+                          date_modified:
+                            type: string
+                            format: date-time
+                            example: '2024-01-02T00:00:00Z'
+                            description: The date the resource was last modified.
+                          description:
+                            type: string
+                            description: A brief description of the resource.
+                            example: Dataset resource for analysis of trial results
+                          resource_type:
+                            type: string
+                            description: 'The type of the resource. Acceptable values include:
+
+                              - data
+
+                              - analytic_code
+
+                              - materials
+
+                              - papers
+
+                              - supplements
+
+                              '
+                            example: data
+                          finalized:
+                            type: boolean
+                            description: Indicates whether the resource has been finalized.
+                            example: true
+                          pid:
+                            type: string
+                            description: Persistent Identifier (PID) assigned to the resource.
+                            example: 10.1234/osf.io/abcde
+                      relationships:
+                        type: object
+                        properties:
+                          registration:
+                            type: object
+                            properties:
+                              data:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    example: reg123
+                                    description: The unique identifier of the registration.
+                                  type:
+                                    type: string
+                                    example: registrations
+                                    description: Type for the registration.
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: https://api.osf.io/v2/resources/abc123/
+                            description: The canonical API endpoint for this resource.
+        '400':
+          description: Validation error or invalid data.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Permission denied.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - attributes
+                  - relationships
+                  properties:
+                    type:
+                      type: string
+                      example: resources
+                      description: Must be `resources`.
+                    attributes:
+                      type: object
+                      description: Metadata about the new resource.
+                      required:
+                      - description
+                      - resource_type
+                      properties:
+                        description:
+                          type: string
+                          example: Dataset resource
+                          description: Short text describing the resource.
+                        resource_type:
+                          type: string
+                          example: data
+                          description: Type of resource (e.g., data, materials).
+                    relationships:
+                      type: object
+                      description: Relationships for the resource.
+                      properties:
+                        registration:
+                          type: object
+                          description: The registration this resource is linked to.
+                          properties:
+                            data:
+                              type: object
+                              required:
+                              - type
+                              - id
+                              properties:
+                                type:
+                                  type: string
+                                  example: registrations
+                                  description: Must be `registrations`.
+                                id:
+                                  type: string
+                                  example: reg123
+                                  description: ID of the related registration.
+        description: JSON:API-compliant resource creation payload.
+        required: true
+  /resources/{resource_id}/:
+    get:
+      summary: Retrieve a resource
+      description: 'Retrieve the full metadata for a specific resource associated with a registration.
+
+
+        A resource may include datasets, materials, code, papers, or supplements.'
+      tags:
+      - Resources
+      operationId: getResource
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        description: The unique identifier of the resource.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of the resource.
+          content:
+            application/json:
+              schema:
+                description: A resource associated with a registration, such as datasets, materials, code, or papers.
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - id
+                    - type
+                    - attributes
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier of the resource.
+                        example: abc123
+                      type:
+                        type: string
+                        description: The type of the resource object.
+                        example: resources
+                      attributes:
+                        type: object
+                        properties:
+                          date_created:
+                            type: string
+                            format: date-time
+                            example: '2024-01-01T00:00:00Z'
+                            description: The date the resource was created.
+                          date_modified:
+                            type: string
+                            format: date-time
+                            example: '2024-01-02T00:00:00Z'
+                            description: The date the resource was last modified.
+                          description:
+                            type: string
+                            description: A brief description of the resource.
+                            example: Dataset resource for analysis of trial results
+                          resource_type:
+                            type: string
+                            description: 'The type of the resource. Acceptable values include:
+
+                              - data
+
+                              - analytic_code
+
+                              - materials
+
+                              - papers
+
+                              - supplements
+
+                              '
+                            example: data
+                          finalized:
+                            type: boolean
+                            description: Indicates whether the resource has been finalized.
+                            example: true
+                          pid:
+                            type: string
+                            description: Persistent Identifier (PID) assigned to the resource.
+                            example: 10.1234/osf.io/abcde
+                      relationships:
+                        type: object
+                        properties:
+                          registration:
+                            type: object
+                            properties:
+                              data:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    example: reg123
+                                    description: The unique identifier of the registration.
+                                  type:
+                                    type: string
+                                    example: registrations
+                                    description: Type for the registration.
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: https://api.osf.io/v2/resources/abc123/
+                            description: The canonical API endpoint for this resource.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Permission denied.
+        '404':
+          description: Resource not found.
+    patch:
+      summary: Update a resource
+      description: 'Update one or more metadata fields of a specific resource.
+
+
+        Only the fields provided in the request payload will be updated.'
+      tags:
+      - Resources
+      operationId: updateResource
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        description: The unique identifier of the resource to update.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Resource updated successfully.
+          content:
+            application/json:
+              schema:
+                description: A resource associated with a registration, such as datasets, materials, code, or papers.
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - id
+                    - type
+                    - attributes
+                    properties:
+                      id:
+                        type: string
+                        description: Unique identifier of the resource.
+                        example: abc123
+                      type:
+                        type: string
+                        description: The type of the resource object.
+                        example: resources
+                      attributes:
+                        type: object
+                        properties:
+                          date_created:
+                            type: string
+                            format: date-time
+                            example: '2024-01-01T00:00:00Z'
+                            description: The date the resource was created.
+                          date_modified:
+                            type: string
+                            format: date-time
+                            example: '2024-01-02T00:00:00Z'
+                            description: The date the resource was last modified.
+                          description:
+                            type: string
+                            description: A brief description of the resource.
+                            example: Dataset resource for analysis of trial results
+                          resource_type:
+                            type: string
+                            description: 'The type of the resource. Acceptable values include:
+
+                              - data
+
+                              - analytic_code
+
+                              - materials
+
+                              - papers
+
+                              - supplements
+
+                              '
+                            example: data
+                          finalized:
+                            type: boolean
+                            description: Indicates whether the resource has been finalized.
+                            example: true
+                          pid:
+                            type: string
+                            description: Persistent Identifier (PID) assigned to the resource.
+                            example: 10.1234/osf.io/abcde
+                      relationships:
+                        type: object
+                        properties:
+                          registration:
+                            type: object
+                            properties:
+                              data:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    example: reg123
+                                    description: The unique identifier of the registration.
+                                  type:
+                                    type: string
+                                    example: registrations
+                                    description: Type for the registration.
+                      links:
+                        type: object
+                        properties:
+                          self:
+                            type: string
+                            example: https://api.osf.io/v2/resources/abc123/
+                            description: The canonical API endpoint for this resource.
+        '400':
+          description: Validation error or malformed request data.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Permission denied.
+        '404':
+          description: Resource not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - id
+                  - type
+                  - attributes
+                  properties:
+                    id:
+                      type: string
+                      example: abc123
+                      description: The ID of the resource being updated.
+                    type:
+                      type: string
+                      example: resources
+                      description: The resource type — must be `"resources"`.
+                    attributes:
+                      type: object
+                      properties:
+                        description:
+                          type: string
+                          example: Updated dataset description.
+                          description: A short description of the resource.
+                        resource_type:
+                          type: string
+                          example: materials
+                          description: 'Type of the resource. Allowed values:
+
+                            - data
+
+                            - analytic_code
+
+                            - materials
+
+                            - papers
+
+                            - supplements
+
+                            '
+                        finalized:
+                          type: boolean
+                          example: true
+                          description: Whether the resource is finalized (locked for editing).
+                        pid:
+                          type: string
+                          example: 10.5678/resource.9012
+                          description: A persistent identifier (e.g. DOI) for the resource.
+        description: A JSON:API compliant object describing the updates.
+        required: true
+    delete:
+      summary: Delete a resource
+      description: 'Permanently delete a specific resource.
+
+
+        Finalized resources or those linked to active registrations may not be deletable.'
+      tags:
+      - Resources
+      operationId: deleteResource
+      parameters:
+      - name: resource_id
+        in: path
+        required: true
+        description: The unique identifier of the resource to delete.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Resource deleted successfully. No content returned.
+        '401':
+          description: Authentication required.
+        '403':
+          description: Permission denied or resource cannot be deleted.
+        '404':
+          description: Resource not found.
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

@@ -1,0 +1,403 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Registration Schema Blocks API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Registration Schema Blocks
+  description: Registration Schema Blocks are read-only entities, they represent question prompts and form inputs known as "blocks" that make up a Registration Schemas. Each block has a designated `block_type` that determines what type of information that Schema Block's corresponding block in the Schema Response.
+paths:
+  /schema_responses/{schema_response_id}/schema_blocks/:
+    get:
+      summary: Retrieve a list of Registration Schema Blocks for a Schema Response
+      description: 'This returns a list of all the Registration Schema Blocks are contained in Registration Schema.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested Registration Schemas, if the request is successful.
+
+        #### Errors
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        name: schema_response_id
+        required: true
+        description: The unique identifier of the Registration Schema example `6176c9d45e01f100091d4f94`.
+        schema:
+          type: string
+      tags:
+      - Registration Schema Blocks
+      operationId: schema_response_blocks_read
+      x-response-schema: Schema Response
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Registration Schema Block
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The unique identifier of the Registration Schema Block.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the Registration Schema Block (`schema-blocks`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The attributes of the Registration Schema Block.
+                    properties:
+                      registration_response_key:
+                        type: string
+                        readOnly: true
+                        description: This string is the the block key for the Registration Schema Block's corresponding block on the Schema Response.
+                      schema_block_group_key:
+                        type: string
+                        readOnly: true
+                        description: This string indicates if a block is part of a block group, block groups may contain the different options dropdown menu or a group of inputs and display elements that are validated together.
+                      block_type:
+                        type: string
+                        readOnly: true
+                        description: A string that represents the type of input that the schema will take and the UI element that appears to the user on the frontend.
+                        enum:
+                        - page-heading
+                        - section-heading
+                        - subsection-heading
+                        - paragraph
+                        - question-label
+                        - short-text-input
+                        - long-text-input
+                        - file-input
+                        - contributors-input
+                        - single-select-input
+                        - multi-select-input
+                        - select-input-option
+                        - select-other-option
+                      display_text:
+                        type: string
+                        readOnly: true
+                        description: The text that will accompany the UI element displayed on this Registration Schema Block.
+                      example_text:
+                        type: string
+                        readOnly: true
+                        description: The text that will accompany the UI element displayed on this Registration Schema Block.
+                      required:
+                        type: boolean
+                        readOnly: true
+                        description: Bool that represents if this field is required for creation of a Schema Response.
+                      index:
+                        type: integer
+                        readOnly: true
+                        description: Integer beginning at zero that represents the order of Registration Schema Block in the Registration Schema.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Links to other entities or entity collections that have a relationship to the Schema Response Action.
+                    properties:
+                      schema:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the schema the the Registration Schema Block is on.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs to alternative representations of the  Registration Schema Block.
+                    properties:
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for a Registration Schema Block.
+              example:
+                data:
+                - type: schema-blocks
+                  id: 61b79f9eadbb5701424a2d5e
+                  attributes:
+                    registration_response_key: null
+                    schema_block_group_key: ''
+                    block_type: page-heading
+                    display_text: Background and Study Intent
+                    help_text: ''
+                    required: false
+                    index: 0
+                  relationships:
+                    schema:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/6176c9d45e01f100091d4f94/
+                          meta: {}
+                        data:
+                          id: 6176c9d45e01f100091d4f94
+                          type: registration-schemas
+                  links:
+                    self: https://api.osf.io/v2/schema_responses/61b79f9eadbb5701424a2d5e/
+                - type: schema-blocks
+                  id: 61b79f9eadbb5701424a2d53
+                  attributes:
+                    registration_response_key: null
+                    schema_block_group_key: ''
+                    block_type: question-label
+                    display_text: Question 1
+                    help_text: I am a question
+                    required: false
+                    index: 1
+                  relationships:
+                    schema:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/6176c9d45e01f100091d4f94/
+                          meta: {}
+                        data:
+                          id: 6176c9d45e01f100091d4f94
+                          type: registration-schemas
+                  links:
+                    self: https://api.osf.io/v2/schema_responses/61b79f9eadbb5701424a2d53/
+                - type: schema-blocks
+                  id: 61b79f9eadbb5701424a2d53
+                  attributes:
+                    registration_response_key: Q1
+                    schema_block_group_key: ''
+                    block_type: long-text-input
+                    display_text: ''
+                    help_text: ''
+                    required: false
+                    index: 2
+                  relationships:
+                    schema:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/6176c9d45e01f100091d4f94/
+                          meta: {}
+                        data:
+                          id: 6176c9d45e01f100091d4f94
+                          type: registration-schemas
+                  links:
+                    self: https://api.osf.io/v2/schema_responses/61b79f9eadbb5701424a2d53/
+                meta:
+                  total: 3
+                  per_page: 10
+                  version: 2.2
+                links:
+                  self: https://api.osf.io/v2/schemas/registrations/6176c9d45e01f100091d4f94/schema_blocks/
+                  first: null
+                  last: null
+                  next: null
+                  prev: null
+  /schema_responses/{schema_response_id}/schema_blocks/{schema_response_block_id}:
+    get:
+      summary: Retrieve a Registration Schema Block
+      description: 'This returns a Registration Schema Block by it''s ID.
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested Registration Schemas, if the request is successful.
+
+        #### Errors
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        name: schema_response_id
+        required: true
+        description: The unique identifier of the Registration Schema example `6176c9d45e01f100091d4f94`.
+        schema:
+          type: string
+      - in: path
+        name: schema_response_block_id
+        required: true
+        description: The unique identifier of the Schema Response Block example `61b79f9eadbb5701424a2d5e`.
+        schema:
+          type: string
+      tags:
+      - Registration Schema Blocks
+      operationId: getSchemaResponsesBySchemaResponseIdSchemaBlocksBySchemaResponseBlockId
+      x-response-schema: Schema Response
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Registration Schema Block
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The unique identifier of the Registration Schema Block.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the Registration Schema Block (`schema-blocks`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The attributes of the Registration Schema Block.
+                    properties:
+                      registration_response_key:
+                        type: string
+                        readOnly: true
+                        description: This string is the the block key for the Registration Schema Block's corresponding block on the Schema Response.
+                      schema_block_group_key:
+                        type: string
+                        readOnly: true
+                        description: This string indicates if a block is part of a block group, block groups may contain the different options dropdown menu or a group of inputs and display elements that are validated together.
+                      block_type:
+                        type: string
+                        readOnly: true
+                        description: A string that represents the type of input that the schema will take and the UI element that appears to the user on the frontend.
+                        enum:
+                        - page-heading
+                        - section-heading
+                        - subsection-heading
+                        - paragraph
+                        - question-label
+                        - short-text-input
+                        - long-text-input
+                        - file-input
+                        - contributors-input
+                        - single-select-input
+                        - multi-select-input
+                        - select-input-option
+                        - select-other-option
+                      display_text:
+                        type: string
+                        readOnly: true
+                        description: The text that will accompany the UI element displayed on this Registration Schema Block.
+                      example_text:
+                        type: string
+                        readOnly: true
+                        description: The text that will accompany the UI element displayed on this Registration Schema Block.
+                      required:
+                        type: boolean
+                        readOnly: true
+                        description: Bool that represents if this field is required for creation of a Schema Response.
+                      index:
+                        type: integer
+                        readOnly: true
+                        description: Integer beginning at zero that represents the order of Registration Schema Block in the Registration Schema.
+                  relationships:
+                    type: object
+                    title: Relationships
+                    readOnly: true
+                    description: Links to other entities or entity collections that have a relationship to the Schema Response Action.
+                    properties:
+                      schema:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the schema the the Registration Schema Block is on.
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs to alternative representations of the  Registration Schema Block.
+                    properties:
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for a Registration Schema Block.
+              example:
+                data:
+                  type: schema-blocks
+                  id: 61b79f9eadbb5701424a2d5e
+                  attributes:
+                    registration_response_key: null
+                    schema_block_group_key: ''
+                    block_type: page-heading
+                    display_text: Background and Study Intent
+                    help_text: ''
+                    required: false
+                    index: 0
+                  relationships:
+                    schema:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/schemas/registrations/6176c9d45e01f100091d4f94/
+                          meta: {}
+                        data:
+                          id: 6176c9d45e01f100091d4f94
+                          type: registration-schemas
+                  links:
+                    self: https://api.osf.io/v2/schema_responses/61b79f9eadbb5701424a2d5e/
+      x-operation-id-source: normalized
+      x-operation-id-original: schema_response_blocks_read
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

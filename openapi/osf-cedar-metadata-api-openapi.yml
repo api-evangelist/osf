@@ -1,0 +1,659 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation CEDAR Metadata API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: CEDAR Metadata
+  description: CEDAR Metadata endpoints allow you to create, read, update, and manage metadata records based on CEDAR templates. These templates enable users to apply structured, standardized metadata to nodes and files for improved data sharing, discoverability, and interoperability. CEDAR Metadata records are associated with OSF resources and can be published or kept private depending on user permissions and workflow.
+paths:
+  /files/{file_id}/cedar_metadata_records/:
+    post:
+      summary: Create a CEDAR metadata record for a file
+      description: Create a new CEDAR metadata record for the specified file. CEDAR metadata records follow structured templates and can include rich metadata for data sharing and reuse.
+      operationId: createCedarMetadataRecordForFile
+      tags:
+      - CEDAR Metadata
+      parameters:
+      - name: file_id
+        in: path
+        description: The unique identifier of the file.
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Successfully created a new CEDAR metadata record.
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                properties:
+                  id:
+                    type: string
+                    example: record-abc123
+                  type:
+                    type: string
+                    example: cedar-metadata-records
+                  attributes:
+                    type: object
+                    properties:
+                      metadata:
+                        type: object
+                        description: The metadata object.
+                        example:
+                          title: Example Title
+                          description: Example Description
+                      is_published:
+                        type: boolean
+                        example: true
+                  relationships:
+                    type: object
+                    properties:
+                      template:
+                        type: object
+                        properties:
+                          data:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: template-abc123
+                              type:
+                                type: string
+                                example: cedar-metadata-templates
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/
+                      metadata_download:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/metadata_download/
+        '400':
+          description: Validation error or invalid data.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to create metadata for this file.
+        '404':
+          description: File not found.
+        '405':
+          description: Returned if creating CEDAR metadata records for this file has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - attributes
+                  - relationships
+                  properties:
+                    type:
+                      type: string
+                      example: cedar-metadata-records
+                    attributes:
+                      type: object
+                      required:
+                      - metadata
+                      - is_published
+                      properties:
+                        metadata:
+                          type: object
+                          description: Metadata fields defined by the CEDAR template.
+                          example:
+                            title: Example Title
+                            description: Example Description
+                        is_published:
+                          type: boolean
+                          example: false
+                    relationships:
+                      type: object
+                      required:
+                      - template
+                      properties:
+                        template:
+                          type: object
+                          description: The CEDAR template this record uses.
+                          properties:
+                            data:
+                              type: object
+                              required:
+                              - id
+                              - type
+                              properties:
+                                id:
+                                  type: string
+                                  description: ID of the template.
+                                  example: 123abc
+                                type:
+                                  type: string
+                                  example: cedar-metadata-templates
+        description: CEDAR metadata record object to be created.
+        required: true
+  /nodes/{node_id}/cedar_metadata_records/:
+    post:
+      summary: Create a CEDAR metadata record for a node
+      description: Create a new CEDAR metadata record for the specified node. CEDAR metadata records are based on predefined templates and can be associated with nodes or files.
+      operationId: createCedarMetadataRecordForNode
+      tags:
+      - CEDAR Metadata
+      parameters:
+      - name: node_id
+        in: path
+        description: The unique identifier of the node.
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Successfully created a new CEDAR metadata record.
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                properties:
+                  id:
+                    type: string
+                    example: record-abc123
+                  type:
+                    type: string
+                    example: cedar-metadata-records
+                  attributes:
+                    type: object
+                    properties:
+                      metadata:
+                        type: object
+                        description: The metadata object.
+                        example:
+                          title: Example Title
+                          description: Example Description
+                      is_published:
+                        type: boolean
+                        example: true
+                  relationships:
+                    type: object
+                    properties:
+                      template:
+                        type: object
+                        properties:
+                          data:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: template-abc123
+                              type:
+                                type: string
+                                example: cedar-metadata-templates
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/
+                      metadata_download:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/metadata_download/
+        '400':
+          description: Validation error or invalid data.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to create metadata for this node.
+        '404':
+          description: Node not found.
+        '405':
+          description: Returned if creating CEDAR metadata records for this node has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - attributes
+                  - relationships
+                  properties:
+                    type:
+                      type: string
+                      example: cedar-metadata-records
+                    attributes:
+                      type: object
+                      required:
+                      - metadata
+                      - is_published
+                      properties:
+                        metadata:
+                          type: object
+                          description: Metadata fields defined by the CEDAR template.
+                          example:
+                            title: Example Title
+                            description: Example Description
+                        is_published:
+                          type: boolean
+                          example: false
+                    relationships:
+                      type: object
+                      required:
+                      - template
+                      properties:
+                        template:
+                          type: object
+                          description: The CEDAR template this record uses.
+                          properties:
+                            data:
+                              type: object
+                              required:
+                              - id
+                              - type
+                              properties:
+                                id:
+                                  type: string
+                                  description: ID of the template.
+                                  example: 123abc
+                                type:
+                                  type: string
+                                  example: cedar-metadata-templates
+        description: CEDAR metadata record object to be created.
+        required: true
+  /_/cedar_metadata_records/{record_id}/:
+    get:
+      summary: Retrieve a CEDAR metadata record
+      description: 'Retrieve a single CEDAR metadata record by its ID.
+
+
+        **Note:** This is a private, unversioned endpoint. Its full URL is `https://api.osf.io/_/cedar_metadata_records/{record_id}/` and does not include the `/v2/` prefix used by the rest of the API, even though it is nested under `/v2/` in this documentation for tooling reasons.'
+      operationId: getCedarMetadataRecord
+      tags:
+      - CEDAR Metadata
+      parameters:
+      - name: record_id
+        in: path
+        description: The unique identifier of the CEDAR metadata record.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved the CEDAR metadata record.
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                properties:
+                  id:
+                    type: string
+                    example: record-abc123
+                  type:
+                    type: string
+                    example: cedar-metadata-records
+                  attributes:
+                    type: object
+                    properties:
+                      metadata:
+                        type: object
+                        description: The metadata object.
+                        example:
+                          title: Example Title
+                          description: Example Description
+                      is_published:
+                        type: boolean
+                        example: true
+                  relationships:
+                    type: object
+                    properties:
+                      template:
+                        type: object
+                        properties:
+                          data:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: template-abc123
+                              type:
+                                type: string
+                                example: cedar-metadata-templates
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/
+                      metadata_download:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/metadata_download/
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to view this CEDAR metadata record.
+        '404':
+          description: CEDAR metadata record not found.
+    patch:
+      summary: Update a CEDAR metadata record
+      description: Update the `metadata` and/or `is_published` fields of an existing CEDAR metadata record. Only the fields included in the request are changed.
+      operationId: updateCedarMetadataRecord
+      tags:
+      - CEDAR Metadata
+      parameters:
+      - name: record_id
+        in: path
+        description: The unique identifier of the CEDAR metadata record.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully updated the CEDAR metadata record.
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                properties:
+                  id:
+                    type: string
+                    example: record-abc123
+                  type:
+                    type: string
+                    example: cedar-metadata-records
+                  attributes:
+                    type: object
+                    properties:
+                      metadata:
+                        type: object
+                        description: The metadata object.
+                        example:
+                          title: Example Title
+                          description: Example Description
+                      is_published:
+                        type: boolean
+                        example: true
+                  relationships:
+                    type: object
+                    properties:
+                      template:
+                        type: object
+                        properties:
+                          data:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: template-abc123
+                              type:
+                                type: string
+                                example: cedar-metadata-templates
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/
+                      metadata_download:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/metadata_download/
+        '400':
+          description: Validation error or invalid data.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to update this CEDAR metadata record.
+        '404':
+          description: CEDAR metadata record not found.
+        '405':
+          description: Returned if write access to this CEDAR metadata record has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: record-abc123
+                    type:
+                      type: string
+                      example: cedar-metadata-records
+                    attributes:
+                      type: object
+                      properties:
+                        metadata:
+                          type: object
+                          example:
+                            title: Updated Title
+                        is_published:
+                          type: boolean
+                          example: true
+        description: CEDAR metadata record fields to update.
+        required: true
+    put:
+      summary: Replace a CEDAR metadata record
+      description: Replace the `metadata` and/or `is_published` fields of an existing CEDAR metadata record. Behaves the same as `PATCH` on this endpoint.
+      operationId: replaceCedarMetadataRecord
+      tags:
+      - CEDAR Metadata
+      parameters:
+      - name: record_id
+        in: path
+        description: The unique identifier of the CEDAR metadata record.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully updated the CEDAR metadata record.
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                required:
+                - id
+                - type
+                - attributes
+                - relationships
+                properties:
+                  id:
+                    type: string
+                    example: record-abc123
+                  type:
+                    type: string
+                    example: cedar-metadata-records
+                  attributes:
+                    type: object
+                    properties:
+                      metadata:
+                        type: object
+                        description: The metadata object.
+                        example:
+                          title: Example Title
+                          description: Example Description
+                      is_published:
+                        type: boolean
+                        example: true
+                  relationships:
+                    type: object
+                    properties:
+                      template:
+                        type: object
+                        properties:
+                          data:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: template-abc123
+                              type:
+                                type: string
+                                example: cedar-metadata-templates
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/
+                      metadata_download:
+                        type: string
+                        example: https://api.osf.io/_/cedar_metadata_records/record-abc123/metadata_download/
+        '400':
+          description: Validation error or invalid data.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to update this CEDAR metadata record.
+        '404':
+          description: CEDAR metadata record not found.
+        '405':
+          description: Returned if write access to this CEDAR metadata record has been restricted. The response will include the message "This action is no longer available. Contact support if you have any questions."
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: record-abc123
+                    type:
+                      type: string
+                      example: cedar-metadata-records
+                    attributes:
+                      type: object
+                      properties:
+                        metadata:
+                          type: object
+                          example:
+                            title: Updated Title
+                        is_published:
+                          type: boolean
+                          example: true
+        description: CEDAR metadata record fields to update.
+        required: true
+    delete:
+      summary: Delete a CEDAR metadata record
+      description: Permanently delete a CEDAR metadata record. Unlike `PATCH`/`PUT`, this action is not blocked by the write restriction described below.
+      operationId: deleteCedarMetadataRecord
+      tags:
+      - CEDAR Metadata
+      parameters:
+      - name: record_id
+        in: path
+        description: The unique identifier of the CEDAR metadata record.
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successfully deleted the CEDAR metadata record.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to delete this CEDAR metadata record.
+        '404':
+          description: CEDAR metadata record not found.
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

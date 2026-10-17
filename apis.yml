@@ -82,11 +82,739 @@ common:
 
 apis:
 - name: OSF API
-  description: Open Science Framework API v2 provides programmatic access to projects, registrations, files, and other research resources.
+  description: >-
+    Open Science Framework API v2 provides programmatic access to projects, registrations, files, and
+    other research resources.
   humanURL: https://developer.osf.io
   baseURL: https://api.osf.io
   properties: []
   aid: osf:osf-api
+- aid: osf:osf-actions-api
+  name: OSF Actions API
+  description: >-
+    Actions represent state transitions or comments performed on reviewable or request-related resources
+    within the OSF platform, such as Preprints, Nodes, Preprint Requests, Node Requests, and Collection
+    Submissions. These endpoints document and facilitate moderation and administrative workflows, ensuring
+    transparency and  accountability in managing user interactions, moderation processes, and lifecycle
+    management for various resources.
+
+    Actions are categorized based on their targets:
+
+     - **Review Actions**: Pertaining to moderation and review processes on Preprints.
+     - **Node Request Actions**: Related to Node Requests (e.g., access or withdrawal requests).
+     - **Preprint Request Actions**: Related to Preprint Requests, such as withdrawal requests.
+
+     Actions require specific permissions depending on their triggers:
+      - `submit`: Typically open, no special permissions required.
+      - `accept`/`reject`: Require moderation or admin permissions.
+      - `edit_comment`: Requires administrative permissions.
+
+     Each successful action response returns a JSON:API formatted object containing:
+      - **id** : The identifier of the action.
+      - **type** : Type of action performed (e.g., `review-actions`, `node-request-actions`).
+      - **attributes** : Information including `trigger`, `comment`, `from_state`, `to_state`, timestamps
+    (`date_created`, `date_modified`), visibility (`visible`), and automation flag (`auto`).
+      - **relationships** :
+       - `creator`: User who initiated the action.
+       - `target` : The resource the action applies to (e.g., Preprint, Node Request).
+       - `provider` : Provider associated with the target, if applicable.
+
+     Actions may fail due to various reasons, resulting in standard error responses:
+      - `400 Bad Request`: Invalid or malformed payload.
+      - `403 Forbidden`: Insufficient permissions to perform the action.
+      - `404 Not Found`: The target resource does not exist or is inaccessible.
+      - `409 Conflict`: Invalid action due to the current state of the target resource.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Actions
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-actions-api-openapi.yml
+- aid: osf:osf-applications-api
+  name: OSF Applications API
+  description: >-
+    **OAuth2 Applications** allow external services to securely authenticate and interact with OSF resources
+    via OAuth2.
+
+    Registered applications manage OAuth2 flows, client credentials, and access tokens.
+
+    Operations include:
+      - Creating new OAuth2 applications
+      - Viewing and updating application details
+      - Deactivating or deleting applications
+      - Resetting client secrets (deprecated after v2.14)
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Applications
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-applications-api-openapi.yml
+- aid: osf:osf-base-api
+  name: OSF Base API
+  description: >-
+    This is the "home page" of the API you can get important autentication information for the user making
+    the request and get links to other resources.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Base
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-base-api-openapi.yml
+- aid: osf:osf-cedar-metadata-api
+  name: OSF CEDAR Metadata API
+  description: >-
+    CEDAR Metadata endpoints allow you to create, read, update, and manage metadata records based on CEDAR
+    templates. These templates enable users to apply structured, standardized metadata to nodes and files
+    for improved data sharing, discoverability, and interoperability. CEDAR Metadata records are associated
+    with OSF resources and can be published or kept private depending on user permissions and workflow.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - CEDAR Metadata
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-cedar-metadata-api-openapi.yml
+- aid: osf:osf-citations-api
+  name: OSF Citations API
+  description: The Citations API from OSF — 2 operation(s) for citations.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Citations
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-citations-api-openapi.yml
+- aid: osf:osf-collection-providers-api
+  name: OSF Collection Providers API
+  description: >-
+    A Collection Submissions Provider represents the data for moderators and admins for a group of collections.
+    It acts as a central hub for managing all collection submissions within various collections, ensuring
+    that the moderation process is handled efficiently and consistently across different collections.
+
+    The Collection Submissions Provider holds important information, such as the list of moderators and
+    admins, and the moderation rules for all collections under its umbrella. Historical data about past
+    collection submissions and their states is saved via Collection Submission Actions.
+
+    Through the Collection Submissions Provider, moderators can oversee the state of all submissions in
+    collections they manage, ensuring that each submission follows the appropriate state transitions and
+    adheres to the standards set for collection submissions. It aids in providing transparency and order
+    to the process of managing collections and ensures that moderators and admins have the tools and information
+    they need to effectively manage collection submissions.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Collection Providers
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-collection-providers-api-openapi.yml
+- aid: osf:osf-collection-submission-actions-api
+  name: OSF Collection Submission Actions API
+  description: >-
+    The Collection Submission Actions API from OSF — 2 operation(s) for collection submission actions.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Collection Submission Actions
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-collection-submission-actions-api-openapi.yml
+- aid: osf:osf-collection-submissions-api
+  name: OSF Collection Submissions API
+  description: >-
+    A Collection Submission is an object that allows a user to add a resource, either a project, preprint,
+    or registration to a collection. Once created, a Collection Submission may be automatically accepted
+    or await moderation. Once a Collection Submission is in a moderation state, an assigned moderator
+    may accept or reject the submission.
+
+    There are a few states for Collection Submissions:
+
+      - `in_progress` is the initial state of a Collection Submission where the resource is editable and
+    still private.
+
+      - `pending` is the state where the Collection Submission is awaiting moderation.
+
+      - `accepted` means the Collection Submission has been approved and added to the collection.
+
+      - `rejected` means the Collection Submission has been declined by the moderator.
+
+      - `removed` means the Collection Submission has been removed from the collection, after initial
+    acceptance.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Collection Submissions
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-collection-submissions-api-openapi.yml
+- aid: osf:osf-collections-api
+  name: OSF Collections API
+  description: The Collections API from OSF — 11 operation(s) for collections.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Collections
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-collections-api-openapi.yml
+- aid: osf:osf-comments-api
+  name: OSF Comments API
+  description: The Comments API from OSF — 1 operation(s) for comments.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Comments
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-comments-api-openapi.yml
+- aid: osf:osf-contributors-api
+  name: OSF Contributors API
+  description: The Contributors API from OSF — 1 operation(s) for contributors.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Contributors
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-contributors-api-openapi.yml
+- aid: osf:osf-custom-metadata-api
+  name: OSF Custom Metadata API
+  description: >-
+    Custom Metadata endpoints allow users to manage freeform or structured metadata associated with OSF
+    nodes and files. Unlike CEDAR metadata, Custom Metadata provides more flexible fields tailored to
+    specific research needs or institutional requirements. Users can create, view, and edit metadata records
+    that describe files or items in OSF, including funder information, language, resource type, and more.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Custom Metadata
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-custom-metadata-api-openapi.yml
+- aid: osf:osf-draft-registrations-api
+  name: OSF Draft Registrations API
+  description: >-
+    A Draft Registration is a object that allows a user to edit and revise a registration before it is
+    registered. Draft Registrations allow contributors to coordinate on a single registration, so they
+    can upload files and change Registration metadata before the Registration is archived.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Draft Registrations
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-draft-registrations-api-openapi.yml
+- aid: osf:osf-files-api
+  name: OSF Files API
+  description: The Files API from OSF — 5 operation(s) for files.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Files
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-files-api-openapi.yml
+- aid: osf:osf-guids-api
+  name: OSF GUIDs API
+  description: The GUIDs API from OSF — 1 operation(s) for guids.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - GUIDs
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-guids-api-openapi.yml
+- aid: osf:osf-identifiers-api
+  name: OSF Identifiers API
+  description: >-
+    Identifiers are unique strings associated with various entities in the OSF system, such as project
+    nodes,  registrations or preprints. Identifiers serve as a means to distinctly reference these entities
+    using standardized formats like DOI  (Digital Object Identifier). Each identifier is linked to a specific
+    entity, providing a persistent and resolvable URL that can be used for citation, sharing, and retrieval
+    purposes.
+
+    Identifiers play a crucial role in ensuring that entities within the OSF ecosystem can be reliably
+    accessed and referenced across different platforms and services. By adhering to widely recognized
+    standards, identifiers facilitate interoperability and integration with external systems, enhancing
+    the visibility and accessibility of research outputs.
+
+    The Identifiers system allows users to access both Datacite and Crossref for DOI minting services
+    and stores detailed metadata about each identifier, including its category, value, and the entity
+    it is associated with. This ensures that users can effectively manage and utilize identifiers in their
+    research workflows, promoting  transparency and traceability of scholarly work.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Identifiers
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-identifiers-api-openapi.yml
+- aid: osf:osf-institutions-api
+  name: OSF Institutions API
+  description: The Institutions API from OSF — 8 operation(s) for institutions.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Institutions
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-institutions-api-openapi.yml
+- aid: osf:osf-licenses-api
+  name: OSF Licenses API
+  description: The Licenses API from OSF — 2 operation(s) for licenses.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Licenses
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-licenses-api-openapi.yml
+- aid: osf:osf-logs-api
+  name: OSF Logs API
+  description: The Logs API from OSF — 2 operation(s) for logs.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Logs
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-logs-api-openapi.yml
+- aid: osf:osf-nodes-api
+  name: OSF Nodes API
+  description: The Nodes API from OSF — 37 operation(s) for nodes.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Nodes
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-nodes-api-openapi.yml
+- aid: osf:osf-notification-subscriptions-api
+  name: OSF Notification Subscriptions API
+  description: "**Notification Subscriptions** allow users to manage how they receive alerts about activities\
+    \ and events  related to OSF resources, such as projects, preprints, registrations, and collections.\
+    \ Subscriptions control  **when** notifications are sent and **which events** trigger them.\nThese\
+    \ subscriptions are **private** and are only visible to the authenticated user who owns them.\n###\
+    \ Subscription Scope and Types\nSubscriptions can be configured at different scopes depending on the\
+    \ resource type:\n- **Global Subscriptions**  \n  Apply OSF-wide, affecting events like comment replies,\
+    \ mentions, and review updates across all resources.\n\n- **Node Subscriptions**  \n  Apply to individual\
+    \ projects or components (nodes), tracking events such as new comments or file updates.\n\n- **Provider\
+    \ Subscriptions**  \n  Apply to resources within a specific provider (collection, preprint, or registration\
+    \ providers). These subscriptions\n  typically track events relevant to moderation workflows, such\
+    \ as new pending submissions.\n\n### Attributes\n- `event_name`  \n  The specific event that triggers\
+    \ this subscription.  \n  Available event names depend on the scope of the subscription. Examples\
+    \ include:\n    - `comments`\n    - `file_updated`\n    - `global_mentions`\n    - `new_pending_submissions`\n\
+    \n- `frequency`  \n  Determines how often the user receives notifications for the event:\n    - `instant`:\
+    \ Sends an email notification immediately after the event occurs.\n    - `daily`: Groups event notifications\
+    \ into a daily summary email.\n    - `none`: Disables notifications for the event.\n\n  Users can\
+    \ update their notification frequency for each subscription.\n\n### Relationships\n\n - `user`  \n\
+    \  The user who owns the subscription. Each subscription is tied to a single user.\n - `provider`\
+    \  \n  The provider associated with the subscription, if applicable. This may be a Collection Provider,\
+    \ Preprint Provider, \n  or Registration Provider. Global subscriptions do not have a provider relationship.\n\
+    \n### Available Event Names by Subscription Scope\n#### Node-Level Subscriptions Subscriptions specific\
+    \ to individual projects or components:\n - `comments`: Notify when comments are added.\n - `file_updated`:\
+    \ Notify when files are updated.\n\n#### Global Subscriptions Default notification preferences applied\
+    \ OSF-wide:\n - `global_comment_replies`: Notify when someone replies to your comments.\n - `global_comments`:\
+    \ Notify when comments are added to your projects.\n - `global_file_updated`: Notify when files are\
+    \ updated in your projects.\n - `global_mentions`: Notify when you are mentioned.\n - `global_reviews`:\
+    \ Notify when your preprint submissions are updated.\n\n#### Provider-Level Subscriptions Notifications\
+    \ related to moderation workflows or submissions within a specific provider:\n - `new_pending_submissions`:\
+    \ Notify when new preprint submissions are awaiting moderation.\n\n### Notification Channels\nNotifications\
+    \ are delivered via **email**, according to the selected `frequency`:\n - `instant`: Immediate email\
+    \ notifications per event.\n - `daily`: Batched email summary delivered daily.\n - `none`: No email\
+    \ notifications are sent.\n\n### Permissions and Access\n\n - Only the authenticated user who owns\
+    \ a subscription can view or update it.\n - Subscriptions are managed via the OSF API and reflect\
+    \ the user's current notification preferences for supported events."
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Notification Subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-notification-subscriptions-api-openapi.yml
+- aid: osf:osf-oauth-scopes-api
+  name: OSF OAuth Scopes API
+  description: >-
+    OAuth scopes define specific permissions for OAuth applications and personal access tokens.
+
+    Each scope indicates the permission level granted to perform actions via the OSF API, such as reading
+    node data (`osf.nodes.read`) or modifying node data (`osf.nodes.write`).
+
+    Scopes can be queried and managed through these endpoints to understand and control access levels
+    associated with applications and tokens.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - OAuth Scopes
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-oauth-scopes-api-openapi.yml
+- aid: osf:osf-preprint-providers-api
+  name: OSF Preprint Providers API
+  description: "Preprint Providers are entities that manage and moderate groups of preprints on the OSF\
+    \ platform.  \nEach Preprint Provider oversees its own preprint service, which can include branding,\
+    \ theming, subject areas, moderation workflows, and licensing policies. Preprint Providers are often\
+    \ affiliated with journals, societies, or research communities and enable researchers to share early\
+    \ versions of their work.\nPreprint Providers can implement customizable review and moderation workflows,\
+    \ as well as curate the preprints submitted to their service. Providers can also specify submission\
+    \ requirements, allowable licenses, and taxonomies for classifying preprints.\n**Attributes include:**\n\
+    \  - `id`: The unique identifier for the preprint provider.\n  - `name`: Human-readable name of the\
+    \ provider.\n  - `description`: A description of the provider’s purpose and scope.\n  - `reviews_workflow`:\
+    \ Defines the moderation workflow type (e.g., pre-moderation, post-moderation).\n  - `allow_submissions`:\
+    \ Boolean indicating whether new preprints can be submitted.\n  - `licenses_acceptable`: List of licenses\
+    \ accepted by the provider.\n  - `social_links`: Optional links to provider social media (e.g., Twitter,\
+    \ Facebook).\n\n**Endpoints include:**\n  - List and detail views of Preprint Providers.\n  - Access\
+    \ to preprints associated with a given provider.\n  - Access to taxonomies and licenses supported\
+    \ by a provider.\n  - Management of moderators and submission actions within the provider's moderation\
+    \ system.\n  - Retrieve citation styles associated with a specific preprint provider"
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Preprint Providers
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-preprint-providers-api-openapi.yml
+- aid: osf:osf-preprints-api
+  name: OSF Preprints API
+  description: The Preprints API from OSF — 17 operation(s) for preprints.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Preprints
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-preprints-api-openapi.yml
+- aid: osf:osf-regions-api
+  name: OSF Regions API
+  description: >-
+    Storage Regions are predefined geographical or cloud-storage areas where files are stored within OSF
+    Storage.
+
+    Each region provides isolation of data in compliance with geographic or regulatory requirements. Users
+    can  specify their preferred region for storing project files when using OSF Storage.
+      - `id`: Unique identifier of the region (e.g., `us-east-1`).
+      - `name`: Human-readable name for the region (e.g., `US East`).
+
+    **Endpoints include:**
+
+      - **List Regions:** Retrieve all available storage regions.
+      - **Region Detail:** Retrieve details about a specific storage region.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Regions
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-regions-api-openapi.yml
+- aid: osf:osf-registration-providers-api
+  name: OSF Registration Providers API
+  description: "Registration Providers are entities that manage and moderate groups of registrations on\
+    \ the OSF platform.  \nEach Registration Provider defines workflows, review policies, and customization\
+    \ options for their collection of registrations. Registration Providers can be configured to operate\
+    \ in different moderation modes, such as pre-moderation, post-moderation, or automated workflows.\n\
+    Registration Providers may also specify accepted license types, registration schemas, taxonomies,\
+    \ and review  workflows for their associated registrations. They allow communities or organizations\
+    \ to manage the  visibility and curation of registered research within their domain.\n**Attributes\
+    \ include:**\n  - `id`: The unique identifier for the registration provider.\n  - `name`: Human-readable\
+    \ name of the provider.\n  - `description`: A description of the provider’s purpose and scope.\n \
+    \ - `reviews_workflow`: Defines the moderation workflow type (e.g., pre-moderation, post-moderation).\n\
+    \  - `allow_submissions`: Boolean indicating whether new registrations can be submitted.\n  - `licenses_acceptable`:\
+    \ List of licenses accepted by the provider.\n\n**Endpoints include:**\n  - List and detail views\
+    \ of Registration Providers.\n  - Access to registrations under a given provider.\n  - Access to registration\
+    \ schemas and licenses supported by a provider.\n  - Management of moderators and submission actions\
+    \ within the provider's moderation system."
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Registration Providers
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-registration-providers-api-openapi.yml
+- aid: osf:osf-registration-schema-blocks-api
+  name: OSF Registration Schema Blocks API
+  description: >-
+    Registration Schema Blocks are read-only entities, they represent question prompts and form inputs
+    known as "blocks" that make up a Registration Schemas. Each block has a designated `block_type` that
+    determines what type of information that Schema Block's corresponding block in the Schema Response.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Registration Schema Blocks
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-registration-schema-blocks-api-openapi.yml
+- aid: osf:osf-registration-schemas-api
+  name: OSF Registration Schemas API
+  description: >-
+    A Registration Schemas defines the range of valid responses to a registration. Each Registration Schema
+    is composed of <a href="#tag/Registration-Schema-Blocks">"blocks"</a> that define the individual questions
+    a user responds to. Registration Schemas are created by the Center for Open Science or an affiliated
+    institution and periodically migrated into the system. Registration Schemas are updated and deactivated
+    using an internal versioning system.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Registration Schemas
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-registration-schemas-api-openapi.yml
+- aid: osf:osf-registrations-api
+  name: OSF Registrations API
+  description: The Registrations API from OSF — 38 operation(s) for registrations.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Registrations
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-registrations-api-openapi.yml
+- aid: osf:osf-requests-api
+  name: OSF Requests API
+  description: >-
+    Manage user-initiated requests related to nodes and preprints, including access requests, withdrawal
+    requests, and institutional affiliation requests. Requests are actions initiated by users to either
+    gain access to private content, withdraw content, or request affiliation with institutions. Administrators
+    and moderators can approve or reject requests, while requesters can view and comment on their submissions.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Requests
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-requests-api-openapi.yml
+- aid: osf:osf-resources-api
+  name: OSF Resources API
+  description: >-
+    Resources are structured data artifacts associated with a Registration. These can include datasets,
+    analytic code, materials, papers, or supplementary files that contribute to the outcomes of a study
+    or project. Resources are part of the registration’s metadata and support reproducibility, data sharing,
+    and transparency in research.
+
+    Each Resource can have an optional Persistent Identifier (PID) such as a DOI, and can be marked as
+    finalized, indicating it is ready for public dissemination or archival. Resources are grouped under
+    a Registration and contribute to Open Practice Badges when relevant artifacts are provided.
+
+    Resources are managed through the API endpoints to:
+     - **Create** new resources for a Registration (e.g., data, code, papers)
+     - **List** existing resources linked to a Registration
+     - **Retrieve** details about an individual resource
+     - **Update** a resource’s description, type, or PID
+     - **Finalize** a resource to prevent further changes (once validated)
+
+    **Note**: Once a resource is finalized, it cannot be edited or deleted.
+
+    ### Resource Types
+     - `data`: Raw or processed datasets related to the research
+     - `analytic_code`: Code or scripts used for analysis
+     - `materials`: Research materials, such as instruments or questionnaires
+     - `papers`: Manuscripts or published papers
+     - `supplements`: Supplementary materials that enhance understanding of the research
+
+    **Permissions**:
+     - Read access requires view permissions on the parent Registration.
+     - Write access requires edit permissions on the parent Registration.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Resources
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-resources-api-openapi.yml
+- aid: osf:osf-schema-response-actions-api
+  name: OSF Schema Response Actions API
+  description: >-
+    Schema Response Actions are objects that when created cause state transitions for Schema Responses.
+    Users use state transitions to submit, approve, and revise new Schema Responses.
+
+
+    Schema Response Actions have a few different triggers to cause state transitions:
+
+      - `submit` is a trigger to transition a Schema Response from an `in_progress` state to an `unapproved`
+    state,
+      this freezes edits for the Schema Response and allows all admin contributors to the Schema Response's
+      Registration to either approved or reject the Schema Response.
+
+      - `approve` is a trigger to transition a Schema Response from an `unapproved` state to an `approved`
+    state, this
+      makes the Schema Response changes public completing the update of the Schema Response. On Schema
+    Responses that
+      are associated with a Registration that has Registration Provider a moderated workflow the `approve`
+    trigger
+      will transition the Schema Response to `pending_moderation`.
+
+      - `accept` is a trigger to transition a Schema Response from an `pending_moderation` state to an
+    `approved`
+      state. This trigger is only valid for Schema Responses that are associated with a Registration that
+    has
+      Registration Provider a moderated workflow and only possible for a user designated as moderator
+    of a
+      Registration Provider.
+
+      - `admin_reject` is a trigger to transition a Schema Response from an `unapproved` state to an
+      `in_progress`  state. This trigger allows users to reject purposed changes to a Schema Response.
+
+      - `moderator_reject` is a trigger to transition a Schema Response from an `pending_moderation` state
+    to an
+      `in_progress`  state. This trigger is only valid for Schema Responses that are associated with a
+    Registration
+      that has Registration Provider a moderated workflow and only possible for a user designated as moderator
+    of a
+      Registration Provider.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Schema Response Actions
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-schema-response-actions-api-openapi.yml
+- aid: osf:osf-schema-responses-api
+  name: OSF Schema Responses API
+  description: >-
+    Schema Responses contain user supplied responses to a Registration Schema. A Schema Response aggregates
+    all of the the responses for a given version of a Registration's Registration Schema. Schema Responses
+    are created when a Registration is completed. Once a Registration is completed the Schema Responses
+    for a Registration can be revisied and updated by using it's associated action endpoints.
+
+
+    There are a few states for Schema Responses:
+
+      - `initial` is the state of a Schema Response on a newly registered Registration, to edit a Schema
+    Response you
+      must create a Schema Response Action that triggers a new submission.
+
+      - `in_progess` is the state of a Schema Response where the response is editable and still private,
+    Schema
+      Responses are editted via a PATCH request as specified below.
+
+      - `unapproved` is the state of a Schema Response where edits have been made and "locked-in", now
+    contributors
+      have the ability to reject the changes, however if they are not rejected changes are automatically
+    approved
+      after 48 hours. If `unapproved` Schema Responses are rejected, they are returned to the `in_progress`
+    state. If
+      `unapproved` Schema Responses are approved they either enter an `approved` state or go into a
+      `pending_moderation` to be accepted or denied by a moderator.
+
+      - `pending_moderation` is the state of a Schema Response where moderators have an opportunity to
+    reject or
+      approve a Schema Response that has been approved by it's contributors. This state is only reachable
+    for Schema
+      Responses that are associated with a Registration that has Registration Provider a moderated workflow.
+
+      - `approved` is the state of a Schema Response where it is public and immutable, in order to update
+    an approved
+      Schema Response a new one must be created.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Schema Responses
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-schema-responses-api-openapi.yml
+- aid: osf:osf-subjects-api
+  name: OSF Subjects API
+  description: >-
+    Subjects endpoints provide access to the taxonomy used for categorizing OSF resources such as nodes,
+    preprints, and registrations. Subjects can be hierarchical, with parent and child relationships, allowing
+    for fine-grained classification. This enables better organization and discoverability of research
+    content across the OSF ecosystem.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Subjects
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-subjects-api-openapi.yml
+- aid: osf:osf-taxonomies-api
+  name: OSF Taxonomies API
+  description: The Taxonomies API from OSF — 4 operation(s) for taxonomies.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Taxonomies
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-taxonomies-api-openapi.yml
+- aid: osf:osf-tokens-api
+  name: OSF Tokens API
+  description: >-
+    **Personal Access Tokens** allow users to authenticate API requests without credentials.
+
+    Tokens support fine-grained permissions (scopes) to control API access levels.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Tokens
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-tokens-api-openapi.yml
+- aid: osf:osf-users-api
+  name: OSF Users API
+  description: "Users represent individual accounts within the OSF (Open Science Framework) platform.\
+    \ Each user account includes identifying information such as names, email addresses, profile details,\
+    \  and metadata about activity and affiliations. The Users endpoints provide access to user-related\
+    \ resources  for profile display, updates, affiliation management, node contributions, and interaction\
+    \ with various OSF  services.\nThe Users API enables both read and write operations, allowing for:\n\
+    \n - **Retrieving user information**: Includes full name, bibliographic name parts (given, middle,\
+    \ family, suffix),\n  timezone, locale, account status, and registration date.\n - **Updating user\
+    \ attributes**: Authenticated users can update certain profile fields such as name, locale, \n  timezone,\
+    \ employment history, education, and social links.\n - **Managing relationships**: Users can access\
+    \ related resources such as their affiliated institutions, \n  nodes they contribute to, registrations,\
+    \ preprints, groups, and more.\n - **Accessing nested resources**: Email addresses, settings, external\
+    \ identities, and export/download data.\n\nCertain fields and actions are restricted based on authentication\
+    \ and permission levels. For example:\n\n - Viewing a user's full profile or updating information\
+    \ requires authentication.\n - Some attributes and relationships (e.g., `emails`, `settings`) are\
+    \ only accessible to the current user.\n - Accessing deactivated or anonymized users may return limited\
+    \ metadata or result in error responses.\n\nUser profiles also support structured fields for `employment`\
+    \ and `education` (e.g., `institution`, `title`,  `dates`, `ongoing` `status`) and `social` (e.g.,\
+    \ `GitHub`, `ORCID`, `Twitter`), which are validated and  standardized for consistency and citation\
+    \ accuracy.\nThese endpoints are fundamental for user discovery, personalization, and managing identity\
+    \ and reputation  across the OSF ecosystem."
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-users-api-openapi.yml
+- aid: osf:osf-view-only-links-api
+  name: OSF View Only Links API
+  description: The View Only Links API from OSF — 2 operation(s) for view only links.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - View Only Links
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-view-only-links-api-openapi.yml
+- aid: osf:osf-wikis-api
+  name: OSF Wikis API
+  description: >-
+    The Wikis endpoints allow users to create, update, retrieve, and manage wiki pages and their versions
+    for OSF projects and registrations. Wikis are collaborative documents that enable teams to share information
+    and document their research process directly within OSF. Each wiki page maintains a version history,
+    providing transparency and accountability over changes.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Wikis
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-wikis-api-openapi.yml
+- aid: osf:osf-add-ons-api
+  name: OSF Add Ons API
+  description: >-
+    Addons represent a user connection to an external service, some addons allow for additional storage,
+    some modify user authentication or add a redirect link to a project.
+  humanURL: https://developer.osf.io
+  baseURL: https://api.osf.io
+  tags:
+  - Add Ons
+  properties:
+  - type: OpenAPI
+    url: openapi/osf-add-ons-api-openapi.yml
 x-enrichment:
   date: '2026-10-14'
   status: enriched

@@ -1,0 +1,361 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Tokens API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Tokens
+  description: '**Personal Access Tokens** allow users to authenticate API requests without credentials.
+
+    Tokens support fine-grained permissions (scopes) to control API access levels.'
+paths:
+  /tokens/:
+    get:
+      summary: List Personal Access Tokens
+      description: 'Retrieve a list of active personal access tokens created by the authenticated user.
+
+        Personal access tokens are used to authenticate requests to the OSF API without user credentials.
+
+        #### Returns A JSON:API-compliant response with an array of personal access token objects under the `data` key.
+
+        #### Errors Returns an `errors` object on failure. See Errors and Error Codes.'
+      tags:
+      - Tokens
+      operationId: token_list
+      responses:
+        '200':
+          description: Successful retrieval of personal access tokens.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: token123
+                        type:
+                          type: string
+                          example: tokens
+                        attributes:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: My API Token
+                            date_created:
+                              type: string
+                              format: date-time
+                              example: '2024-03-14T15:00:00Z'
+                        relationships:
+                          type: object
+                          properties:
+                            scopes:
+                              type: object
+                              properties:
+                                links:
+                                  type: object
+                                  properties:
+                                    related:
+                                      type: string
+                                      example: https://api.osf.io/v2/tokens/token123/scopes/
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 1
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/v2/tokens/
+    post:
+      summary: Create Personal Access Token
+      description: 'Create a new personal access token for authenticating API requests.
+
+        #### Request Body A JSON:API-compliant request with token attributes (`name`) and `scopes` as relationships.
+
+        #### Returns A `201 Created` response with the newly created token details, including the token itself (`token_id`).
+
+        **Note:** The token (`token_id`) is returned **only once** during creation.
+
+        #### Errors - `400 Bad Request`: Missing required fields or invalid scope. - `403 Forbidden`: User lacks permission to create tokens.'
+      tags:
+      - Tokens
+      operationId: token_create
+      responses:
+        '201':
+          description: Token successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: token123
+                      type:
+                        type: string
+                        example: tokens
+                      attributes:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: My API Token
+                          token_id:
+                            type: string
+                            example: abc123def456
+                      relationships:
+                        type: object
+                        properties:
+                          scopes:
+                            type: object
+                            properties:
+                              links:
+                                type: object
+                                properties:
+                                  related:
+                                    type: string
+                                    example: https://api.osf.io/v2/tokens/token123/scopes/
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: object
+                  required:
+                  - type
+                  - attributes
+                  - relationships
+                  properties:
+                    type:
+                      type: string
+                      example: tokens
+                    attributes:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: My API Token
+                    relationships:
+                      type: object
+                      properties:
+                        scopes:
+                          type: object
+                          properties:
+                            data:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                    example: scopes
+                                  id:
+                                    type: string
+                                    example: osf.full_write
+        required: true
+  /tokens/{_id}/:
+    get:
+      summary: Personal Access Token Detail
+      description: 'Retrieve details of a specific personal access token.
+
+        #### Returns A JSON:API-compliant response with the token''s details.
+
+        #### Errors - `404 Not Found`: Token not found or not owned by the user.'
+      tags:
+      - Tokens
+      operationId: token_detail
+      parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The tokens's unique identifier.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of tokens details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: token123
+                      type:
+                        type: string
+                        example: tokens
+                      attributes:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: My API Token
+                          date_created:
+                            type: string
+                            format: date-time
+                            example: '2024-03-14T15:00:00Z'
+                      relationships:
+                        type: object
+                        properties:
+                          scopes:
+                            type: object
+                            properties:
+                              links:
+                                type: object
+                                properties:
+                                  related:
+                                    type: string
+                                    example: https://api.osf.io/v2/tokens/token123/scopes/
+        '404':
+          description: Token not found.
+    delete:
+      summary: Deactivate Personal Access Token
+      description: 'Deactivate (revoke) a personal access token. The token becomes inactive but is retained in the database.
+
+        #### Errors - `404 Not Found`: Token does not exist or is not accessible.'
+      tags:
+      - Tokens
+      operationId: token_deactivate
+      parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The tokens's unique identifier.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Token successfully deactivated.
+  /tokens/{_id}/scopes/:
+    get:
+      summary: List Scopes of a Personal Access Token
+      description: 'Retrieve the scopes associated with a specific personal access token.
+
+        Scopes determine the level of access and operations permitted by the token.
+
+        #### Returns A JSON:API-compliant response containing an array of scopes.
+
+        #### Errors - `404 Not Found`: Token or scopes not accessible by user.'
+      tags:
+      - Tokens
+      operationId: token_scopes_list
+      parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The token's unique identifier.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved tokens scopes.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: osf.full_write
+                        type:
+                          type: string
+                          example: scopes
+                        attributes:
+                          type: object
+                          properties:
+                            description:
+                              type: string
+                              example: Full write access to OSF resources.
+        '404':
+          description: Token not found.
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

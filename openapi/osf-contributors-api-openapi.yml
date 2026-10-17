@@ -1,0 +1,142 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Contributors API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Contributors
+paths:
+  /draft_registrations/{draft_id}/bibliographic_contributors/:
+    get:
+      summary: List bibliographic contributors on a draft registration
+      description: Retrieve a list of contributors marked as bibliographic (visible) for a draft registration.
+      tags:
+      - Contributors
+      operationId: draft_registration_bibliographic_contributors_list
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: Draft registration ID.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Bibliographic contributors retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - attributes
+                      properties:
+                        id:
+                          type: string
+                          description: Contributor ID
+                        type:
+                          type: string
+                          example: contributors
+                        attributes:
+                          type: object
+                          properties:
+                            full_name:
+                              type: string
+                            bibliographic:
+                              type: boolean
+                              description: Indicates if the contributor is visible.
+                            email:
+                              type: string
+                              description: Email of the contributor.
+                example:
+                  data:
+                  - id: user123
+                    type: contributors
+                    attributes:
+                      full_name: Alice Smith
+                      bibliographic: true
+                      email: alice@example.com
+                  - id: user456
+                    type: contributors
+                    attributes:
+                      full_name: Bob Jones
+                      bibliographic: true
+                      email: bob@example.com
+        '403':
+          description: Forbidden.
+        '404':
+          description: Draft registration not found.
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

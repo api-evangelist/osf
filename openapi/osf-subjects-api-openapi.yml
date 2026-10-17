@@ -1,0 +1,577 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Subjects API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Subjects
+  description: Subjects endpoints provide access to the taxonomy used for categorizing OSF resources such as nodes, preprints, and registrations. Subjects can be hierarchical, with parent and child relationships, allowing for fine-grained classification. This enables better organization and discoverability of research content across the OSF ecosystem.
+paths:
+  /draft_registrations/{draft_id}/relationships/subjects/:
+    get:
+      summary: Retrieve subjects relationship for a draft registration
+      description: 'Retrieve the list of subjects currently associated with a draft registration.
+
+        This endpoint returns subject IDs in the JSON:API relationship format.'
+      tags:
+      - Subjects
+      operationId: draft_registration_subjects_relationship_retrieve
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Subjects retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - type
+                      - id
+                      properties:
+                        type:
+                          type: string
+                          example: subjects
+                          description: The resource type; always `subjects`.
+                        id:
+                          type: string
+                          example: abc123
+                          description: The unique identifier for the subject.
+                example:
+                  data:
+                  - type: subjects
+                    id: abc123
+                  - type: subjects
+                    id: def456
+        '403':
+          description: Forbidden. You don't have permission to view these subjects.
+        '404':
+          description: Draft registration not found.
+    post:
+      summary: Add subjects to a draft registration
+      description: 'Add one or more subjects to the draft registration by their identifiers.
+
+        This modifies the subjects relationship and does not affect the subject resource itself.'
+      tags:
+      - Subjects
+      operationId: draft_registration_subjects_relationship_add
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Subjects added successfully.
+        '403':
+          description: Forbidden. You don't have permission to modify subjects.
+        '404':
+          description: Draft registration not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - type
+                    - id
+                    properties:
+                      type:
+                        type: string
+                        example: subjects
+                        description: The resource type; must be `subjects`.
+                      id:
+                        type: string
+                        example: abc123
+                        description: The unique ID of the subject to add.
+        description: JSON:API list of subject identifiers to associate with the draft registration.
+        required: true
+    delete:
+      summary: Remove subjects from a draft registration
+      description: 'Remove one or more subjects from the draft registration by their identifiers.
+
+        This only updates the relationship and does not delete the subject resource.'
+      tags:
+      - Subjects
+      operationId: draft_registration_subjects_relationship_delete
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Subjects removed successfully.
+        '403':
+          description: Forbidden. You don't have permission to modify subjects.
+        '404':
+          description: Draft registration not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - type
+                    - id
+                    properties:
+                      type:
+                        type: string
+                        example: subjects
+                        description: The resource type; must be `subjects`.
+                      id:
+                        type: string
+                        example: def456
+                        description: The unique ID of the subject to remove.
+        description: JSON:API list of subject identifiers to disassociate from the draft registration.
+        required: true
+  /subjects/:
+    get:
+      summary: List available taxonomy subjects
+      description: 'Retrieve a list of taxonomy subjects. Subjects categorize content on the OSF.
+
+        This endpoint returns top-level subjects (those not linked to bepress subjects).
+
+
+        ### Permissions
+
+        - Publicly accessible (no authentication required).'
+      operationId: listSubjects
+      tags:
+      - Subjects
+      parameters:
+      - name: filter[text]
+        in: query
+        description: Filter subjects by matching text.
+        required: false
+        schema:
+          type: string
+      - name: filter[parent]
+        in: query
+        description: Filter subjects by parent subject ID.
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Page number for paginated results.
+        required: false
+        schema:
+          type: integer
+      - name: page_size
+        in: query
+        description: Number of results per page (no max page size).
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful retrieval of subjects.
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - attributes
+                      - relationships
+                      properties:
+                        id:
+                          type: string
+                          example: abc123
+                        type:
+                          type: string
+                          example: subjects
+                        attributes:
+                          type: object
+                          properties:
+                            text:
+                              type: string
+                              example: Climate Change
+                              description: The label for this subject.
+                            taxonomy_name:
+                              type: string
+                              example: OSF
+                              description: The taxonomy this subject belongs to.
+                        relationships:
+                          type: object
+                          properties:
+                            parent:
+                              type: object
+                              properties:
+                                data:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: parent123
+                                    type:
+                                      type: string
+                                      example: subjects
+                              description: The parent subject, if any.
+                            children:
+                              type: object
+                              properties:
+                                data:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        example: child123
+                                      type:
+                                        type: string
+                                        example: subjects
+                              description: Array of child subjects.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/v2/subjects/
+                      next:
+                        type: string
+                        example: https://api.osf.io/v2/subjects/?page=2
+                      prev:
+                        type: string
+                        example: null
+                  meta:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 100
+                        description: Total number of subjects.
+                      per_page:
+                        type: integer
+                        example: 10
+                        description: Number of results per page.
+                      page:
+                        type: integer
+                        example: 1
+                        description: Current page number.
+        '400':
+          description: Bad request (e.g., invalid filter or pagination parameters)
+  /subjects/{subject_id}/:
+    get:
+      summary: Retrieve a single taxonomy subject
+      description: 'Retrieve detailed information about a specific taxonomy subject by its ID.
+
+
+        ### Permissions
+
+        - Publicly accessible (no authentication required).'
+      operationId: retrieveSubject
+      tags:
+      - Subjects
+      parameters:
+      - name: subject_id
+        in: path
+        description: The unique identifier of the subject.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved the subject.
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    required:
+                    - id
+                    - type
+                    - attributes
+                    - relationships
+                    properties:
+                      id:
+                        type: string
+                        example: abc123
+                        description: The unique ID of the subject.
+                      type:
+                        type: string
+                        example: subjects
+                        description: The resource type.
+                      attributes:
+                        type: object
+                        properties:
+                          text:
+                            type: string
+                            example: Climate Change
+                            description: Human-readable label for the subject.
+                          taxonomy_name:
+                            type: string
+                            example: OSF
+                            description: The taxonomy classification this subject belongs to.
+                      relationships:
+                        type: object
+                        properties:
+                          parent:
+                            type: object
+                            description: The parent subject of this subject (if any).
+                            properties:
+                              data:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    example: parent123
+                                    description: ID of the parent subject.
+                                  type:
+                                    type: string
+                                    example: subjects
+                                    description: Resource type (subjects).
+                          children:
+                            type: object
+                            description: The direct children subjects of this subject.
+                            properties:
+                              data:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: child123
+                                      description: ID of the child subject.
+                                    type:
+                                      type: string
+                                      example: subjects
+                                      description: Resource type (subjects).
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/v2/subjects/abc123/
+                        description: Canonical link to this subject resource.
+        '404':
+          description: Subject not found.
+  /subjects/{subject_id}/children/:
+    get:
+      summary: List child subjects for a given subject
+      description: 'Retrieve all immediate child taxonomy subjects of the specified parent subject.
+
+
+        Taxonomy subjects are structured hierarchically. This endpoint returns only the direct descendants (children) of the given subject.
+
+
+        ### Permissions
+
+        - Publicly accessible (no authentication required).'
+      operationId: listSubjectChildren
+      tags:
+      - Subjects
+      parameters:
+      - name: subject_id
+        in: path
+        required: true
+        description: The unique identifier of the parent taxonomy subject.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of child subjects.
+          content:
+            application/vnd.api+json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - attributes
+                      - relationships
+                      properties:
+                        id:
+                          type: string
+                          example: child123
+                          description: Unique identifier for the subject.
+                        type:
+                          type: string
+                          example: subjects
+                          description: The resource type.
+                        attributes:
+                          type: object
+                          properties:
+                            text:
+                              type: string
+                              example: Sub-discipline Example
+                              description: Human-readable name of the subject.
+                            taxonomy_name:
+                              type: string
+                              example: OSF
+                              description: Name of the taxonomy this subject belongs to.
+                        relationships:
+                          type: object
+                          properties:
+                            parent:
+                              type: object
+                              description: The parent of this subject.
+                              properties:
+                                data:
+                                  type: object
+                                  required:
+                                  - id
+                                  - type
+                                  properties:
+                                    id:
+                                      type: string
+                                      example: abc123
+                                      description: ID of the parent subject.
+                                    type:
+                                      type: string
+                                      example: subjects
+                                      description: The resource type (subjects).
+                            children:
+                              type: object
+                              description: Nested relationship to this subject’s own children.
+                              properties:
+                                links:
+                                  type: object
+                                  properties:
+                                    related:
+                                      type: string
+                                      example: https://api.osf.io/v2/subjects/child123/children/
+                                      description: Link to this subject's own children.
+                  links:
+                    type: object
+                    description: Pagination links.
+                    properties:
+                      self:
+                        type: string
+                        example: https://api.osf.io/v2/subjects/{subject_id}/children/
+                      next:
+                        type: string
+                        example: https://api.osf.io/v2/subjects/{subject_id}/children/?page=2
+                      prev:
+                        type: string
+                        example: https://api.osf.io/v2/subjects/{subject_id}/children/?page=1
+                  meta:
+                    type: object
+                    description: Pagination metadata.
+                    properties:
+                      total:
+                        type: integer
+                        example: 20
+                        description: Total number of child subjects available.
+                      per_page:
+                        type: integer
+                        example: 10
+                        description: Number of results returned per page.
+                      page:
+                        type: integer
+                        example: 1
+                        description: Current page number.
+        '404':
+          description: Parent subject not found.
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

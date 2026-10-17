@@ -1,0 +1,703 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Taxonomies API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Taxonomies
+paths:
+  /providers/preprints/{provider_id}/taxonomies/:
+    get:
+      summary: List Taxonomies for a Preprint Provider (Deprecated)
+      description: 'Retrieve a list of all taxonomies (subjects) associated with a specific preprint provider.
+
+        These taxonomies can be used to categorize and filter preprints submitted to this provider.
+
+        **Deprecated:** Use `subjects` endpoints instead.
+
+        #### Permissions - No authentication required for public providers. - Only authorized users can access restricted providers.
+
+        #### Returns - A JSON object with a `data` key containing an array of taxonomy resources. - Each taxonomy represents a subject that can be assigned to preprints.'
+      deprecated: true
+      tags:
+      - Taxonomies
+      operationId: preprint_provider_taxonomies_list
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of taxonomies for the preprint provider.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      title: Preprint Providers
+                      properties:
+                        id:
+                          type: string
+                          readOnly: true
+                          description: The identifier of the preprint provider entity.
+                        type:
+                          type: string
+                          readOnly: true
+                          description: The type identifier of the preprint provider entity (`preprint_providers`).
+                        attributes:
+                          type: object
+                          title: Attributes
+                          readOnly: true
+                          description: The properties of the preprint provider entity.
+                          properties:
+                            social_instagram:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                            advisory_board:
+                              type: string
+                              readOnly: true
+                              description: The HTML representation of the preprint provider's advisory board.
+                            email_support:
+                              type: string
+                              readOnly: true
+                              description: The preprint providers's support email address.
+                            banner_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                            logo_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                            subjects_acceptable:
+                              type: string
+                              readOnly: true
+                              description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                            description:
+                              type: string
+                              readOnly: true
+                              description: The description of the preprint provider.
+                            social_facebook:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                            email_contact:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                            example:
+                              type: string
+                              readOnly: true
+                              description: The GUID for an example preprint from this preprint provider.
+                            name:
+                              type: string
+                              readOnly: true
+                              description: The name of the preprint provider.
+                            domain:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                            domain_redirect_enabled:
+                              type: boolean
+                              readOnly: true
+                              description: Whether or not redirects are enabled for the provider's domain.
+                        relationships:
+                          type: object
+                          title: Relationships
+                          readOnly: true
+                          description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                          properties:
+                            licenses_acceptable:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to licenses the preprint provider allows.
+                            taxonomies:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the taxonomies the preprint provider allows.
+                            preprints:
+                              type: string
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                        links:
+                          type: object
+                          title: Links
+                          readOnly: true
+                          description: Links to alternative representations of the preprint entity.
+                          properties:
+                            external_url:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the external website for the preprint provider.
+                            preprints:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                            self:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the detail page for the preprint provider.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        description: Link to the current page of results.
+                      next:
+                        type: string
+                        description: Link to the next page of results (if applicable).
+                      prev:
+                        type: string
+                        description: Link to the previous page of results (if applicable).
+                  meta:
+                    type: object
+                    description: Meta information about the response (e.g., total number of results).
+              example:
+                data:
+                - id: engineering
+                  type: taxonomy
+                  attributes:
+                    text: Engineering
+                    parent: null
+                    has_children: true
+                  links:
+                    self: https://api.test.osf.io/v2/taxonomies/engineering/
+                - id: biology
+                  type: taxonomy
+                  attributes:
+                    text: Biology
+                    parent: null
+                    has_children: true
+                  links:
+                    self: https://api.test.osf.io/v2/taxonomies/biology/
+                links:
+                  self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/taxonomies/
+                  next: null
+                  prev: null
+                meta:
+                  total: 2
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access taxonomies for this provider.
+        '404':
+          description: Not Found. No preprint provider matches the given ID.
+  /providers/preprints/{provider_id}/taxonomies/highlighted/:
+    get:
+      summary: List Highlighted Taxonomies for a Preprint Provider (Deprecated)
+      description: 'Retrieve a list of highlighted taxonomies (subjects) for a specific preprint provider.
+
+        Highlighted taxonomies are the primary subjects that the preprint provider chooses to showcase for organizing and filtering preprints.
+
+        **Deprecated:** Use the `highlighted subjects` endpoint instead.
+
+        #### Permissions - No authentication required for public providers. - Only authorized users can access restricted providers.
+
+        #### Returns - A JSON object with a `data` key containing an array of taxonomy resources. - Each taxonomy represents a subject that can be assigned to preprints.'
+      deprecated: true
+      tags:
+      - Taxonomies
+      operationId: preprint_provider_taxonomies_highlighted_list
+      parameters:
+      - in: path
+        name: provider_id
+        required: true
+        description: The unique identifier of the preprint provider.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful retrieval of highlighted taxonomies.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      title: Preprint Providers
+                      properties:
+                        id:
+                          type: string
+                          readOnly: true
+                          description: The identifier of the preprint provider entity.
+                        type:
+                          type: string
+                          readOnly: true
+                          description: The type identifier of the preprint provider entity (`preprint_providers`).
+                        attributes:
+                          type: object
+                          title: Attributes
+                          readOnly: true
+                          description: The properties of the preprint provider entity.
+                          properties:
+                            social_instagram:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Instagram account ID. This field is deprecated as of verson 2.4.
+                            advisory_board:
+                              type: string
+                              readOnly: true
+                              description: The HTML representation of the preprint provider's advisory board.
+                            email_support:
+                              type: string
+                              readOnly: true
+                              description: The preprint providers's support email address.
+                            banner_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's banner image. This field is deprecated as of verson 2.4.
+                            logo_path:
+                              type: string
+                              readOnly: true
+                              description: A static path to the preprint provider's logo image. This field is deprecated as of verson 2.4.
+                            subjects_acceptable:
+                              type: string
+                              readOnly: true
+                              description: A nested array structure defining allowed subjects for this preprint provider, in the BePress taxonomy.
+                            description:
+                              type: string
+                              readOnly: true
+                              description: The description of the preprint provider.
+                            social_facebook:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's Facebook account ID. This field is deprecated as of verson 2.4.
+                            email_contact:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's contact email address. This field is deprecated as of verson 2.4.
+                            example:
+                              type: string
+                              readOnly: true
+                              description: The GUID for an example preprint from this preprint provider.
+                            name:
+                              type: string
+                              readOnly: true
+                              description: The name of the preprint provider.
+                            domain:
+                              type: string
+                              readOnly: true
+                              description: The preprint provider's domain, if the provider is using a domain to for their preprint service.
+                            domain_redirect_enabled:
+                              type: boolean
+                              readOnly: true
+                              description: Whether or not redirects are enabled for the provider's domain.
+                        relationships:
+                          type: object
+                          title: Relationships
+                          readOnly: true
+                          description: Links to other entities or entity collections that have a relationship to the preprint provider.
+                          properties:
+                            licenses_acceptable:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to licenses the preprint provider allows.
+                            taxonomies:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the taxonomies the preprint provider allows.
+                            preprints:
+                              type: string
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                        links:
+                          type: object
+                          title: Links
+                          readOnly: true
+                          description: Links to alternative representations of the preprint entity.
+                          properties:
+                            external_url:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the external website for the preprint provider.
+                            preprints:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the preprint list page for the preprint provider.
+                            self:
+                              type: string
+                              format: URL
+                              readOnly: true
+                              description: A link to the detail page for the preprint provider.
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        description: Link to the current page of results.
+                      next:
+                        type: string
+                        description: Link to the next page of results (if applicable).
+                      prev:
+                        type: string
+                        description: Link to the previous page of results (if applicable).
+                  meta:
+                    type: object
+                    description: Meta information about the response (e.g., total number of results).
+              example:
+                data:
+                - id: sociology
+                  type: taxonomy
+                  attributes:
+                    text: Sociology
+                    parent: null
+                    has_children: true
+                  links:
+                    self: https://api.test.osf.io/v2/taxonomies/sociology/
+                - id: psychology
+                  type: taxonomy
+                  attributes:
+                    text: Psychology
+                    parent: null
+                    has_children: true
+                  links:
+                    self: https://api.test.osf.io/v2/taxonomies/psychology/
+                links:
+                  self: https://api.test.osf.io/v2/providers/preprints/{provider_id}/taxonomies/highlighted/
+                  next: null
+                  prev: null
+                meta:
+                  total: 2
+                  version: '2.0'
+        '401':
+          description: Unauthorized. Authentication is required.
+        '403':
+          description: Forbidden. You do not have permission to access taxonomies for this provider.
+        '404':
+          description: Not Found. No preprint provider matches the given ID.
+  /taxonomies/:
+    get:
+      summary: List all taxonomies
+      description: 'A paginated list of all bepress disciplines taxonomies.
+
+        Note: this API endpoint is under active development, and is subject to change in the future.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of up to 10 taxonomies. Each resource in the array is a separate taxonomy object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+
+        This request should never return an error.
+
+        #### Filtering
+
+        You can optionally request that the response only include taxonomies that match your filters by utilizing the `filter` query parameter, e.g. https://api.osf.io/v2/taxonomies/?filter[''id'']=''{taxonomy_id}''.
+
+
+        Taxonomies may be filtered by their `id`, `parents`, and `text`.'
+      tags:
+      - Taxonomies
+      operationId: taxonomies_list
+      x-response-schema: Taxonomy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Taxonomy
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: The identifier of the taxonomy entity.
+                    type:
+                      type: string
+                      readOnly: true
+                      description: The type identifier of the taxonomy entity (`taxonomies`).
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: true
+                      description: The properties of the taxonomy entity.
+                      properties:
+                        text:
+                          type: string
+                          readOnly: true
+                          description: The text name of the taxonomy
+                        child_count:
+                          type: integer
+                          readOnly: true
+                          description: The number of children this taxonomy contains.
+                        parents:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: An array of JSON objects containing keys for `text` (name) and `id` (unique identifier) of this taxonomy's parents
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: URLs to alternative representations of the taxonomy entity.
+                      properties:
+                        parents:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: An array of links to to this taxonomy's parents. This field is deprecated as of verson 2.4.
+                        self:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the detail page for the taxonomy.
+              example:
+                data:
+                - links:
+                    self: https://api.osf.io/v2/taxonomies/584240d854be81056ceca838/
+                    parents:
+                    - https://api.osf.io/v2/taxonomies/584240d954be81056ceca97a/
+                  attributes:
+                    text: History of Philosophy
+                    parents:
+                    - text: Philosophy
+                      id: 584240d954be81056ceca97a
+                    child_count: 0
+                  type: taxonomies
+                  id: 584240d854be81056ceca838
+                - links:
+                    self: https://api.osf.io/v2/taxonomies/584240d854be81056ceca839/
+                    parents:
+                    - https://api.osf.io/v2/taxonomies/584240db54be81056cecacd3/
+                  attributes:
+                    text: Animal Law
+                    parents:
+                    - text: Law
+                      id: 584240db54be81056cecacd3
+                    child_count: 0
+                  type: taxonomies
+                  id: 584240d854be81056ceca839
+                - links:
+                    self: https://api.osf.io/v2/taxonomies/584240d854be81056ceca83a/
+                    parents:
+                    - https://api.osf.io/v2/taxonomies/584240db54be81056cecacd3/
+                  attributes:
+                    text: Consumer Protection Law
+                    parents:
+                    - text: Law
+                      id: 584240db54be81056cecacd3
+                    child_count: 0
+                  type: taxonomies
+                  id: 584240d854be81056ceca83a
+                - links:
+                    self: https://api.osf.io/v2/taxonomies/584240d854be81056ceca83b/
+                    parents:
+                    - https://api.osf.io/v2/taxonomies/584240da54be81056cecaa9c/
+                  attributes:
+                    text: Missions and World Christianity
+                    parents:
+                    - text: Religion
+                      id: 584240da54be81056cecaa9c
+                    child_count: 0
+                  type: taxonomies
+                  id: 584240d854be81056ceca83b
+                - links:
+                    self: https://api.osf.io/v2/taxonomies/584240d854be81056ceca83c/
+                    parents:
+                    - https://api.osf.io/v2/taxonomies/584240d954be81056ceca8fd/
+                  attributes:
+                    text: Other Teacher Education and Professional Development
+                    parents:
+                    - text: Teacher Education and Professional Development
+                      id: 584240d954be81056ceca8fd
+                    child_count: 0
+                  type: taxonomies
+                  id: 584240d854be81056ceca83c
+                links:
+                  first: null
+                  last: null
+                  prev: null
+                  next: null
+                  meta: null
+                  total: 5
+                  per_page: 10
+  /taxonomies/{taxonomy_id}/:
+    get:
+      summary: Retrieve a taxonomy
+      description: 'Retrieves the details of a taxonomy.
+
+        #### Returns
+
+
+        Returns a JSON object with a `data` key containing the representation of the requested taxonomy, if the request is successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        required: true
+        name: taxonomy_id
+        description: The unique identifier of the taxonomy.
+        schema:
+          type: string
+      tags:
+      - Taxonomies
+      operationId: taxonomies_read
+      x-response-schema: Taxonomy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Taxonomy
+                properties:
+                  id:
+                    type: string
+                    readOnly: true
+                    description: The identifier of the taxonomy entity.
+                  type:
+                    type: string
+                    readOnly: true
+                    description: The type identifier of the taxonomy entity (`taxonomies`).
+                  attributes:
+                    type: object
+                    title: Attributes
+                    readOnly: true
+                    description: The properties of the taxonomy entity.
+                    properties:
+                      text:
+                        type: string
+                        readOnly: true
+                        description: The text name of the taxonomy
+                      child_count:
+                        type: integer
+                        readOnly: true
+                        description: The number of children this taxonomy contains.
+                      parents:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: true
+                        description: An array of JSON objects containing keys for `text` (name) and `id` (unique identifier) of this taxonomy's parents
+                  links:
+                    type: object
+                    title: Links
+                    readOnly: true
+                    description: URLs to alternative representations of the taxonomy entity.
+                    properties:
+                      parents:
+                        type: array
+                        items:
+                          type: string
+                        readOnly: true
+                        description: An array of links to to this taxonomy's parents. This field is deprecated as of verson 2.4.
+                      self:
+                        type: string
+                        format: URL
+                        readOnly: true
+                        description: A link to the detail page for the taxonomy.
+              example:
+                data:
+                  links:
+                    self: https://api.osf.io/v2/taxonomies/584240d954be81056ceca841/
+                    parents:
+                    - https://api.osf.io/v2/taxonomies/584240da54be81056cecab8f/
+                  attributes:
+                    text: Public Economics
+                    parents:
+                    - text: Economics
+                      id: 584240da54be81056cecab8f
+                    child_count: 0
+                  type: taxonomies
+                  id: 584240d954be81056ceca841
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources

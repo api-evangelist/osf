@@ -1,0 +1,1729 @@
+openapi: 3.2.0
+info:
+  title: OSF APIv2 Documentation Institutions API
+  description: This is the official documentation for the OSF (Open Science Framework) API v2.
+  version: '2.0'
+  termsOfService: https://osf.io/terms_of_use/
+  contact:
+    name: OSF Support Team
+    email: support@osf.io
+    url: https://help.osf.io/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  x-logo:
+    url: https://cdn.cos.io/media/images/cos_center_logo_small.original.png
+    backgroundColor: transparent
+servers:
+- url: https://api.test.osf.io/v2
+tags:
+- name: Institutions
+paths:
+  /institutions/:
+    get:
+      summary: List all institutions
+      description: 'A paginated list of all verified institutions.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of 10 institutions. Each resource in the array is a separate institution object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+
+        This request should never return an error.
+
+        #### Filtering
+
+        You can optionally request that the response only include institutions that match your filters by utilizing the `filter` query parameter, e.g. https://api.osf.io/v2/institutions/?filter[id]=cos.
+
+
+        Institutions may be filtered by their `id`, `name`, and `auth_url`'
+      tags:
+      - Institutions
+      operationId: institutions_list
+      x-response-schema: Institution
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Institution
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: The identifier of the institution entity.
+                    type:
+                      type: string
+                      readOnly: true
+                      description: The type identifier of the institution entity (`institutions`).
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: false
+                      description: The properties of the institution entity.
+                      properties:
+                        name:
+                          type: string
+                          readOnly: true
+                          description: Full name of the institution.
+                        description:
+                          type: string
+                          readOnly: true
+                          description: Description of the institution.
+                        iri:
+                          type: string
+                          readOnly: true
+                          description: Internationalized Resource Identifier (IRI) of the institution.
+                        ror_iri:
+                          type: string
+                          readOnly: true
+                          description: Research Organization Registry (ROR) IRI of the institution.
+                        iris:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: List of IRIs associated with the institution.
+                        assets:
+                          type: object
+                          properties:
+                            logo:
+                              type: string
+                              readOnly: true
+                              description: URL to the institution's logo.
+                            logo_rounded:
+                              type: string
+                              readOnly: true
+                              description: URL to the institution's logo with rounded corners.
+                            banner:
+                              type: string
+                              readOnly: true
+                              description: URL to the institution's banner.
+                            logo_path:
+                              type: string
+                              readOnly: true
+                              description: Static path to the institution specific logo.
+                    relationships:
+                      type: object
+                      title: Relationships
+                      readOnly: true
+                      description: URLs to other entities or entity collections that have a relationship to the institution entity.
+                      properties:
+                        nodes:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A relationship to the nodes affiliated with the institution.
+                        users:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A relationship to the users affiliated with the institution.
+                        registrations:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A relationship to the registrations affiliated with the institution.
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: URLs to alternative representations of the institutions entity.
+                      properties:
+                        self:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the detail page for the institution.
+              example:
+                data:
+                - relationships:
+                    nodes:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/nodes/
+                          meta: {}
+                    users:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/users/
+                          meta: {}
+                    registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/registrations/
+                          meta: {}
+                    department_metrics:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/metrics/departments/
+                          meta: {}
+                    users_metrics:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/metrics/users/
+                          meta: {}
+                    summary_metrics:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/metrics/sumary/
+                          meta: {}
+                        data:
+                          id: cos
+                          type: institution-summary-metrics
+                  links:
+                    self: https://api.osf.io/v2/institutions/cos/
+                  attributes:
+                    name: Center For Open Science
+                    description: COS is a non-profit technology company providing free and open services to increase inclusivity and transparency of research. Find out more at <a href="https://cos.io">cos.io</a>.
+                    iri: http://www.test.edu
+                    ror_iri: https://ror.org/000000000
+                    iris:
+                    - https://ror.org/000000000
+                    - http://www.test.edu/
+                    - https://osf.io/institutions/test/
+                    assets:
+                      logo: https://storage.test.com/test-shield.png
+                      logo_rounded: https://storage.test.com/test-shield-rounded-corners.png
+                      banner: https://storage.test.com/test-banner.png
+                links:
+                  first: null
+                  last: https://api.osf.io/v2/institutions/cos/nodes/?page=2
+                  prev: null
+                  next: https://api.osf.io/v2/institutions/cos/nodes/?page=2
+                  meta:
+                    total: 15
+                    per_page: 10
+  /institutions/{institution_id}/:
+    get:
+      summary: Retrieve an institution
+      description: 'Retrieves the details of an institution
+
+        #### Returns
+
+        Returns a JSON object with a `data` key containing the representation of the requested institution, if the request was successful.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.'
+      parameters:
+      - in: path
+        required: true
+        name: institution_id
+        description: The unique identifier of the institution you wish to retrieve.
+        schema:
+          type: string
+      tags:
+      - Institutions
+      operationId: institutions_detail
+      x-response-schema: Institution
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Institution
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: The identifier of the institution entity.
+                    type:
+                      type: string
+                      readOnly: true
+                      description: The type identifier of the institution entity (`institutions`).
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: false
+                      description: The properties of the institution entity.
+                      properties:
+                        name:
+                          type: string
+                          readOnly: true
+                          description: Full name of the institution.
+                        description:
+                          type: string
+                          readOnly: true
+                          description: Description of the institution.
+                        iri:
+                          type: string
+                          readOnly: true
+                          description: Internationalized Resource Identifier (IRI) of the institution.
+                        ror_iri:
+                          type: string
+                          readOnly: true
+                          description: Research Organization Registry (ROR) IRI of the institution.
+                        iris:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: List of IRIs associated with the institution.
+                        assets:
+                          type: object
+                          properties:
+                            logo:
+                              type: string
+                              readOnly: true
+                              description: URL to the institution's logo.
+                            logo_rounded:
+                              type: string
+                              readOnly: true
+                              description: URL to the institution's logo with rounded corners.
+                            banner:
+                              type: string
+                              readOnly: true
+                              description: URL to the institution's banner.
+                            logo_path:
+                              type: string
+                              readOnly: true
+                              description: Static path to the institution specific logo.
+                    relationships:
+                      type: object
+                      title: Relationships
+                      readOnly: true
+                      description: URLs to other entities or entity collections that have a relationship to the institution entity.
+                      properties:
+                        nodes:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A relationship to the nodes affiliated with the institution.
+                        users:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A relationship to the users affiliated with the institution.
+                        registrations:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A relationship to the registrations affiliated with the institution.
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: URLs to alternative representations of the institutions entity.
+                      properties:
+                        self:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the detail page for the institution.
+              example:
+                data:
+                  relationships:
+                    nodes:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/nodes/
+                          meta: {}
+                    users:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/users/
+                          meta: {}
+                    registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/registrations/
+                          meta: {}
+                    department_metrics:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/metrics/departments/
+                          meta: {}
+                    users_metrics:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/metrics/users/
+                          meta: {}
+                    summary_metrics:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/institutions/cos/metrics/sumary/
+                          meta: {}
+                        data:
+                          id: cos
+                          type: institution-summary-metrics
+                  links:
+                    self: https://api.osf.io/v2/institutions/cos/
+                  attributes:
+                    name: Center For Open Science
+                    description: COS is a non-profit technology company providing free and open services to increase inclusivity and transparency of research. Find out more at <a href="https://cos.io">cos.io</a>.
+                    iri: http://www.test.edu
+                    ror_iri: https://ror.org/000000000
+                    iris:
+                    - https://ror.org/000000000
+                    - http://www.test.edu/
+                    - https://osf.io/institutions/test/
+                    assets:
+                      logo: https://storage.test.com/test-shield.png
+                      logo_rounded: https://storage.test.com/test-shield-rounded-corners.png
+                      banner: https://storage.test.com/test-banner.png
+                  type: institutions
+                  id: cos
+  /institutions/{institution_id}/users/:
+    get:
+      summary: List all affiliated users
+      description: 'A paginated list of all users affiliated with an institution.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of 10 users. Each resource in the array is a separate users object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.
+
+        #### Filtering
+
+        You can optionally request that the response only include users that match your filters by utilizing the `filter` query parameter, e.g. https://api.osf.io/v2/institutions/cos/users?filter[family_name]=Nosek.
+
+
+        Users may be filtered by their `id`, `full_name`, `given_name`, `middle_names`, and `family_name`'
+      parameters:
+      - in: path
+        required: true
+        name: institution_id
+        description: The unique identifier of the institution you wish to retrieve.
+        schema:
+          type: string
+      tags:
+      - Institutions
+      operationId: institutions_users_list
+      x-response-schema: User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: User
+                  required:
+                  - id
+                  - type
+                  - attributes
+                  - relationships
+                  - links
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: The unique identifier of the user entity.
+                    type:
+                      type: string
+                      readOnly: true
+                      description: The type identifier of the user entity (`users`).
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: false
+                      description: The properties of the user entity.
+                      required:
+                      - active
+                      - date_registered
+                      - full_name
+                      properties:
+                        active:
+                          type: boolean
+                          readOnly: true
+                          description: Whether or not the user is an active user.
+                        date_registered:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the user registered their account, as an iso8601 formatted timestamp.
+                        family_name:
+                          type: string
+                          readOnly: false
+                          description: The family name of the user, used for bibliographic citations.
+                        full_name:
+                          type: string
+                          readOnly: false
+                          description: The full name of the user, used for display on the OSF.
+                        given_name:
+                          type: string
+                          readOnly: false
+                          description: The given name of the user, used for bibliographic citations.
+                        middle_names:
+                          type: string
+                          readOnly: false
+                          description: The middle names of the user, used for bibliographic citations.
+                        suffix:
+                          type: string
+                          readOnly: false
+                          description: The suffix of the user, used for bibliographic citations.
+                        locale:
+                          type: string
+                          readOnly: false
+                          description: The user's locale, e.g. 'en_US'.
+                        timezone:
+                          type: string
+                          readOnly: false
+                          description: The user's timezone, e.g. 'Etc/UTC'.
+                        social:
+                          type: object
+                          readOnly: false
+                          additionalProperties: true
+                          description: "A dictionary of the user's social and academic profile links. \nFields may include:\n- `github`, `twitter`, `linkedIn`: List of profile URLs (strings)\n- `scholar`, `orcid`, `researcherId`, `impactStory`, etc.: Single URL string\n- `profileWebsites`: List of personal website URLs (strings)\n"
+                        employment:
+                          type: array
+                          readOnly: false
+                          description: A list of the user's employment history records.
+                          items:
+                            type: object
+                            required:
+                            - institution
+                            - startYear
+                            - startMonth
+                            - ongoing
+                            properties:
+                              title:
+                                type: string
+                              institution:
+                                type: string
+                              department:
+                                type: string
+                              startYear:
+                                type: integer
+                                minimum: 1900
+                              startMonth:
+                                type: integer
+                                minimum: 1
+                                maximum: 12
+                              endYear:
+                                type: integer
+                                minimum: 1900
+                              endMonth:
+                                type: integer
+                                minimum: 1
+                                maximum: 12
+                              ongoing:
+                                type: boolean
+                        education:
+                          type: array
+                          readOnly: false
+                          description: A list of the user's educational history records.
+                          items:
+                            type: object
+                            required:
+                            - institution
+                            - startYear
+                            - startMonth
+                            - ongoing
+                            properties:
+                              degree:
+                                type: string
+                              institution:
+                                type: string
+                              department:
+                                type: string
+                              startYear:
+                                type: integer
+                                minimum: 1900
+                              startMonth:
+                                type: integer
+                                minimum: 1
+                                maximum: 12
+                              endYear:
+                                type: integer
+                                minimum: 1900
+                              endMonth:
+                                type: integer
+                                minimum: 1
+                                maximum: 12
+                              ongoing:
+                                type: boolean
+                    relationships:
+                      type: object
+                      title: Relationships
+                      readOnly: true
+                      description: URLs to other entities or entity collections that have a relationship to the user entity.
+                      properties:
+                        institutions:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of institutions the user is affiliated with.
+                        nodes:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of nodes the user is a contributor to.
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: URLs to alternative representations of the user entity.
+                      properties:
+                        html:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the user's profile page on the OSF.
+                        profile_image:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the user's profile image.
+                  example:
+                    data:
+                      type: users
+                      id: '{user_id}'
+                      attributes:
+                        full_name: Casey M. Rollins
+                        middle_names: Marie
+                        social:
+                          github:
+                          - https://github.com/caseyrollins
+                          twitter:
+                          - https://twitter.com/crollins
+                        employment:
+                        - title: Data Scientist
+                          institution: Open Science Framework
+                          department: Engineering
+                          startYear: 2018
+                          startMonth: 5
+                          ongoing: true
+                        education:
+                        - degree: MS in Computer Science
+                          institution: University of Somewhere
+                          department: Computer Science
+                          startYear: 2014
+                          startMonth: 9
+                          endYear: 2016
+                          endMonth: 6
+                          ongoing: false
+              example:
+                data:
+                - relationships:
+                    nodes:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/users/cdi38/nodes/
+                          meta: {}
+                    institutions:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/users/cdi38/relationships/institutions/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/users/cdi38/institutions/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/users/cdi38/
+                    html: https://osf.io/cdi38/
+                    profile_image: https://secure.gravatar.com/avatar/37fc491096861dae49fe23ba665af56b?d=identicon
+                  attributes:
+                    family_name: Nosek
+                    suffix: ''
+                    locale: en_US
+                    date_registered: '2012-05-31T05:29:01.320000'
+                    middle_names: A.
+                    given_name: Brian
+                    full_name: Brian A. Nosek
+                    active: true
+                    timezone: America/New_York
+                  type: users
+                  id: cdi38
+                links:
+                  first: null
+                  last: https://api.osf.io/v2/institutions/cos/users/?page=8
+                  prev: null
+                  next: https://api.osf.io/v2/institutions/cos/users/?page=2
+                  meta:
+                    total: 77
+                    per_page: 10
+  /institutions/{institution_id}/nodes/:
+    get:
+      summary: List all affiliated nodes
+      description: 'A paginated list of all nodes affiliated with an institution.
+
+        #### Versioning
+
+        As of version `2.2`, affiliated components (in addition to affiliated top-level projects) are returned from this endpoint.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of 10 nodes. Each resource in the array is a separate nodes object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.
+
+        #### Filtering
+
+        You can optionally request that the response only include nodes that match your filters by utilizing the `filter` query parameter, e.g. https://api.osf.io/v2/institutions/cos/nodes?filter[title]=science.
+
+
+        Nodes may be filtered by their `id`, `title`, `description`, `public`, `tags`, `category`, `date_created`, `date_modified`, `root`, `parent`, `contributors`, and `preprint`'
+      parameters:
+      - in: path
+        required: true
+        name: institution_id
+        description: The unique identifier of the institution you wish to retrieve.
+        schema:
+          type: string
+      tags:
+      - Institutions
+      operationId: institutions_node_list
+      x-response-schema: Node
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  title: Node
+                  required:
+                  - type
+                  - attributes
+                  properties:
+                    id:
+                      type: string
+                      readOnly: true
+                      description: The unique identifier of the node entity.
+                    type:
+                      type: string
+                      readOnly: false
+                      description: The type identifier of the node entity (`nodes`).
+                    attributes:
+                      type: object
+                      title: Attributes
+                      readOnly: false
+                      description: The properties of the node entity.
+                      required:
+                      - title
+                      - category
+                      properties:
+                        category:
+                          type: string
+                          readOnly: false
+                          enum:
+                          - analysis
+                          - communication
+                          - data
+                          - hypothesis
+                          - instrumentation
+                          - methods and measures
+                          - procedure
+                          - project
+                          - software
+                          - other
+                          description: The category of the node, as selected by project contributors.
+                        title:
+                          type: string
+                          readOnly: false
+                          description: The title of the node.
+                        collection:
+                          type: boolean
+                          readOnly: true
+                          description: Whether or not this node represents a collection. This value should always be `false`. This field may be deprecated in future versions.
+                        current_user_can_comment:
+                          type: boolean
+                          readOnly: true
+                          description: Whether or not the current user has permission to post comments on this node. Comments on nodes can be set to allow all users to comment (if public) or restricted to only allow comments from contributors.
+                        current_user_permissions:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: true
+                          description: A list of strings representing the permissions for the current user on this node. Valid permissions are "admin", "read", and "write".
+                        date_created:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the node was created, as an iso8601 formatted timestamp.
+                        date_modified:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: The time at which the node was last modified, as an iso8601 formatted timestamp.
+                        description:
+                          type: string
+                          readOnly: false
+                          description: The description of the node.
+                        fork:
+                          type: boolean
+                          readOnly: true
+                          description: Whether or not this node represents a fork of another node.
+                        forked_date:
+                          type: string
+                          format: date-time
+                          readOnly: true
+                          description: If this node is a fork of another node, the time at which the node was created, as an iso8601 formatted timestamp.
+                        node_license:
+                          type: string
+                          readOnly: false
+                          description: A dictionary containing the metadata (copyright year and holder) associated with the node license (required for certain license types).
+                        preprint:
+                          type: boolean
+                          readOnly: true
+                          description: Whether or not a preprint has been created from this node, or if this node was created for a preprint.
+                        public:
+                          type: boolean
+                          readOnly: false
+                          description: Whether or not the node is publicly visible. This field is only editable by project administrators.
+                        registration:
+                          type: boolean
+                          readOnly: true
+                          description: Whether or not the node represents a registration. This value should always be `false`. This field may be deprecated in future versions.
+                        tags:
+                          type: array
+                          items:
+                            type: string
+                          readOnly: false
+                          description: A list of strings that describe this node, as entered by project contributors.
+                        template_from:
+                          type: string
+                          readOnly: false
+                          description: The unique ID of the node from which this node was templated, if this node was created from a template.
+                    relationships:
+                      type: object
+                      title: Relationships
+                      readOnly: false
+                      description: URLs to other entities or entity collections that have a relationship to the node entity.
+                      properties:
+                        affiliated_institutions:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of institutions this node is affiliated with.
+                        children:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of this node's children (components).
+                        citation:
+                          type: string
+                          readOnly: true
+                          description: A link to the citation details of this node.
+                        comments:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of comments on this node.
+                        contributors:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of contributors on this node.
+                        draft_registrations:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of registrations that have been initiated from this node and are still in a draft state.
+                        files:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of storage providers that have been enabled on this node.
+                        forked_from:
+                          type: string
+                          readOnly: true
+                          description: A link to the node which this node was forked from, if this node is a fork.
+                        forks:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of nodes that are forks of this node.
+                        identifiers:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of identifiers for this node (i.e. ARK and DOI identifiers).
+                        license:
+                          type: string
+                          readOnly: true
+                          description: A link to the license that has been applied to this node.
+                        logs:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of log actions pertaining to this node.
+                        linked_nodes:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of nodes that are linked to the current node.
+                        node_links:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of nodes that are linked to the current node. This field is deprecated as of verson 2.1; use the linked_nodes link instead.
+                        parent:
+                          type: string
+                          readOnly: true
+                          description: A link to the node that is the direct parent of the current node, if the current node is a child node.
+                        preprints:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of preprints that this node relates to.
+                        registrations:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of registrations that have been created from this node.
+                        root:
+                          type: string
+                          readOnly: true
+                          description: A link to the node that is the top-level parent of the current node. If the current node is the top-level node, the root is the current node.
+                        template_node:
+                          type: string
+                          readOnly: true
+                          description: A link to the node that the current node was templated from, if the current node was created from a template.
+                        view_only_links:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of view only links that have been created for this node.
+                        wikis:
+                          type: string
+                          readOnly: true
+                          description: A link to the list of wiki pages for this node.
+                    links:
+                      type: object
+                      title: Links
+                      readOnly: true
+                      description: URLs to alternative representations of the node entity.
+                      properties:
+                        html:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the node's page on the OSF.
+                        self:
+                          type: string
+                          format: URL
+                          readOnly: true
+                          description: A link to the canonical API endpoint of this node.
+                  example:
+                    data:
+                      type: nodes
+                      attributes:
+                        title: An Excellent Project Title
+                        category: software
+              example:
+                data:
+                - relationships:
+                    files:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/files/
+                          meta: {}
+                    view_only_links:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/view_only_links/
+                          meta: {}
+                    citation:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/citation/
+                          meta: {}
+                    license:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/licenses/563c1cf88c5e4a3877f9e96a/
+                          meta: {}
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/contributors/
+                          meta: {}
+                    forks:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/forks/
+                          meta: {}
+                    root:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/
+                          meta: {}
+                    identifiers:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/identifiers/
+                          meta: {}
+                    comments:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/comments/?filter%5Btarget%5D=qpxv2
+                          meta: {}
+                    registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/registrations/
+                          meta: {}
+                    logs:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/logs/
+                          meta: {}
+                    node_links:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/node_links/
+                          meta: {}
+                    linked_nodes:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/nodes/qpxv2/relationships/linked_nodes/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/linked_nodes/
+                          meta: {}
+                    wikis:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/wikis/
+                          meta: {}
+                    affiliated_institutions:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/nodes/qpxv2/relationships/institutions/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/institutions/
+                          meta: {}
+                    children:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/children/
+                          meta: {}
+                    preprints:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/preprints/
+                          meta: {}
+                    draft_registrations:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/qpxv2/draft_registrations/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/nodes/qpxv2/
+                    html: https://osf.io/qpxv2/
+                  attributes:
+                    category: project
+                    fork: false
+                    preprint: false
+                    description: A project storing mp4 files of all the webinar videos posted to the COS youtube channel
+                    current_user_permissions:
+                    - read
+                    date_modified: '2017-02-09T14:19:23.054000'
+                    title: COS Webinar Videos
+                    collection: false
+                    registration: false
+                    date_created: '2017-02-08T18:27:00.135000'
+                    current_user_can_comment: true
+                    node_license:
+                      copyright_holders:
+                      - ''
+                      year: '2017'
+                    public: true
+                    tags: []
+                  type: nodes
+                  id: qpxv2
+                links:
+                  first: null
+                  last: https://api.osf.io/v2/institutions/cos/nodes/?page=330
+                  prev: null
+                  next: https://api.osf.io/v2/institutions/cos/nodes/?page=2
+                  meta:
+                    total: 337
+                    per_page: 10
+  /institutions/{institution_id}/registrations/:
+    get:
+      summary: List all affiliated registrations
+      description: 'A paginated list of all registrations affiliated with an institution.
+
+        #### Returns
+
+        Returns a JSON object containing `data` and `links` keys.
+
+
+        The `data` key contains an array of 10 registrations. Each resource in the array is a separate users object.
+
+
+        The `links` key contains a dictionary of links that can be used for pagination.
+
+
+        If the request is unsuccessful, an `errors` key containing information about the failure will be returned. Refer to the list of error codes to understand why this request may have failed.
+
+        #### Filtering
+
+        You can optionally request that the response only include registrations that match your filters by utilizing the `filter` query parameter, e.g. https://api.osf.io/v2/institutions/cos/registrations?filter[title]=science.
+
+
+        Registrations may be filtered by their `id`, `title`, `description`, `public`, `tags`, `category`, `date_created`, `date_modified`, `root`, `parent`, `contributors`, and `preprint`'
+      parameters:
+      - in: path
+        required: true
+        name: institution_id
+        description: The unique identifier of the institution you wish to retrieve.
+        schema:
+          type: string
+      tags:
+      - Institutions
+      operationId: institutions_registration_list
+      x-response-schema: Registration
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              example:
+                data:
+                - relationships:
+                    files:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/files/
+                          meta: {}
+                    view_only_links:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/view_only_links/
+                          meta: {}
+                    citation:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/citation/
+                          meta: {}
+                    license:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/licenses/563c1cf88c5e4a3877f9e96a/
+                          meta: {}
+                    contributors:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/contributors/
+                          meta: {}
+                    forks:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/forks/
+                          meta: {}
+                    root:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/
+                          meta: {}
+                    identifiers:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/identifiers/
+                          meta: {}
+                    comments:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/comments/?filter%5Btarget%5D=xemzv
+                          meta: {}
+                    node_links:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/node_links/
+                          meta: {}
+                    linked_nodes:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/nodes/xemzv/relationships/linked_nodes/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/linked_nodes/
+                          meta: {}
+                    wikis:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/wikis/
+                          meta: {}
+                    affiliated_institutions:
+                      links:
+                        self:
+                          href: https://api.osf.io/v2/nodes/xemzv/relationships/institutions/
+                          meta: {}
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/institutions/
+                          meta: {}
+                    children:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/children/
+                          meta: {}
+                    logs:
+                      links:
+                        related:
+                          href: https://api.osf.io/v2/nodes/xemzv/logs/
+                          meta: {}
+                  links:
+                    self: https://api.osf.io/v2/registrations/xemzv/
+                    html: https://osf.io/xemzv/
+                  attributes:
+                    category: project
+                    fork: false
+                    preprint: false
+                    description: This project contains the materials and proposal for the upcoming OASPA 2016 Conference
+                    current_user_permissions:
+                    - read
+                    date_modified: '2016-12-14T20:48:58.147000'
+                    title: COASPA 2016, Center for Open Science
+                    collection: false
+                    registration: true
+                    date_created: '2016-05-26T14:56:27.310000'
+                    current_user_can_comment: true
+                    node_license:
+                      copyright_holders:
+                      - ''
+                      year: '2016'
+                    public: true
+                    tags:
+                    - TOP Guidelines
+                    - Open Practice Badges
+                    - Registered Reports
+                    - Prereg Challenge
+                  type: nodes
+                  id: xemzv
+                links:
+                  first: null
+                  last: https://api.osf.io/v2/institutions/cos/registrations/?page=3
+                  prev: null
+                  next: https://api.osf.io/v2/institutions/cos/registrations/?page=2
+                  meta:
+                    total: 22
+                    per_page: 10
+  /institutions/{institution_id}/relationships/nodes/:
+    get:
+      summary: List nodes affiliated with an institution (relationship data)
+      description: 'Retrieve relationship data for nodes affiliated with the given institution.
+
+
+        ### Permissions
+
+        - Public nodes: Anyone can view the affiliation.
+
+        - Private nodes: Only contributors can view affiliation.
+
+        - Requires read access to the institution and nodes.'
+      tags:
+      - Institutions
+      operationId: listInstitutionNodeRelationships
+      parameters:
+      - name: institution_id
+        in: path
+        required: true
+        description: The unique identifier of the institution.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved node relationships.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: nodes
+                        id:
+                          type: string
+                          example: abcd1
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /v2/institutions/{institution_id}/relationships/nodes/
+                      related:
+                        type: string
+                        example: /v2/institutions/{institution_id}/nodes/
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to view this institution's nodes.
+        '404':
+          description: Institution not found.
+    post:
+      summary: Add node relationships to an institution
+      description: 'Add nodes to an institution''s affiliated nodes relationship.
+
+
+        ### Permissions
+
+        - Requires write access on each node being added.
+
+        - User must be affiliated with the institution.'
+      tags:
+      - Institutions
+      operationId: addInstitutionNodeRelationships
+      parameters:
+      - name: institution_id
+        in: path
+        required: true
+        description: The unique identifier of the institution.
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Nodes successfully affiliated with institution.
+        '204':
+          description: No changes made (nodes already affiliated).
+        '400':
+          description: Invalid request payload.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to affiliate these nodes.
+        '404':
+          description: Institution not found.
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: nodes
+                      id:
+                        type: string
+                        example: abcd1
+        description: List of node relationships to add.
+        required: true
+    delete:
+      summary: Remove node relationships from an institution
+      description: 'Remove nodes from an institution''s affiliated nodes relationship.
+
+
+        ### Permissions
+
+        - Requires write access on each node being removed.'
+      tags:
+      - Institutions
+      operationId: removeInstitutionNodeRelationships
+      parameters:
+      - name: institution_id
+        in: path
+        required: true
+        description: The unique identifier of the institution.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Nodes successfully removed from affiliation.
+        '400':
+          description: Invalid request payload.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to modify these nodes.
+        '404':
+          description: Institution not found.
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: nodes
+                      id:
+                        type: string
+                        example: abcd1
+        description: List of node relationships to remove.
+        required: true
+  /institutions/{institution_id}/relationships/registrations/:
+    get:
+      summary: List registrations affiliated with an institution (relationship data)
+      description: 'Retrieve relationship data for registrations affiliated with the given institution.
+
+
+        ### Permissions
+
+        - Public registrations: Anyone can view the affiliation.
+
+        - Private registrations: Only contributors can view affiliation.
+
+        - Requires read access to the institution and registrations.'
+      tags:
+      - Institutions
+      operationId: listInstitutionRegistrationRelationships
+      parameters:
+      - name: institution_id
+        in: path
+        required: true
+        description: The unique identifier of the institution.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully retrieved registration relationships.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: registrations
+                        id:
+                          type: string
+                          example: reg123
+                  links:
+                    type: object
+                    properties:
+                      self:
+                        type: string
+                        example: /v2/institutions/{institution_id}/relationships/registrations/
+                      related:
+                        type: string
+                        example: /v2/institutions/{institution_id}/registrations/
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to view this institution's registrations.
+        '404':
+          description: Institution not found.
+    post:
+      summary: Add registration relationships to an institution
+      description: 'Add registrations to an institution''s affiliated registrations relationship.
+
+
+        ### Permissions
+
+        - Requires write access on each registration being added.
+
+        - User must be affiliated with the institution.'
+      tags:
+      - Institutions
+      operationId: addInstitutionRegistrationRelationships
+      parameters:
+      - name: institution_id
+        in: path
+        required: true
+        description: The unique identifier of the institution.
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Registrations successfully affiliated with institution.
+        '204':
+          description: No changes made (registrations already affiliated).
+        '400':
+          description: Invalid request payload.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to affiliate these registrations.
+        '404':
+          description: Institution not found.
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: registrations
+                      id:
+                        type: string
+                        example: reg123
+        description: List of registration relationships to add.
+        required: true
+    delete:
+      summary: Remove registration relationships from an institution
+      description: 'Remove registrations from an institution''s affiliated registrations relationship.
+
+
+        ### Permissions
+
+        - Requires write access on each registration being removed.'
+      tags:
+      - Institutions
+      operationId: removeInstitutionRegistrationRelationships
+      parameters:
+      - name: institution_id
+        in: path
+        required: true
+        description: The unique identifier of the institution.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Registrations successfully removed from affiliation.
+        '400':
+          description: Invalid request payload.
+        '401':
+          description: Authentication credentials were not provided or are invalid.
+        '403':
+          description: You do not have permission to modify these registrations.
+        '404':
+          description: Institution not found.
+      requestBody:
+        content:
+          application/vnd.api+json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: registrations
+                      id:
+                        type: string
+                        example: reg123
+        description: List of registration relationships to remove.
+        required: true
+  /draft_registrations/{draft_id}/relationships/institutions/:
+    get:
+      summary: Retrieve affiliated institutions for a draft registration
+      description: 'Retrieve the list of institutions currently affiliated with a draft registration.
+
+        Returns institution IDs in JSON:API relationship format.'
+      tags:
+      - Institutions
+      operationId: draft_registration_institutions_relationship_retrieve
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Institutions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - type
+                      - id
+                      properties:
+                        type:
+                          type: string
+                          example: institutions
+                          description: The resource type; must be `institutions`.
+                        id:
+                          type: string
+                          example: inst123
+                          description: The unique identifier of the institution.
+                example:
+                  data:
+                  - type: institutions
+                    id: inst123
+                  - type: institutions
+                    id: inst456
+        '403':
+          description: Forbidden. You do not have permission to view affiliated institutions.
+        '404':
+          description: Draft registration not found.
+    post:
+      summary: Add affiliated institutions to a draft registration
+      description: 'Add one or more institutions to a draft registration by their identifiers.
+
+        The user must be affiliated with the institutions they are attempting to add.'
+      tags:
+      - Institutions
+      operationId: draft_registration_institutions_relationship_add
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Institutions added successfully.
+        '400':
+          description: Bad Request. User is not affiliated with the specified institution(s).
+        '403':
+          description: Forbidden. You do not have permission to add institutions.
+        '404':
+          description: Draft registration not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - type
+                    - id
+                    properties:
+                      type:
+                        type: string
+                        example: institutions
+                        description: The resource type; must be `institutions`.
+                      id:
+                        type: string
+                        example: inst123
+                        description: The unique ID of the institution to add.
+        description: JSON:API list of institution identifiers to associate with the draft registration.
+        required: true
+    delete:
+      summary: Remove affiliated institutions from a draft registration
+      description: 'Remove one or more institutions from the draft registration by their identifiers.
+
+        This operation only modifies the relationship and does not delete the institutions themselves.'
+      tags:
+      - Institutions
+      operationId: draft_registration_institutions_relationship_delete
+      parameters:
+      - name: draft_id
+        in: path
+        required: true
+        description: The unique identifier of the draft registration.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Institutions removed successfully.
+        '403':
+          description: Forbidden. You do not have permission to modify institutions.
+        '404':
+          description: Draft registration not found.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - data
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - type
+                    - id
+                    properties:
+                      type:
+                        type: string
+                        example: institutions
+                        description: The resource type; must be `institutions`.
+                      id:
+                        type: string
+                        example: inst456
+                        description: The unique ID of the institution to remove.
+        description: JSON:API list of institution identifiers to disassociate from the draft registration.
+        required: true
+x-tagGroups:
+- name: Welcome
+  tags:
+  - Introduction
+  - General Usage
+  - Authentication
+  - Pagination
+  - Versioning
+  - Filtering
+  - Sparse Fieldsets
+  - Embedding
+  - Request Formatting
+  - Errors & Error Codes
+  - Entities & Entity Collections
+- name: API Reference
+  tags:
+  - Actions
+  - Addons
+  - Applications
+  - Base
+  - CEDAR Metadata
+  - Citations
+  - Comments
+  - Collections
+  - Collection Submissions
+  - Collection Submissions Actions
+  - Collection Providers
+  - Custom Metadata
+  - Files
+  - Licenses
+  - Logs
+  - Institutions
+  - Identifiers
+  - Registration Schemas
+  - Registration Schema Blocks
+  - Schema Responses
+  - Schema Response Actions
+  - Nodes
+  - Notification Subscriptions
+  - Preprints
+  - Preprint Providers
+  - Draft Registrations
+  - Registrations
+  - Registration Providers
+  - Regions
+  - OAuth Scopes
+  - Taxonomies
+  - Tokens
+  - Users
+  - View Only Links
+  - Wikis
+  - Subjects
+  - GUIDs
+  - Requests
+  - Resources
